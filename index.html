@@ -23,10 +23,14 @@
     -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     overflow-x:hidden;
   }
-  /* <<< FIX ICON FONTS >>> */
+
+  /* <<< FIX mostre/nascondi >>> */
+  [hidden]{display:none !important;}
+  .hidden{display:none !important;}
+
+  /* <<< FIX ICON FONTS (serve per i brand) >>> */
   .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
   .fa-brands{font-family:"Font Awesome 6 Brands" !important}
-  /* (niente regola generica su i[class^="fa-"]!) */
 
   .noscript{background:#ffdd57;color:#111;padding:10px 14px;text-align:center;font-weight:800}
 
@@ -587,18 +591,20 @@
     }
   }
 
-  /* ===== AUTH UI ===== */
+  /* ===== AUTH UI (mostra/nasconde Login/Logout) ===== */
   function updateAuthUI(){
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
 
-    // mostra/nasconde Login e Logout come richiesto
-    $('#goProfile').hidden = !isIn;
-    $('#btnLogout').hidden = !isIn;          // Logout visibile SOLO quando loggato
-    $('#btnDiscordLogin').hidden =  isIn;     // Login nascosto quando loggato
-    $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn);
+    // Navbar
+    $('#btnLogout').hidden        = !isIn;     // Logout visibile SOLO se loggato
+    $('#btnDiscordLogin').hidden  =  isIn;     // Login nascosto se loggato
+    $('#goProfile').hidden        = !isIn;
+
+    // Sezione profilo
     $('#btnLogoutProfile').hidden = !isIn;
+    $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn);
 
     if(isIn){
       $('#userName').textContent = user.global_name || (user.username + (user.discriminator ? '#' + user.discriminator : ''));
@@ -661,7 +667,7 @@
       localStorage.setItem(OAUTH_TOKEN_KEY, at);
       localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
       toast('Accesso con Discord riuscito!');
-      updateAuthUI(); // <-- qui abilita subito Logout e avatar
+      updateAuthUI(); // abilita subito Logout, nasconde Login
     }catch(err){
       console.error(err);
       toast('Errore nel recupero profilo Discord.');
@@ -680,15 +686,7 @@
     }catch(_){}
 
     // reset UI immediato
-    setAvatar(null);
-    setProfileAvatar(null);
-    $('#goProfile').hidden = true;
-    $('#btnLogout').hidden = true;
-    $('#btnDiscordLogin').hidden = false;
-    $('#btnLogoutProfile').hidden = true;
-    $('#btnDiscordLogin2')?.classList.remove('hidden');
-    $('#userName').textContent = '';
-
+    updateAuthUI();
     showPage('home');
     toast('Logout effettuato');
   }
@@ -727,7 +725,7 @@
   /* Init */
   window.addEventListener('load', async ()=>{
     await handleOAuthRedirectFragment(); // gestisce login al ritorno da Discord
-    updateAuthUI();                       // mostra/nasconde Logout e icone
+    updateAuthUI();                       // mostra correttamente Login/Logout
     showPage('home');
     tryAutoplay();
   });

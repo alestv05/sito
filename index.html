@@ -28,7 +28,7 @@
   [hidden]{display:none !important;}
   .hidden{display:none !important;}
 
-  /* Icon fonts corretti (per Discord brand) */
+  /* Icon fonts corretti (serve per l’icona Discord) */
   .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
   .fa-brands{font-family:"Font Awesome 6 Brands" !important}
 
@@ -221,14 +221,14 @@
       <a href="#" class="nav-link" data-route="concorsi">Concorsi</a>
       <a href="#" class="nav-link" data-route="staff">Staff</a>
 
-      <!-- SOLO ICONA per Login -->
-      <a href="#" class="nav-link" id="btnDiscordLogin" aria-label="Login con Discord" title="Login con Discord">
-        <i class="fa-brands fa-discord" aria-hidden="true"></i>
+      <!-- TESTO + ICONA: Login -->
+      <a href="#" class="nav-link" id="btnDiscordLogin" title="Login con Discord">
+        Login <i class="fa-brands fa-discord" aria-hidden="true"></i>
       </a>
 
       <a href="#" class="nav-link" id="goProfile" data-route="profile" hidden>Profilo</a>
 
-      <!-- SCRITTA Logout (appare solo quando loggato) -->
+      <!-- SCRITTA Logout (visibile solo quando loggato) -->
       <a href="#" class="nav-link" id="btnLogout" hidden>Logout</a>
     </nav>
 
@@ -451,9 +451,9 @@
             <img id="profAvatarImg" alt="Avatar">
           </div>
           <div class="actions">
-            <!-- Icona login anche qui quando sloggato -->
-            <button class="btn btn-discord" id="btnDiscordLogin2" title="Login con Discord" aria-label="Login con Discord">
-              <i class="fa-brands fa-discord" aria-hidden="true"></i>
+            <!-- bottone login (icona + testo) quando sloggato -->
+            <button class="btn btn-discord" id="btnDiscordLogin2" title="Login con Discord">
+              Login <i class="fa-brands fa-discord" aria-hidden="true"></i>
             </button>
             <button class="btn btn-ghost" id="btnLogoutProfile">Logout</button>
           </div>
@@ -588,18 +588,18 @@
     }
   }
 
-  /* ===== AUTH UI (icone vs Logout) ===== */
+  /* ===== AUTH UI (Login testo+icona vs Logout) ===== */
   function updateAuthUI(){
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
 
-    // Navbar: icona login solo se sloggato, scritta Logout solo se loggato
-    $('#btnDiscordLogin').hidden  =  isIn;     // icona login sparisce quando loggato
-    $('#btnLogout').hidden        = !isIn;     // Logout appare quando loggato
+    // Navbar
+    $('#btnDiscordLogin').hidden  =  isIn;     // mostra "Login + icona" solo se sloggato
+    $('#btnLogout').hidden        = !isIn;     // mostra "Logout" solo se loggato
     $('#goProfile').hidden        = !isIn;
 
-    // Sezione profilo: mostra bottone icona login se sloggato, altrimenti Logout
+    // Sezione profilo
     $('#btnLogoutProfile').hidden = !isIn;
     $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn);
 
@@ -664,7 +664,7 @@
       localStorage.setItem(OAUTH_TOKEN_KEY, at);
       localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
       toast('Accesso con Discord riuscito!');
-      updateAuthUI(); // subito: icona sparisce, appare Logout
+      updateAuthUI(); // subito: nasconde Login, mostra Logout
     }catch(err){
       console.error(err);
       toast('Errore nel recupero profilo Discord.');
@@ -682,7 +682,7 @@
       if(location.hash) history.replaceState(null,'',location.pathname+location.search);
     }catch(_){}
 
-    updateAuthUI();   // torna icona login, nasconde Logout
+    updateAuthUI();   // torna a mostrare "Login" e nasconde "Logout"
     showPage('home');
     toast('Logout effettuato');
   }
@@ -721,7 +721,7 @@
   /* Init */
   window.addEventListener('load', async ()=>{
     await handleOAuthRedirectFragment(); // gestisce login al ritorno da Discord
-    updateAuthUI();                       // mostra icona o Logout correttamente
+    updateAuthUI();                       // mostra "Login" o "Logout" correttamente
     showPage('home');
     tryAutoplay();
   });

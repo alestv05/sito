@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nova Roma Roleplay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand"></div>
+    <nav id="mainNav" class="nav">
+      <a href="#home" class="nav-link" data-route="home">Home</a>
+      <a href="#login" class="nav-link" data-route="login">Login</a>
+      <a href="#register" class="nav-link" data-route="register">Registrati</a>
+      <a href="#profile" id="navProfile" class="nav-link" data-route="profile" hidden>Profilo</a>
+    </nav>
+    <div class="top-right">
+      <!-- avatar nascosto finché non loggato -->
+      <div class="avatar-topbox">
+        <i id="avatarIcon" class="fa-solid fa-circle-user"></i>
+        <img id="avatarImage" class="avatar-top" alt="Avatar">
+      </div>
+      <button id="menuToggle" class="menu-toggle" aria-label="Apri menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <main id="app">
+    <section id="page-home" data-page class="page hero-onlylogo"><div aria-hidden="true"></div></section>
+
+    <section id="page-profile" data-page class="page auth-section" hidden>
+      <div class="card profile">
+        <header class="card-head">
+          <div class="chip"><i class="fa-solid fa-user"></i></div>
+          <div><h3>Profilo</h3><p class="sub">Gestisci avatar e nickname</p></div>
+        </header>
+
+        <div class="profile-box">
+          <img id="avatarPreview" class="avatar" hidden alt="Avatar">
+          <i id="avatarFallback" class="fa-solid fa-circle-user fa-5x"></i>
+
+          <div class="uploader">
+            <label class="btn btn-ghost">
+              <i class="fa-solid fa-image"></i> Carica avatar
+              <input type="file" id="avatarInput" accept="image/*" hidden>
+            </label>
+            <button class="btn btn-ghost" id="removeAvatar"><i class="fa-solid fa-user-slash"></i> Rimuovi</button>
+          </div>
+
+          <div class="grid-two">
+            <p class="info"><strong>Nickname:</strong> <span id="profileName">-</span></p>
+            <p class="info"><strong>Email:</strong> <span id="profileEmail">-</span></p>
+          </div>
+
+          <div class="field float">
+            <i class="fa-solid fa-pen leading"></i>
+            <input type="text" id="newName" placeholder=" " autocomplete="off">
+            <label for="newName">Nuovo nickname</label>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="saveProfile"><i class="fa-solid fa-floppy-disk"></i> Salva</button>
+            <button class="btn btn-ghost" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- LOGIN -->
+  <aside id="sheet-login" class="sheet" aria-hidden="true">
+    <div class="sheet-panel">
+      <button class="sheet-close" data-close="#sheet-login" aria-label="Chiudi"><i class="fa-solid fa-xmark"></i></button>
+      <section class="sheet-body">
+        <header class="sheet-header">
+          <div class="chip blue"><i class="fa-solid fa-right-to-bracket"></i></div>
+          <div><h3>Accedi</h3><p class="sub">Bentornato in Nova Roma</p></div>
+        </header>
+
+        <form id="loginForm" class="form-grid one" novalidate>
+          <div class="field float">
+            <i class="fa-solid fa-envelope leading"></i>
+            <input type="email" id="loginEmail" placeholder=" " required autocomplete="username">
+            <label for="loginEmail">Email</label>
+          </div>
+
+          <div class="field float">
+            <i class="fa-solid fa-lock leading"></i>
+            <input type="password" id="loginPassword" placeholder=" " required autocomplete="current-password">
+            <label for="loginPassword">Password</label>
+            <i class="fa-solid fa-eye pw-toggle" data-target="loginPassword" aria-hidden="true"></i>
+          </div>
+
+          <div class="links-row"><a href="#" id="openRecovery">Password dimenticata?</a></div>
+          <button class="btn btn-primary full" type="submit"><i class="fa-solid fa-key"></i> Accedi</button>
+          <p id="loginMsg" class="form-msg"></p>
+
+          <div class="swap">Nuovo qui? <a href="#register" data-swap="register">Crea un account</a></div>
+        </form>
+      </section>
+    </div>
+  </aside>
+
+  <!-- REGISTRAZIONE -->
+  <aside id="sheet-register" class="sheet" aria-hidden="true">
+    <div class="sheet-panel">
+      <button class="sheet-close" data-close="#sheet-register" aria-label="Chiudi"><i class="fa-solid fa-xmark"></i></button>
+      <section class="sheet-body">
+        <header class="sheet-header">
+          <div class="chip green"><i class="fa-solid fa-user-plus"></i></div>
+          <div><h3>Registrati</h3><p class="sub">Unisciti alla community</p></div>
+        </header>
+
+        <form id="registerForm" class="form-grid two" novalidate>
+          <div class="field float">
+            <i class="fa-solid fa-user leading"></i>
+            <input type="text" id="regName" placeholder=" " required minlength="3" autocomplete="nickname">
+            <label for="regName">Nickname</label>
+          </div>
+
+          <div class="field float">
+            <i class="fa-solid fa-envelope leading"></i>
+            <input type="email" id="regEmail" placeholder=" " required autocomplete="email">
+            <label for="regEmail">Email</label>
+          </div>
+
+          <div class="field float has-meter">
+            <i class="fa-solid fa-lock leading"></i>
+            <input type="password" id="regPassword" placeholder=" " required minlength="6" autocomplete="new-password">
+            <label for="regPassword">Password</label>
+            <i class="fa-solid fa-eye pw-toggle" data-target="regPassword" aria-hidden="true"></i>
+            <div class="meter" id="pwMeter"><span></span></div>
+            <small id="pwText" class="muted">Sicurezza password</small>
+          </div>
+
+          <div class="field float">
+            <i class="fa-solid fa-lock leading"></i>
+            <input type="password" id="regPassword2" placeholder=" " required minlength="6" autocomplete="new-password">
+            <label for="regPassword2">Conferma password</label>
+            <i class="fa-solid fa-eye pw-toggle" data-target="regPassword2" aria-hidden="true"></i>
+          </div>
+
+          <label class="checkline span2">
+            <input type="checkbox" id="terms" required>
+            <span class="box"></span><span>Accetto i termini</span>
+          </label>
+
+          <button class="btn btn-primary full span2" type="submit"><i class="fa-solid fa-user-check"></i> Crea account</button>
+          <p id="registerMsg" class="form-msg span2"></p>
+
+          <div class="swap span2">Hai già un account? <a href="#login" data-swap="login">Accedi</a></div>
+        </form>
+      </section>
+    </div>
+  </aside>
+
+  <!-- RECUPERO PASSWORD -->
+  <div id="recoveryOverlay" class="overlay" aria-hidden="true">
+    <div class="modal">
+      <header class="modal-head">
+        <h4>Recupera password</h4>
+        <button id="closeRecovery" class="close" aria-label="Chiudi"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+      <div class="modal-body">
+        <div class="field float">
+          <i class="fa-solid fa-envelope leading"></i>
+          <input type="email" id="recoveryEmail" placeholder=" ">
+          <label for="recoveryEmail">Email</label>
+        </div>
+        <button id="sendRecovery" class="btn btn-primary full">Invia link</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="stripe"></div>
+    <p>© 2025 Nova Roma Roleplay</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

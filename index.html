@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NOVA ROMA Roleplay</title>
 
-  <!-- Fonts & Icons -->
+  <!-- Font & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
@@ -95,7 +95,7 @@
   .card-head{display:flex; align-items:center; gap:12px; margin-bottom:20px}
   .chip{width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:#1b2747; border:1px solid #2a3a61}
   .chip.blue{background:#153259} .chip.green{background:#143c2a}
-  .sub{color:var(--muted); font-size:.9rem}
+  .sub{color:#9daccc; font-size:.9rem}
 
   /* Donations */
   #page-donations{position:relative; padding:40px 20px}
@@ -220,13 +220,14 @@
 
       <a href="#" class="nav-link" id="goProfile" data-route="profile" hidden>Profilo</a>
 
-      <!-- Logout (con bolla click ripple & blocco default) -->
+      <!-- Logout -->
       <a href="#" class="nav-link" id="btnLogout" hidden>
         Logout <i class="fa-brands fa-discord" aria-hidden="true"></i>
       </a>
     </nav>
 
-    <div class="top-avatar" id="topAvatar" hidden title="Profilo">
+    <!-- Avatar sempre visibile: icona quando sloggato, immagine quando loggato -->
+    <div class="top-avatar" id="topAvatar" title="Profilo">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
       <img id="topAvatarImg" alt="Avatar">
     </div>
@@ -478,7 +479,7 @@
   const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
   function cdnDefaultAvatar(index=0){const i=Number(index)%5||0;return `https://cdn.discordapp.com/embed/avatars/${i}.png`;}
 
-  /* Ripple click sugli elementi .nav-link */
+  /* Ripple click */
   document.addEventListener('click',e=>{
     const btn=e.target.closest('.nav-link'); if(!btn) return;
     const rect=btn.getBoundingClientRect();
@@ -562,12 +563,36 @@
     window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
-  /* Auth UI */
+  /* ===== AVATAR HELPERS ===== */
   function setAvatar(url){
     const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
-    if(url){ topImg.src=url; topImg.style.display='block'; topIcon.style.display='none'; }
-    else { topImg.style.display='none'; topIcon.style.display='block'; }
+    if(url){
+      topImg.src=url;
+      topImg.style.display='block';
+      topIcon.style.display='none';
+    }else{
+      // pulizia completa
+      topImg.removeAttribute('src');
+      topImg.src = '';
+      topImg.style.display='none';
+      topIcon.style.display='block';
+    }
   }
+  function setProfileAvatar(url){
+    const img=$('#profAvatarImg'), ico=$('#profAvatarIcon');
+    if(url){
+      img.src=url;
+      img.style.display='block';
+      ico.style.display='none';
+    }else{
+      img.removeAttribute('src');
+      img.src='';
+      img.style.display='none';
+      ico.style.display='grid';
+    }
+  }
+
+  /* ===== AUTH UI ===== */
   function updateAuthUI(){
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
@@ -576,26 +601,25 @@
     $('#goProfile').hidden = !isIn;
     $('#btnLogout').hidden = !isIn;
     $('#btnDiscordLogin').hidden =  isIn;
-    $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn); // nel profilo
+    $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn);
     $('#btnLogoutProfile').hidden = !isIn;
 
+    // La bolla avatar è sempre visibile: icona se sloggato, immagine se loggato
     if(isIn){
       $('#userName').textContent = user.global_name || (user.username + (user.discriminator ? '#' + user.discriminator : ''));
       const avatar = user.avatar
         ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
         : cdnDefaultAvatar(user.discriminator||0);
-      $('#topAvatar').hidden=false; setAvatar(avatar);
-      $('#profAvatarImg').src=avatar; $('#profAvatarImg').style.display='block';
-      $('#profAvatarIcon').style.display='none';
+      setAvatar(avatar);
+      setProfileAvatar(avatar);
     }else{
       $('#userName').textContent = '';
-      $('#topAvatar').hidden=true; setAvatar(null);
-      $('#profAvatarImg').style.display='none';
-      $('#profAvatarIcon').style.display='grid';
+      setAvatar(null);
+      setProfileAvatar(null);
     }
   }
 
-  /* Discord login flow */
+  /* ===== Discord login flow ===== */
   function beginDiscordLogin(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
     const state = Math.random().toString(36).slice(2);
@@ -649,31 +673,40 @@
     return true;
   }
 
-  /* Logout robusto */
+  /* ===== Logout robusto ===== */
   function logout(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
     try{
-      // pulizia storage e URL
       localStorage.removeItem(OAUTH_TOKEN_KEY);
       localStorage.removeItem(OAUTH_USER_KEY);
       sessionStorage.removeItem('oauth_state');
       if(location.hash) history.replaceState(null,'',location.pathname+location.search);
     }catch(_){}
 
-    updateAuthUI();
+    // reset UI immediato e visibile
+    setAvatar(null);
+    setProfileAvatar(null);
+    $('#goProfile').hidden = true;
+    $('#btnLogout').hidden = true;
+    $('#btnDiscordLogin').hidden = false;
+    $('#btnLogoutProfile').hidden = true;
+    $('#btnDiscordLogin2')?.classList.remove('hidden');
+    $('#userName').textContent = '';
+
     showPage('home');
     toast('Logout effettuato');
   }
 
-  /* Bind bottoni (con stopPropagation per evitare conflitti) */
+  /* Bind bottoni */
   $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
   $('#btnDiscordLogin2')?.addEventListener('click', beginDiscordLogin);
   $('#btnLogout')?.addEventListener('click', logout, {capture:true});
   $('#btnLogoutProfile')?.addEventListener('click', logout, {capture:true});
 
+  // Clic avatar: vai al profilo se loggato, altrimenti resta su home
   $('#topAvatar')?.addEventListener('click',()=>{
-    const tok=localStorage.getItem(OAUTH_TOKEN_KEY); if(!tok) return;
-    showPage('profile')
+    const tok=localStorage.getItem(OAUTH_TOKEN_KEY);
+    if(tok) showPage('profile');
   });
 
   /* Countdown */

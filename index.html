@@ -10,7 +10,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <style>
-  /* ========== THEME & RESET ========== */
   :root{
     --bg:#070b14; --surface:#121a2a; --text:#eaf0ff; --muted:#9daccc;
     --primary:#58a6ff; --primary2:#0b6dd6; --shadow:0 18px 40px rgba(0,0,0,.55);
@@ -27,7 +26,7 @@
   i.fa, i[class^="fa-"], i[class*=" fa-"]{font-family:"Font Awesome 6 Free" !important}
   .noscript{background:#ffdd57;color:#111;padding:10px 14px;text-align:center;font-weight:800}
 
-  /* ========== NAVBAR (underline + ripple bianchi) ========== */
+  /* NAVBAR */
   .site-header{
     position:sticky; top:0; z-index:20;
     background:#0f1625dd; backdrop-filter:saturate(140%) blur(6px);
@@ -39,8 +38,9 @@
     position:relative; overflow:hidden;
     color:#eaf0ff; text-decoration:none; font-weight:800;
     padding:8px 10px; border-radius:10px; text-transform:uppercase;
-    letter-spacing:.06em; transition:color .3s ease;
+    letter-spacing:.06em; transition:color .3s ease; display:inline-flex; gap:8px; align-items:center;
   }
+  .nav-link i{font-size:1.05em}
   .nav-link.active{ color:#fff }
   .nav-link:hover{ color:#fff }
   .nav-link::after{
@@ -62,7 +62,7 @@
   #topAvatarIcon{font-size:28px}
   #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none}
 
-  /* ========== HERO & LOGO (Opzione B) ========== */
+  /* HERO */
   .hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 16px; overflow:hidden}
   .logo-container{position:relative; width:var(--logo-size); height:var(--logo-size); margin-bottom:40px; display:flex; align-items:center; justify-content:center}
   .logo-bg{position:absolute; inset:0; background:url('https://i.postimg.cc/d19KnZQv/LOGO-SERVER-2.png') no-repeat center/contain; opacity:0.24; z-index:2}
@@ -75,7 +75,7 @@
   }
   @keyframes float{from{transform:translateY(-6px)} to{transform:translateY(6px)}}
 
-  /* ===== Countdown / Video ===== */
+  /* Countdown / Video */
   .countdown-container{position:relative; z-index:3; margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:800px}
   .hero-announcement{display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; width:100%}
   .badge-opening{display:inline-flex; align-items:center; gap:8px; color:#fff; background:linear-gradient(135deg,#58a6ff,#0b6dd6); border:1px solid #2a3a61; box-shadow:var(--shadow); padding:8px 14px; border-radius:999px; text-transform:uppercase; letter-spacing:.06em; font-weight:900}
@@ -89,7 +89,7 @@
   .home-video-frame{width:min(95vw,var(--home-video-max)); max-width:var(--home-video-max); min-width:var(--home-video-min); background:#0f1528; border:2px solid #2a3a61; border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
   .home-video-frame video{display:block; width:100%; height:auto}
 
-  /* TITOLI / CARD BASE */
+  /* Titles / Cards */
   .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.5rem}
   .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:24px; box-shadow:var(--shadow)}
   .card-head{display:flex; align-items:center; gap:12px; margin-bottom:20px}
@@ -97,7 +97,7 @@
   .chip.blue{background:#153259} .chip.green{background:#143c2a}
   .sub{color:var(--muted); font-size:.9rem}
 
-  /* DONAZIONI (ridotto) */
+  /* Donations */
   #page-donations{position:relative; padding:40px 20px}
   .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; max-width:920px; margin:0 auto}
   .donation-card{text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:12px; transition:transform .3s ease}
@@ -106,7 +106,7 @@
   .donation-thumb img{width:90%; height:90%; object-fit:contain}
   .donation-caption{font-weight:800; font-size:1.05rem; padding:6px 8px; border-radius:10px; background:rgba(23,33,55,.85); border:1px solid #2a3a61; text-align:center; text-transform:uppercase}
 
-  /* DONAZIONE DETTAGLIO */
+  /* Donation detail */
   #page-donation{padding:40px 16px}
   .donation-detail{max-width:960px;margin:0 auto;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
   .donation-media{background:#0f1528;border:2px solid #2a3a61;border-radius:14px;overflow:hidden;display:grid;place-items:center;padding:16px}
@@ -114,7 +114,7 @@
   .donation-info .price{font-size:2rem;font-weight:900;margin:6px 0 10px}
   .donation-info pre{white-space:pre-wrap; background:#0f1528; border:1px solid #2a3a61; border-radius:10px; padding:12px; font-family:inherit; color:#cfe0ff}
 
-  /* STAFF */
+  /* Staff */
   .staff-section{max-width:1000px; margin:40px auto}
   .role{display:flex; align-items:center; gap:10px; margin:0 0 20px; font-weight:800; font-size:1.5rem}
   .role .role-icon{width:28px; height:28px; object-fit:contain; display:inline-block; filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
@@ -131,7 +131,7 @@
   .role-dev{color:#8ecaff}
   .role-eup{color:#4a90e2}
 
-  /* BUTTONS / TOAST */
+  /* Buttons / Toast */
   .actions{display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap}
   .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; border:0; cursor:pointer; font-weight:800; text-transform:uppercase; letter-spacing:.06em; transition:transform .12s ease,box-shadow .12s ease; font-family:inherit}
   .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2)); color:#fff; box-shadow:0 10px 22px rgba(11,109,214,.25)}
@@ -149,75 +149,52 @@
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
-  /* PROFILE */
+  /* Profile */
   .avatar-box{display:grid; gap:20px; justify-items:center}
   .avatar-preview{width:150px; height:150px; border-radius:50%; background:#0f1528; border:2px solid #2a3a61; display:grid; place-items:center; overflow:hidden; box-shadow:var(--shadow)}
   .avatar-preview img{width:100%; height:100%; object-fit:cover; display:none}
   .avatar-preview i{font-size:88px; color:#9daccc}
 
-  /* FOOTER */
+  /* Footer */
   .site-footer{text-align:center; padding:30px 12px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
   .stripe{height:8px; width:220px; margin:0 auto 12px; border-radius:6px; background:linear-gradient(90deg,#009246 0 33%, #fff 33% 66%, #ce2b37 66% 100%); border:1px solid #2a3a61}
 
-  /* PAGES */
+  /* Pages */
   .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
   .page.active{display:block}
 
-  /* ========== CONCORSI — MATCH SCREENSHOT ========== */
+  /* Concorsi (chiaro) */
   #page-concorsi{ background:#f4f6fa; color:#1f2937; padding:0; }
   .concorsi-wrap{max-width:1100px; margin:0 auto; padding:28px 16px 40px}
   .concorsi-title{font-family:inherit; font-weight:900; letter-spacing:.02em; text-transform:none; margin-bottom:14px; font-size:clamp(28px,4.6vw,40px); color:#1d2430}
-
-  /* Tabs (solo testo) */
   .concorsi-tabs{display:flex; gap:8px; align-items:center; padding:10px 0 18px}
   .c-tab{display:inline-flex; align-items:center; gap:8px; background:#eef2f9; color:#1f3a62; border:1px solid #d7e0f0; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:800; letter-spacing:.04em}
   .c-tab.is-active{background:#dae6fb; border-color:#bcd3f8}
-
-  /* Card + Table */
   .concorsi-card{background:#ffffff; border:1px solid #dde3ef; border-radius:10px; overflow:hidden; box-shadow:0 10px 30px rgba(20,30,60,.06)}
   .concorsi-table{width:100%; border-collapse:separate; border-spacing:0}
   .concorsi-table thead th{background:#2f3a4a; color:#fff; padding:14px 18px; font-weight:900; letter-spacing:.04em; border-bottom:2px solid #202a39; white-space:nowrap}
-  .concorsi-table thead th:first-child{border-top-left-radius:8px}
-  .concorsi-table thead th:last-child{border-top-right-radius:8px}
-
-  /* Corpo ampio con separatori leggeri */
   .concorsi-table tbody td{background:#fff; padding:22px 18px; border-bottom:1px solid #edf1f7; vertical-align:middle; white-space:nowrap}
-  .concorsi-table tbody tr:last-child td{border-bottom:0}
   .ta-left{text-align:left}
   .ta-right{text-align:right}
-
-  /* Forza Armata: logo sopra, nome sotto */
   .fa-cell{display:flex; align-items:center; gap:10px}
   .fa-cell.vertical{flex-direction:column; justify-content:center; gap:8px; min-width:126px}
   .fa-logo{width:46px; height:46px; border-radius:10px; display:grid; place-items:center; background:#fff; border:1px solid #e6edf8; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,.05)}
   .fa-logo img{width:92%; height:92%; object-fit:contain}
   .fa-name{font-weight:900; color:#2b3545}
-
-  /* Data due righe */
   .date-cell{min-width:120px}
   .date-top{display:block; font-weight:900; font-size:18px; color:#2a3446; line-height:1}
   .date-year{display:block; margin-top:6px; font-weight:900; font-size:20px; color:#2a3446}
-
-  /* Concorso */
   .concorso-titolo{font-weight:900; line-height:1.25; color:#243046; white-space:normal; max-width:640px}
-
-  /* Stato: solo testo */
   .state{font-weight:900}
   .state-ok{color:#2e7d32}
   .state-att{color:#a76412}
-
-  /* Allegati */
   .link-alle{color:#1565c0; text-decoration:none; font-weight:900}
   .link-alle:hover{text-decoration:underline}
-
-  /* Azioni impilate a destra */
   .azioni{display:flex; gap:10px; justify-content:flex-end}
   .azioni-col{flex-direction:column; align-items:flex-end}
   .btn-slim{padding:10px 14px; border-radius:8px; font-weight:900; background:#f4f7fb; cursor:pointer; text-transform:uppercase; letter-spacing:.02em}
   .btn-outline{border:1px solid #dde6f5; color:#2a4365; box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
   .btn-outline:hover{background:#eef4ff}
-
-  /* Responsive sticky prima colonna */
   @media (max-width: 720px){
     .concorso-titolo{max-width:unset}
     .concorsi-table thead th:nth-child(1),
@@ -235,9 +212,18 @@
       <a href="#" class="nav-link" data-route="donations">Donazioni</a>
       <a href="#" class="nav-link" data-route="concorsi">Concorsi</a>
       <a href="#" class="nav-link" data-route="staff">Staff</a>
-      <a href="#" class="nav-link" id="btnDiscordLogin"><i class="fa-brands fa-discord"></i> Login Discord</a>
+
+      <!-- Login Discord (icona + testo) -->
+      <a href="#" class="nav-link" id="btnDiscordLogin">
+        Login <i class="fa-brands fa-discord" aria-hidden="true"></i> Discord
+      </a>
+
       <a href="#" class="nav-link" id="goProfile" data-route="profile" hidden>Profilo</a>
-      <a href="#" class="nav-link" id="btnLogout" hidden>Logout</a>
+
+      <!-- Logout (con bolla click ripple & blocco default) -->
+      <a href="#" class="nav-link" id="btnLogout" hidden>
+        Logout <i class="fa-brands fa-discord" aria-hidden="true"></i>
+      </a>
     </nav>
 
     <div class="top-avatar" id="topAvatar" hidden title="Profilo">
@@ -247,7 +233,7 @@
   </header>
 
   <main id="app">
-    <!-- ========== HOME ========== -->
+    <!-- HOME -->
     <section id="page-home" class="page active" data-page>
       <div class="hero">
         <div class="logo-container">
@@ -284,7 +270,7 @@
       </div>
     </section>
 
-    <!-- ========== DONAZIONI (griglia) ========== -->
+    <!-- DONAZIONI -->
     <section id="page-donations" class="page" data-page>
       <h2 class="title-roman">Sostieni Nova Roma</h2>
       <div id="donationsGrid" class="donations-grid">
@@ -323,7 +309,7 @@
       </div>
     </section>
 
-    <!-- ========== DONAZIONE (dettaglio) ========== -->
+    <!-- DONAZIONE DETTAGLIO -->
     <section id="page-donation" class="page" data-page>
       <div class="card">
         <header class="card-head">
@@ -333,11 +319,8 @@
             <p class="sub">Riepilogo offerta</p>
           </div>
         </header>
-
         <div class="donation-detail">
-          <div class="donation-media">
-            <img id="detailImg" alt="Pacchetto">
-          </div>
+          <div class="donation-media"><img id="detailImg" alt="Pacchetto"></div>
           <div class="donation-info">
             <div class="price"><span id="detailPrice">0</span>€</div>
             <pre id="detailDesc"></pre>
@@ -350,50 +333,37 @@
       </div>
     </section>
 
-    <!-- ========== CONCORSI (match screenshot) ========== -->
+    <!-- CONCORSI -->
     <section id="page-concorsi" class="page" data-page>
       <div class="concorsi-wrap">
         <h1 class="concorsi-title">I miei concorsi</h1>
-
-        <!-- Tabs SOLO TESTO -->
         <nav class="concorsi-tabs" aria-label="Sezioni concorsi">
           <a href="#" class="c-tab is-active" data-force="all"><i class="fa-solid fa-house"></i> Home</a>
           <a href="#" class="c-tab" data-force="Esercito">Esercito</a>
           <a href="#" class="c-tab" data-force="Marina">Marina</a>
           <a href="#" class="c-tab" data-force="Aeronautica">Aeronautica</a>
         </nav>
-
         <div class="concorsi-card">
           <div class="concorsi-table-wrap">
             <table class="concorsi-table" aria-describedby="tabella-concorsi">
               <thead>
                 <tr>
-                  <th scope="col" class="ta-left">Forza Armata</th>
-                  <th scope="col">Data</th>
-                  <th scope="col" class="ta-left">Concorso</th>
-                  <th scope="col">Stato</th>
-                  <th scope="col">Allegati</th>
-                  <th scope="col" class="ta-right">Azioni</th>
+                  <th class="ta-left">Forza Armata</th>
+                  <th>Data</th>
+                  <th class="ta-left">Concorso</th>
+                  <th>Stato</th>
+                  <th>Allegati</th>
+                  <th class="ta-right">Azioni</th>
                 </tr>
               </thead>
               <tbody>
-                <!-- Esercito -->
                 <tr data-title="Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco">
                   <td class="fa-cell vertical">
-                    <span class="fa-logo">
-                      <img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito">
-                    </span>
+                    <span class="fa-logo"><img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito"></span>
                     <span class="fa-name">Esercito</span>
                   </td>
-                  <td class="date-cell">
-                    <span class="date-top">07 luglio</span>
-                    <span class="date-year">2025</span>
-                  </td>
-                  <td class="ta-left">
-                    <div class="concorso-titolo">
-                      Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco
-                    </div>
-                  </td>
+                  <td class="date-cell"><span class="date-top">07 luglio</span><span class="date-year">2025</span></td>
+                  <td class="ta-left"><div class="concorso-titolo">Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco</div></td>
                   <td><span class="state state-ok">Ricevuta</span></td>
                   <td><a href="#" class="link-alle">Allegati</a></td>
                   <td class="ta-right">
@@ -403,19 +373,12 @@
                     </div>
                   </td>
                 </tr>
-
-                <!-- altri esempi -->
                 <tr data-title="Bando VFP4 Esercito Italiano - 2025">
                   <td class="fa-cell vertical">
-                    <span class="fa-logo">
-                      <img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito">
-                    </span>
+                    <span class="fa-logo"><img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito"></span>
                     <span class="fa-name">Esercito</span>
                   </td>
-                  <td class="date-cell">
-                    <span class="date-top">15 gennaio</span>
-                    <span class="date-year">2025</span>
-                  </td>
+                  <td class="date-cell"><span class="date-top">15 gennaio</span><span class="date-year">2025</span></td>
                   <td class="ta-left"><div class="concorso-titolo">Bando VFP4 Esercito Italiano - 2025</div></td>
                   <td><span class="state state-att">In lavorazione</span></td>
                   <td><a href="#" class="link-alle">Allegati</a></td>
@@ -426,18 +389,12 @@
                     </div>
                   </td>
                 </tr>
-
                 <tr data-title="Concorso VFI Marina Militare">
                   <td class="fa-cell vertical">
-                    <span class="fa-logo">
-                      <img src="https://i.postimg.cc/Sj08xy9D/logomm.png" alt="Marina">
-                    </span>
+                    <span class="fa-logo"><img src="https://i.postimg.cc/Sj08xy9D/logomm.png" alt="Marina"></span>
                     <span class="fa-name">Marina</span>
                   </td>
-                  <td class="date-cell">
-                    <span class="date-top">01 marzo</span>
-                    <span class="date-year">2025</span>
-                  </td>
+                  <td class="date-cell"><span class="date-top">01 marzo</span><span class="date-year">2025</span></td>
                   <td class="ta-left"><div class="concorso-titolo">Concorso VFI Marina Militare</div></td>
                   <td><span class="state state-ok">Ricevuta</span></td>
                   <td><a href="#" class="link-alle">Allegati</a></td>
@@ -448,18 +405,12 @@
                     </div>
                   </td>
                 </tr>
-
                 <tr data-title="Concorso Allievi Aeronautica Militare">
                   <td class="fa-cell vertical">
-                    <span class="fa-logo">
-                      <img src="https://i.postimg.cc/mgsXd4nY/logoam.png" alt="Aeronautica">
-                    </span>
+                    <span class="fa-logo"><img src="https://i.postimg.cc/mgsXd4nY/logoam.png" alt="Aeronautica"></span>
                     <span class="fa-name">Aeronautica</span>
                   </td>
-                  <td class="date-cell">
-                    <span class="date-top">10 aprile</span>
-                    <span class="date-year">2025</span>
-                  </td>
+                  <td class="date-cell"><span class="date-top">10 aprile</span><span class="date-year">2025</span></td>
                   <td class="ta-left"><div class="concorso-titolo">Concorso Allievi Aeronautica Militare</div></td>
                   <td><span class="state state-att">In lavorazione</span></td>
                   <td><a href="#" class="link-alle">Allegati</a></td>
@@ -470,7 +421,6 @@
                     </div>
                   </td>
                 </tr>
-
               </tbody>
             </table>
           </div>
@@ -478,161 +428,7 @@
       </div>
     </section>
 
-    <!-- ========== STAFF COMPLETO ========== -->
-    <section id="page-staff" class="page" data-page>
-      <h2 class="title-roman center">Il nostro staff</h2>
-
-      <!-- Owner -->
-      <div class="staff-section">
-        <h3 class="title-roman role">
-          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Owner
-        </h3>
-        <div class="staff-grid">
-          <div class="member">
-            <div class="avatar ring ring-gold">
-              <img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy">
-            </div>
-            <div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Founder -->
-      <div class="staff-section">
-        <h3 class="title-roman role">
-          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Founder
-        </h3>
-        <div class="staff-grid">
-          <div class="member">
-            <div class="avatar ring ring-silver">
-              <img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto" loading="lazy">
-            </div>
-            <div class="member-name">Anto</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-silver">
-              <img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony" loading="lazy">
-            </div>
-            <div class="member-name">Mony</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Co-Founder -->
-      <div class="staff-section">
-        <h3 class="title-roman role">
-          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Co-Founder
-        </h3>
-        <div class="staff-grid">
-          <div class="member">
-            <div class="avatar ring">
-              <img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo" loading="lazy">
-            </div>
-            <div class="member-name">Gabbo</div>
-            <div class="member-role role-dev">Developer</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring">
-              <img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez" loading="lazy">
-            </div>
-            <div class="member-name">Rodriguez</div>
-            <div class="member-role role-dev">Developer</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring">
-              <img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss" loading="lazy">
-            </div>
-            <div class="member-name">Th3b00ss</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Admin -->
-      <div class="staff-section">
-        <h3 class="title-roman role">
-          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Admin
-        </h3>
-        <div class="staff-grid">
-          <div class="member">
-            <div class="avatar ring ring-red">
-              <img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo" loading="lazy">
-            </div>
-            <div class="member-name">Alexo</div>
-            <div class="member-role role-eup">Eup Creator</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-red">
-              <img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri" loading="lazy">
-            </div>
-            <div class="member-name">Chri</div>
-            <div class="member-role role-dev">Developer</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-red">
-              <img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide" loading="lazy">
-            </div>
-            <div class="member-name">Il Davide</div>
-            <div class="member-role role-eup">Eup Creator</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Moderatore -->
-      <div class="staff-section">
-        <h3 class="title-roman role">
-          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Moderatore
-        </h3>
-        <div class="staff-grid">
-          <div class="member">
-            <div class="avatar ring ring-green">
-              <img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales" loading="lazy">
-            </div>
-            <div class="member-name">Ales</div>
-            <div class="member-role role-dev">Developer</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-green">
-              <img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze" loading="lazy">
-            </div>
-            <div class="member-name">Blaze</div>
-            <div class="member-role role-grafico">Grafico</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-green">
-              <img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco" loading="lazy">
-            </div>
-            <div class="member-name">Franco</div>
-            <div class="member-role role-grafico">Grafico</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-green">
-              <img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio" loading="lazy">
-            </div>
-            <div class="member-name">Glaudio</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-green">
-              <img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca" loading="lazy">
-            </div>
-            <div class="member-name">Luca</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-green">
-              <img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger" loading="lazy">
-            </div>
-            <div class="member-name">Mattiger</div>
-          </div>
-          <div class="member">
-            <div class="avatar ring ring-green">
-              <img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight" loading="lazy">
-            </div>
-            <div class="member-name">Voight</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== PROFILO ========== -->
+    <!-- PROFILO -->
     <section id="page-profile" class="page" data-page>
       <div class="card">
         <header class="card-head">
@@ -648,8 +444,12 @@
             <img id="profAvatarImg" alt="Avatar">
           </div>
           <div class="actions">
-            <button class="btn btn-discord" id="btnDiscordLogin2"><i class="fa-brands fa-discord"></i> Login Discord</button>
-            <button class="btn btn-ghost" id="btnLogoutProfile"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            <button class="btn btn-discord" id="btnDiscordLogin2">
+              Login <i class="fa-brands fa-discord" aria-hidden="true"></i> Discord
+            </button>
+            <button class="btn btn-ghost" id="btnLogoutProfile">
+              Logout <i class="fa-brands fa-discord" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
         <div style="margin-top:20px;text-align:center;">
@@ -665,7 +465,7 @@
   </footer>
 
   <script>
-  /* ====== DISCORD OAUTH (implicit flow, solo front-end) ====== */
+  /* ===== Discord OAuth (implicit flow) ===== */
   const DISCORD_CLIENT_ID = '1419444744563720404';
   const DISCORD_SCOPE = 'identify';
   const REDIRECT_URI = 'https://alestv05.github.io/sito/';
@@ -673,12 +473,12 @@
   const OAUTH_TOKEN_KEY = 'nr_discord_token_v1';
   const OAUTH_USER_KEY  = 'nr_discord_user_v1';
 
-  /* ====== UTILS/UI ====== */
+  /* ===== Utils / UI ===== */
   const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
   const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
   function cdnDefaultAvatar(index=0){const i=Number(index)%5||0;return `https://cdn.discordapp.com/embed/avatars/${i}.png`;}
 
-  /* ====== NAV ripple ====== */
+  /* Ripple click sugli elementi .nav-link */
   document.addEventListener('click',e=>{
     const btn=e.target.closest('.nav-link'); if(!btn) return;
     const rect=btn.getBoundingClientRect();
@@ -688,7 +488,7 @@
     btn.appendChild(r); setTimeout(()=>r.remove(),600);
   },{passive:true});
 
-  /* ====== ROUTER ====== */
+  /* Router */
   function showPage(id){
     $$('.page').forEach(p=>p.classList.remove('active'));
     $$('.nav-link').forEach(l=>l.classList.remove('active'));
@@ -701,7 +501,7 @@
     e.preventDefault(); showPage(r.dataset.route);
   });
 
-  /* ====== DONAZIONI ====== */
+  /* Donazioni */
   const OFFER_TEXT={
     5:"Acquistando questo pacchetto otterai 50.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
     10:"Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
@@ -726,7 +526,7 @@
     if(e.target.id==='btnBuy'){toast('Pagamento non configurato — apri un ticket Discord.')}
   });
 
-  /* ====== CONCORSI: azioni & tabs ====== */
+  /* Concorsi tabs/actions */
   document.addEventListener('click',e=>{
     const btn=e.target.closest('.azioni .btn-slim'); if(!btn) return;
     const tr=btn.closest('tr'); const title=tr?.dataset?.title||'concorso';
@@ -749,7 +549,7 @@
     });
   });
 
-  /* ====== VIDEO AUTOPLAY ====== */
+  /* Video */
   function tryAutoplay(){
     const v=$('#nvVideo'); if(!v) return;
     v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
@@ -762,7 +562,7 @@
     window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
-  /* ====== AUTH UI (Discord) ====== */
+  /* Auth UI */
   function setAvatar(url){
     const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
     if(url){ topImg.src=url; topImg.style.display='block'; topIcon.style.display='none'; }
@@ -776,7 +576,7 @@
     $('#goProfile').hidden = !isIn;
     $('#btnLogout').hidden = !isIn;
     $('#btnDiscordLogin').hidden =  isIn;
-    $('#btnDiscordLogin2').hidden = isIn;
+    $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn); // nel profilo
     $('#btnLogoutProfile').hidden = !isIn;
 
     if(isIn){
@@ -789,20 +589,21 @@
       $('#profAvatarIcon').style.display='none';
     }else{
       $('#userName').textContent = '';
-      $('#topAvatar').hidden=true;
+      $('#topAvatar').hidden=true; setAvatar(null);
       $('#profAvatarImg').style.display='none';
       $('#profAvatarIcon').style.display='grid';
     }
   }
 
-  /* ====== DISCORD LOGIN FLOW ====== */
-  function beginDiscordLogin(){
+  /* Discord login flow */
+  function beginDiscordLogin(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
     const state = Math.random().toString(36).slice(2);
     sessionStorage.setItem('oauth_state', state);
     const authUrl = new URL('https://discord.com/oauth2/authorize');
     authUrl.searchParams.set('client_id', DISCORD_CLIENT_ID);
     authUrl.searchParams.set('redirect_uri', REDIRECT_URI);
-    authUrl.searchParams.set('response_type', 'token'); // implicit flow (no backend)
+    authUrl.searchParams.set('response_type', 'token');
     authUrl.searchParams.set('scope', DISCORD_SCOPE);
     authUrl.searchParams.set('state', state);
     window.location.assign(authUrl.toString());
@@ -813,7 +614,6 @@
     const params = new URLSearchParams(location.hash.slice(1));
     if(!(params.get('access_token') || params.get('error'))) return false;
 
-    // pulizia hash nell'URL
     history.replaceState(null, '', location.pathname + location.search);
 
     if(params.get('error')){
@@ -849,22 +649,34 @@
     return true;
   }
 
-  function logout(){
-    localStorage.removeItem(OAUTH_TOKEN_KEY);
-    localStorage.removeItem(OAUTH_USER_KEY);
-    toast('Logout effettuato');
+  /* Logout robusto */
+  function logout(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    try{
+      // pulizia storage e URL
+      localStorage.removeItem(OAUTH_TOKEN_KEY);
+      localStorage.removeItem(OAUTH_USER_KEY);
+      sessionStorage.removeItem('oauth_state');
+      if(location.hash) history.replaceState(null,'',location.pathname+location.search);
+    }catch(_){}
+
     updateAuthUI();
     showPage('home');
+    toast('Logout effettuato');
   }
 
-  // Bottoni
-  $('#btnDiscordLogin')?.addEventListener('click', e=>{e.preventDefault(); beginDiscordLogin();});
-  $('#btnDiscordLogin2')?.addEventListener('click', e=>{e.preventDefault(); beginDiscordLogin();});
-  $('#btnLogout')?.addEventListener('click', e=>{e.preventDefault(); logout();});
-  $('#btnLogoutProfile')?.addEventListener('click', e=>{e.preventDefault(); logout();});
-  $('#topAvatar')?.addEventListener('click',()=>{const tok=localStorage.getItem(OAUTH_TOKEN_KEY); if(!tok) return; showPage('profile')});
+  /* Bind bottoni (con stopPropagation per evitare conflitti) */
+  $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
+  $('#btnDiscordLogin2')?.addEventListener('click', beginDiscordLogin);
+  $('#btnLogout')?.addEventListener('click', logout, {capture:true});
+  $('#btnLogoutProfile')?.addEventListener('click', logout, {capture:true});
 
-  /* ====== COUNTDOWN ====== */
+  $('#topAvatar')?.addEventListener('click',()=>{
+    const tok=localStorage.getItem(OAUTH_TOKEN_KEY); if(!tok) return;
+    showPage('profile')
+  });
+
+  /* Countdown */
   (function initCountdown(){
     const target=new Date('2025-09-21T16:30:00+02:00').getTime();
     const $d=id=>document.getElementById(id);
@@ -883,9 +695,9 @@
     tick(); setInterval(tick,1000);
   })();
 
-  /* ====== INIT ====== */
+  /* Init */
   window.addEventListener('load', async ()=>{
-    await handleOAuthRedirectFragment(); // gestisce ritorno da Discord
+    await handleOAuthRedirectFragment();
     updateAuthUI();
     showPage('home');
     tryAutoplay();

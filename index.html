@@ -1,187 +1,1089 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nova Roma Roleplay</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOVA ROMA Roleplay</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- Google Sign-In -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <style>
+  /* ========== THEME & RESET ========== */
+  :root{
+    --bg:#070b14; --surface:#121a2a; --text:#eaf0ff; --muted:#9daccc;
+    --primary:#58a6ff; --primary2:#0b6dd6; --shadow:0 18px 40px rgba(0,0,0,.55);
+    --logo-size:clamp(280px,45vw,560px); --home-video-max:440px; --home-video-min:280px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
+  i.fa, i[class^="fa-"], i[class*=" fa-"]{font-family:"Font Awesome 6 Free" !important}
+  .noscript{background:#ffdd57;color:#111;padding:10px 14px;text-align:center;font-weight:800}
+
+  /* ========== NAVBAR (underline + ripple bianchi) ========== */
+  .site-header{
+    position:sticky; top:0; z-index:20;
+    background:#0f1625dd; backdrop-filter:saturate(140%) blur(6px);
+    border-bottom:1px solid #23314f; padding:8px 14px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .nav{display:flex; gap:14px; align-items:center}
+  .nav-link{
+    position:relative; overflow:hidden;
+    color:#eaf0ff; text-decoration:none; font-weight:800;
+    padding:8px 10px; border-radius:10px; text-transform:uppercase;
+    letter-spacing:.06em; transition:color .3s ease;
+  }
+  .nav-link.active{ background:transparent !important; box-shadow:none !important; color:#fff !important }
+  .nav-link:hover{ background:transparent !important; color:#fff }
+  .nav-link::after{
+    content:""; position:absolute; left:12px; right:12px; bottom:6px; height:2px;
+    background:#ffffff; transform:scaleX(0); transform-origin:left;
+    transition:transform .25s ease; border-radius:2px;
+  }
+  .nav-link:hover::after, .nav-link.active::after{ transform:scaleX(1) }
+  .ripple{
+    position:absolute; width:10px; height:10px; border-radius:50%;
+    pointer-events:none;
+    background:radial-gradient(closest-side, rgba(255,255,255,.65), rgba(255,255,255,.25) 60%, rgba(255,255,255,0) 70%);
+    transform:translate(-50%,-50%) scale(0);
+    animation:ripple .6s ease-out forwards; mix-blend-mode:screen;
+  }
+  @keyframes ripple{ to{ transform:translate(-50%,-50%) scale(18); opacity:0 } }
+
+  .top-avatar{display:flex; gap:8px; align-items:center; cursor:pointer}
+  #topAvatarIcon{font-size:28px}
+  #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none}
+
+  /* ========== HERO & LOGO (Opzione B) ========== */
+  .hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 16px; overflow:hidden}
+  .logo-container{position:relative; width:var(--logo-size); height:var(--logo-size); margin-bottom:40px; display:flex; align-items:center; justify-content:center}
+  .logo-bg{position:absolute; inset:0; background:url('https://i.postimg.cc/d19KnZQv/LOGO-SERVER-2.png') no-repeat center/contain; opacity:0.24; z-index:2}
+  .logo-glow{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(40% 55% at 50% 50%, rgba(88,166,255,.10), rgba(0,0,0,0) 60%),
+      radial-gradient(100% 100% at 50% 50%, rgba(0,0,0,.45), transparent 55%);
+    filter:blur(10px); animation:float 5.5s ease-in-out infinite alternate; z-index:1
+  }
+  @keyframes float{from{transform:translateY(-6px)} to{transform:translateY(6px)}}
+
+  /* ===== Countdown / Video ===== */
+  .countdown-container{position:relative; z-index:3; margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:800px}
+  .hero-announcement{display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; width:100%}
+  .badge-opening{display:inline-flex; align-items:center; gap:8px; color:#fff; background:linear-gradient(135deg,#58a6ff,#0b6dd6); border:1px solid #2a3a61; box-shadow:var(--shadow); padding:8px 14px; border-radius:999px; text-transform:uppercase; letter-spacing:.06em; font-weight:900}
+  .hero-title{margin:4px 0 0; font-size:clamp(28px,5.4vw,60px); font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-shadow:0 2px 10px rgba(0,0,0,.5)}
+  .countdown{display:flex; gap:12px; justify-content:center; align-items:center; background:#0f1625; border:1px solid #2a3a61; border-radius:16px; padding:12px 16px; width:max-content; box-shadow:var(--shadow); margin-top:10px}
+  .cd-box{min-width:80px; text-align:center; background:#121e36; border:1px solid #2a3a61; border-radius:12px; padding:10px 8px}
+  .cd-box span{display:block; font-size:clamp(24px,4.5vw,38px); font-weight:900; line-height:1}
+  .cd-box label{display:block; margin-top:4px; font-size:12px; color:#9daccc; letter-spacing:.1em; text-transform:uppercase}
+  .home-video{display:grid; place-items:center; margin-top:60px; width:100%}
+  .home-video-head{display:flex; align-items:center; gap:8px; color:#cfe0ff; background:#0f1625; border:1px solid #2a3a61; padding:6px 10px; border-radius:10px; margin-bottom:10px; text-transform:uppercase}
+  .home-video-frame{width:min(95vw,var(--home-video-max)); max-width:var(--home-video-max); min-width:var(--home-video-min); background:#0f1528; border:2px solid #2a3a61; border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
+  .home-video-frame video{display:block; width:100%; height:auto}
+
+  /* TITOLI / CARD BASE */
+  .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.5rem}
+  .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:24px; box-shadow:var(--shadow)}
+  .card-head{display:flex; align-items:center; gap:12px; margin-bottom:20px}
+  .chip{width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:#1b2747; border:1px solid #2a3a61}
+  .chip.blue{background:#153259} .chip.green{background:#143c2a}
+  .sub{color:var(--muted); font-size:.9rem}
+
+  /* DONAZIONI (ridotto) */
+  #page-donations{position:relative; padding:40px 20px}
+  .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; max-width:920px; margin:0 auto}
+  .donation-card{text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:12px; transition:transform .3s ease}
+  .donation-card:hover{transform:translateY(-5px)}
+  .donation-thumb{width:100%; aspect-ratio:1/1; border-radius:14px; overflow:hidden; border:2px solid #2a3a61; background:#0f1528; display:grid; place-items:center}
+  .donation-thumb img{width:90%; height:90%; object-fit:contain}
+  .donation-caption{font-weight:800; font-size:1.05rem; padding:6px 8px; border-radius:10px; background:rgba(23,33,55,.85); border:1px solid #2a3a61; text-align:center; text-transform:uppercase}
+
+  /* DONAZIONE DETTAGLIO */
+  #page-donation{padding:40px 16px}
+  .donation-detail{max-width:960px;margin:0 auto;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
+  .donation-media{background:#0f1528;border:2px solid #2a3a61;border-radius:14px;overflow:hidden;display:grid;place-items:center;padding:16px}
+  .donation-media img{max-width:100%;height:auto;display:block}
+  .donation-info .price{font-size:2rem;font-weight:900;margin:6px 0 10px}
+  .donation-info pre{white-space:pre-wrap; background:#0f1528; border:1px solid #2a3a61; border-radius:10px; padding:12px; font-family:inherit; color:#cfe0ff}
+
+  /* STAFF */
+  .staff-section{max-width:1000px; margin:40px auto}
+  .role{display:flex; align-items:center; gap:10px; margin:0 0 20px; font-weight:800; font-size:1.5rem}
+  .role .role-icon{width:28px; height:28px; object-fit:contain; display:inline-block; filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+  .staff-grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .member{background:#162137; border:1px solid #2a3a61; border-radius:14px; padding:20px; display:grid; justify-items:center; gap:12px; box-shadow:var(--shadow); transition:transform .3s ease}
+  .member:hover{transform:translateY(-5px)}
+  .avatar{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:#0f1528; color:#eaf0ff; font-size:36px; overflow:hidden}
+  .avatar img{width:100%; height:100%; object-fit:cover}
+  .ring{border:2px solid #2a3a61}.ring-gold{border-color:#ffd76a}.ring-silver{border-color:#cfd7ff}
+  .ring-red{border-color:#ff4d4f}.ring-green{border-color:#7ee787}.ring-purple{border-color:#a78bfa}
+  .member-name{font-weight:800; text-align:center; font-size:1.2rem}
+  .member-role{font-weight:700; font-size:.95rem; margin-top:-6px}
+  .role-grafico{color:#ff4dd2}
+  .role-dev{color:#8ecaff}
+  .role-eup{color:#4a90e2}
+
+  /* BUTTONS / FORM / MODALI */
+  .actions{display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap}
+  .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; border:0; cursor:pointer; font-weight:800; text-transform:uppercase; letter-spacing:.06em; transition:transform .12s ease,box-shadow .12s ease; font-family:inherit}
+  .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2)); color:#fff; box-shadow:0 10px 22px rgba(11,109,214,.25)}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(11,109,214,.35)}
+  .btn-ghost{background:transparent; border:1px solid #2a3a61; color:#fff}
+  .btn-ghost:hover{background:rgba(42,58,97,.2)}
+  .btn.full{width:100%}
+  .btn-google{background:#1b1f2e; border:1px solid #2a3a61; color:#fff}
+  .sheet{position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:50; padding:20px}
+  .sheet.is-open{display:flex}
+  .sheet-panel{position:relative; width:min(96vw,520px); background:#121a2a; border:1px solid #2a3a61; border-radius:16px; box-shadow:var(--shadow); padding:24px; max-height:90vh; overflow-y:auto}
+  .sheet-close{position:absolute; right:12px; top:12px; background:transparent; border:1px solid #2a3a61; border-radius:10px; color:#fff; width:40px; height:40px; cursor:pointer; display:grid; place-items:center}
+  .sheet-close:hover{background:rgba(42,58,97,.2)}
+  .sheet-header{display:flex; align-items:center; gap:12px; margin-bottom:20px}
+  .grid-one{display:grid; gap:16px}
+  .field{position:relative}
+  .field input{width:100%; height:54px; border-radius:12px; border:2px solid #28365c; background:#0f1528; color:#fff; padding:0 14px; font-size:18px; outline:none; font-family:inherit}
+  .field input::placeholder{letter-spacing:.06em; color:#9daccc}
+  .pw-field .pw-toggle{position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:0; color:#cfe0ff; width:40px; height:40px; border-radius:8px; display:grid; place-items:center; cursor:pointer}
+  .pw-field input{padding-right:56px}
+  .muted-line{text-align:center; margin-top:16px; color:#9daccc; font-size:.9rem}
+  .muted-line a{color:#58a6ff; text-decoration:none}
+
+  /* PROFILE */
+  .avatar-box{display:grid; gap:20px; justify-items:center}
+  .avatar-preview{width:150px; height:150px; border-radius:50%; background:#0f1528; border:2px solid #2a3a61; display:grid; place-items:center; overflow:hidden; box-shadow:var(--shadow)}
+  .avatar-preview img{width:100%; height:100%; object-fit:cover; display:none}
+  .avatar-preview i{font-size:88px; color:#9daccc}
+
+  /* FOOTER */
+  .site-footer{text-align:center; padding:30px 12px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
+  .stripe{height:8px; width:220px; margin:0 auto 12px; border-radius:6px; background:linear-gradient(90deg,#009246 0 33%, #fff 33% 66%, #ce2b37 66% 100%); border:1px solid #2a3a61}
+
+  /* PAGES */
+  .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
+  .page.active{display:block}
+
+  /* ========== CONCORSI — MATCH SCREENSHOT ========== */
+  #page-concorsi{ background:#f4f6fa; color:#1f2937; padding:0; }
+  .concorsi-wrap{max-width:1100px; margin:0 auto; padding:28px 16px 40px}
+  .concorsi-title{font-family:inherit; font-weight:900; letter-spacing:.02em; text-transform:none; margin-bottom:14px; font-size:clamp(28px,4.6vw,40px); color:#1d2430}
+
+  /* Tabs (solo testo) */
+  .concorsi-tabs{display:flex; gap:8px; align-items:center; padding:10px 0 18px}
+  .c-tab{display:inline-flex; align-items:center; gap:8px; background:#eef2f9; color:#1f3a62; border:1px solid #d7e0f0; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:800; letter-spacing:.04em}
+  .c-tab.is-active{background:#dae6fb; border-color:#bcd3f8}
+
+  /* Card + Table */
+  .concorsi-card{background:#ffffff; border:1px solid #dde3ef; border-radius:10px; overflow:hidden; box-shadow:0 10px 30px rgba(20,30,60,.06)}
+  .concorsi-table{width:100%; border-collapse:separate; border-spacing:0}
+  .concorsi-table thead th{background:#2f3a4a; color:#fff; padding:14px 18px; font-weight:900; letter-spacing:.04em; border-bottom:2px solid #202a39; white-space:nowrap}
+  .concorsi-table thead th:first-child{border-top-left-radius:8px}
+  .concorsi-table thead th:last-child{border-top-right-radius:8px}
+
+  /* Corpo ampio con separatori leggeri */
+  .concorsi-table tbody td{background:#fff; padding:22px 18px; border-bottom:1px solid #edf1f7; vertical-align:middle; white-space:nowrap}
+  .concorsi-table tbody tr:last-child td{border-bottom:0}
+  .ta-left{text-align:left}
+  .ta-right{text-align:right}
+
+  /* Forza Armata: logo sopra, nome sotto */
+  .fa-cell{display:flex; align-items:center; gap:10px}
+  .fa-cell.vertical{flex-direction:column; justify-content:center; gap:8px; min-width:126px}
+  .fa-logo{width:46px; height:46px; border-radius:10px; display:grid; place-items:center; background:#fff; border:1px solid #e6edf8; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,.05)}
+  .fa-logo img{width:92%; height:92%; object-fit:contain}
+  .fa-name{font-weight:900; color:#2b3545}
+
+  /* Data due righe */
+  .date-cell{min-width:120px}
+  .date-top{display:block; font-weight:900; font-size:18px; color:#2a3446; line-height:1}
+  .date-year{display:block; margin-top:6px; font-weight:900; font-size:20px; color:#2a3446}
+
+  /* Concorso */
+  .concorso-titolo{font-weight:900; line-height:1.25; color:#243046; white-space:normal; max-width:640px}
+
+  /* Stato: solo testo */
+  .state{font-weight:900}
+  .state-ok{color:#2e7d32}
+  .state-att{color:#a76412}
+
+  /* Allegati */
+  .link-alle{color:#1565c0; text-decoration:none; font-weight:900}
+  .link-alle:hover{text-decoration:underline}
+
+  /* Azioni impilate a destra */
+  .azioni{display:flex; gap:10px; justify-content:flex-end}
+  .azioni-col{flex-direction:column; align-items:flex-end}
+  .btn-slim{padding:10px 14px; border-radius:8px; font-weight:900; background:#f4f7fb; cursor:pointer; text-transform:uppercase; letter-spacing:.02em}
+  .btn-outline{border:1px solid #dde6f5; color:#2a4365; box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+  .btn-outline:hover{background:#eef4ff}
+
+  /* Responsive sticky prima colonna */
+  @media (max-width: 720px){
+    .concorso-titolo{max-width:unset}
+    .concorsi-table thead th:nth-child(1),
+    .concorsi-table tbody td:nth-child(1){position:sticky; left:0; background:#fff}
+  }
+
+  /* ========== TOAST ========== */
+  .toast{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
+    background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow);
+    padding:12px 16px; border-radius:12px; font-weight:800; z-index:1000; opacity:0;
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+  </style>
 </head>
 <body>
+  <noscript><div class="noscript">Attiva JavaScript per usare il sito.</div></noscript>
+
+  <!-- NAVBAR -->
   <header class="site-header">
-    <div class="brand"></div>
-    <nav id="mainNav" class="nav">
-      <a href="#home" class="nav-link" data-route="home">Home</a>
-      <a href="#login" class="nav-link" data-route="login">Login</a>
-      <a href="#register" class="nav-link" data-route="register">Registrati</a>
-      <a href="#profile" id="navProfile" class="nav-link" data-route="profile" hidden>Profilo</a>
+    <nav class="nav" id="mainNav">
+      <a href="#" class="nav-link active" data-route="home">Home</a>
+      <a href="#" class="nav-link" data-route="donations">Donazioni</a>
+      <a href="#" class="nav-link" data-route="concorsi">Concorsi</a>
+      <a href="#" class="nav-link" data-route="staff">Staff</a>
+      <a href="#" class="nav-link" id="openLogin">Login</a>
+      <a href="#" class="nav-link" id="openRegister">Registrati</a>
+      <a href="#" class="nav-link" id="goProfile" data-route="profile" hidden>Profilo</a>
+      <a href="#" class="nav-link" id="btnLogout" hidden>Logout</a>
     </nav>
-    <div class="top-right">
-      <!-- avatar nascosto finché non loggato -->
-      <div class="avatar-topbox">
-        <i id="avatarIcon" class="fa-solid fa-circle-user"></i>
-        <img id="avatarImage" class="avatar-top" alt="Avatar">
-      </div>
-      <button id="menuToggle" class="menu-toggle" aria-label="Apri menu"><i class="fa-solid fa-bars"></i></button>
+
+    <div class="top-avatar" id="topAvatar" hidden title="Profilo">
+      <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
+      <img id="topAvatarImg" alt="Avatar">
     </div>
   </header>
 
-  <div id="toast" role="status" aria-live="polite"></div>
-
   <main id="app">
-    <section id="page-home" data-page class="page hero-onlylogo"><div aria-hidden="true"></div></section>
+    <!-- ========== HOME ========== -->
+    <section id="page-home" class="page active" data-page>
+      <div class="hero">
+        <div class="logo-container">
+          <div class="logo-bg"></div>
+          <div class="logo-glow"></div>
+        </div>
 
-    <section id="page-profile" data-page class="page auth-section" hidden>
-      <div class="card profile">
-        <header class="card-head">
-          <div class="chip"><i class="fa-solid fa-user"></i></div>
-          <div><h3>Profilo</h3><p class="sub">Gestisci avatar e nickname</p></div>
-        </header>
-
-        <div class="profile-box">
-          <img id="avatarPreview" class="avatar" hidden alt="Avatar">
-          <i id="avatarFallback" class="fa-solid fa-circle-user fa-5x"></i>
-
-          <div class="uploader">
-            <label class="btn btn-ghost">
-              <i class="fa-solid fa-image"></i> Carica avatar
-              <input type="file" id="avatarInput" accept="image/*" hidden>
-            </label>
-            <button class="btn btn-ghost" id="removeAvatar"><i class="fa-solid fa-user-slash"></i> Rimuovi</button>
+        <div class="countdown-container">
+          <div class="hero-announcement">
+            <div class="badge-opening">
+              <i class="fa-solid fa-bullhorn"></i>
+              <span>NUOVA APERTURA <strong>21 Settembre 2025</strong> ore <strong>16:30</strong></span>
+            </div>
+            <h1 class="hero-title">NOVA ROMA ROLEPLAY</h1>
           </div>
 
-          <div class="grid-two">
-            <p class="info"><strong>Nickname:</strong> <span id="profileName">-</span></p>
-            <p class="info"><strong>Email:</strong> <span id="profileEmail">-</span></p>
+          <div id="nrCountdown" class="countdown" aria-live="polite">
+            <div class="cd-box"><span id="cdDays">00</span><label>Giorni</label></div>
+            <div class="cd-box"><span id="cdHours">00</span><label>Ore</label></div>
+            <div class="cd-box"><span id="cdMins">00</span><label>Min</label></div>
+            <div class="cd-box"><span id="cdSecs">00</span><label>Sec</label></div>
           </div>
+        </div>
 
-          <div class="field float">
-            <i class="fa-solid fa-pen leading"></i>
-            <input type="text" id="newName" placeholder=" " autocomplete="off">
-            <label for="newName">Nuovo nickname</label>
+        <div class="home-video">
+          <div class="home-video-head">
+            <i class="fa-solid fa-film"></i>
+            <span>Trailer server</span>
           </div>
-
-          <div class="actions">
-            <button class="btn btn-primary" id="saveProfile"><i class="fa-solid fa-floppy-disk"></i> Salva</button>
-            <button class="btn btn-ghost" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+          <div class="home-video-frame">
+            <video id="nvVideo" src="https://files.catbox.moe/vq53u8.mp4" muted autoplay loop playsinline webkit-playsinline preload="auto"></video>
           </div>
         </div>
       </div>
     </section>
-  </main>
 
-  <!-- LOGIN -->
-  <aside id="sheet-login" class="sheet" aria-hidden="true">
-    <div class="sheet-panel">
-      <button class="sheet-close" data-close="#sheet-login" aria-label="Chiudi"><i class="fa-solid fa-xmark"></i></button>
-      <section class="sheet-body">
-        <header class="sheet-header">
-          <div class="chip blue"><i class="fa-solid fa-right-to-bracket"></i></div>
-          <div><h3>Accedi</h3><p class="sub">Bentornato in Nova Roma</p></div>
-        </header>
-
-        <form id="loginForm" class="form-grid one" novalidate>
-          <div class="field float">
-            <i class="fa-solid fa-envelope leading"></i>
-            <input type="email" id="loginEmail" placeholder=" " required autocomplete="username">
-            <label for="loginEmail">Email</label>
-          </div>
-
-          <div class="field float">
-            <i class="fa-solid fa-lock leading"></i>
-            <input type="password" id="loginPassword" placeholder=" " required autocomplete="current-password">
-            <label for="loginPassword">Password</label>
-            <i class="fa-solid fa-eye pw-toggle" data-target="loginPassword" aria-hidden="true"></i>
-          </div>
-
-          <div class="links-row"><a href="#" id="openRecovery">Password dimenticata?</a></div>
-          <button class="btn btn-primary full" type="submit"><i class="fa-solid fa-key"></i> Accedi</button>
-          <p id="loginMsg" class="form-msg"></p>
-
-          <div class="swap">Nuovo qui? <a href="#register" data-swap="register">Crea un account</a></div>
-        </form>
-      </section>
-    </div>
-  </aside>
-
-  <!-- REGISTRAZIONE -->
-  <aside id="sheet-register" class="sheet" aria-hidden="true">
-    <div class="sheet-panel">
-      <button class="sheet-close" data-close="#sheet-register" aria-label="Chiudi"><i class="fa-solid fa-xmark"></i></button>
-      <section class="sheet-body">
-        <header class="sheet-header">
-          <div class="chip green"><i class="fa-solid fa-user-plus"></i></div>
-          <div><h3>Registrati</h3><p class="sub">Unisciti alla community</p></div>
-        </header>
-
-        <form id="registerForm" class="form-grid two" novalidate>
-          <div class="field float">
-            <i class="fa-solid fa-user leading"></i>
-            <input type="text" id="regName" placeholder=" " required minlength="3" autocomplete="nickname">
-            <label for="regName">Nickname</label>
-          </div>
-
-          <div class="field float">
-            <i class="fa-solid fa-envelope leading"></i>
-            <input type="email" id="regEmail" placeholder=" " required autocomplete="email">
-            <label for="regEmail">Email</label>
-          </div>
-
-          <div class="field float has-meter">
-            <i class="fa-solid fa-lock leading"></i>
-            <input type="password" id="regPassword" placeholder=" " required minlength="6" autocomplete="new-password">
-            <label for="regPassword">Password</label>
-            <i class="fa-solid fa-eye pw-toggle" data-target="regPassword" aria-hidden="true"></i>
-            <div class="meter" id="pwMeter"><span></span></div>
-            <small id="pwText" class="muted">Sicurezza password</small>
-          </div>
-
-          <div class="field float">
-            <i class="fa-solid fa-lock leading"></i>
-            <input type="password" id="regPassword2" placeholder=" " required minlength="6" autocomplete="new-password">
-            <label for="regPassword2">Conferma password</label>
-            <i class="fa-solid fa-eye pw-toggle" data-target="regPassword2" aria-hidden="true"></i>
-          </div>
-
-          <label class="checkline span2">
-            <input type="checkbox" id="terms" required>
-            <span class="box"></span><span>Accetto i termini</span>
-          </label>
-
-          <button class="btn btn-primary full span2" type="submit"><i class="fa-solid fa-user-check"></i> Crea account</button>
-          <p id="registerMsg" class="form-msg span2"></p>
-
-          <div class="swap span2">Hai già un account? <a href="#login" data-swap="login">Accedi</a></div>
-        </form>
-      </section>
-    </div>
-  </aside>
-
-  <!-- RECUPERO PASSWORD -->
-  <div id="recoveryOverlay" class="overlay" aria-hidden="true">
-    <div class="modal">
-      <header class="modal-head">
-        <h4>Recupera password</h4>
-        <button id="closeRecovery" class="close" aria-label="Chiudi"><i class="fa-solid fa-xmark"></i></button>
-      </header>
-      <div class="modal-body">
-        <div class="field float">
-          <i class="fa-solid fa-envelope leading"></i>
-          <input type="email" id="recoveryEmail" placeholder=" ">
-          <label for="recoveryEmail">Email</label>
-        </div>
-        <button id="sendRecovery" class="btn btn-primary full">Invia link</button>
+    <!-- ========== DONAZIONI (griglia) ========== -->
+    <section id="page-donations" class="page" data-page>
+      <h2 class="title-roman">Sostieni Nova Roma</h2>
+      <div id="donationsGrid" class="donations-grid">
+        <a href="#" class="donation-card" data-price="5" data-img="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 5€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="10" data-img="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 10€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="15" data-img="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 15€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="20" data-img="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 20€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="30" data-img="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 30€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="40" data-img="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 40€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="50" data-img="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 50€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="70" data-img="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 70€</div>
+        </a>
       </div>
-    </div>
-  </div>
+    </section>
+
+    <!-- ========== DONAZIONE (dettaglio) ========== -->
+    <section id="page-donation" class="page" data-page>
+      <div class="card">
+        <header class="card-head">
+          <div class="chip"><i class="fa-solid fa-gift"></i></div>
+          <div>
+            <h3 class="title-roman" id="detailTitle">Pacchetto</h3>
+            <p class="sub">Riepilogo offerta</p>
+          </div>
+        </header>
+
+        <div class="donation-detail">
+          <div class="donation-media">
+            <img id="detailImg" alt="Pacchetto">
+          </div>
+          <div class="donation-info">
+            <div class="price"><span id="detailPrice">0</span>€</div>
+            <pre id="detailDesc"></pre>
+            <div class="actions" style="justify-content:flex-start">
+              <button class="btn btn-primary" id="btnBuy"><i class="fa-solid fa-credit-card"></i> Procedi</button>
+              <button class="btn btn-ghost" id="btnBackDon"><i class="fa-solid fa-arrow-left"></i> Torna alle donazioni</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONCORSI (match screenshot) ========== -->
+    <section id="page-concorsi" class="page" data-page>
+      <div class="concorsi-wrap">
+        <h1 class="concorsi-title">I miei concorsi</h1>
+
+        <!-- Tabs SOLO TESTO -->
+        <nav class="concorsi-tabs" aria-label="Sezioni concorsi">
+          <a href="#" class="c-tab is-active" data-force="all"><i class="fa-solid fa-house"></i> Home</a>
+          <a href="#" class="c-tab" data-force="Esercito">Esercito</a>
+          <a href="#" class="c-tab" data-force="Marina">Marina</a>
+          <a href="#" class="c-tab" data-force="Aeronautica">Aeronautica</a>
+        </nav>
+
+        <div class="concorsi-card">
+          <div class="concorsi-table-wrap">
+            <table class="concorsi-table" aria-describedby="tabella-concorsi">
+              <thead>
+                <tr>
+                  <th scope="col" class="ta-left">Forza Armata</th>
+                  <th scope="col">Data</th>
+                  <th scope="col" class="ta-left">Concorso</th>
+                  <th scope="col">Stato</th>
+                  <th scope="col">Allegati</th>
+                  <th scope="col" class="ta-right">Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Esercito -->
+                <tr data-title="Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco">
+                  <td class="fa-cell vertical">
+                    <span class="fa-logo">
+                      <img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito">
+                    </span>
+                    <span class="fa-name">Esercito</span>
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-top">07 luglio</span>
+                    <span class="date-year">2025</span>
+                  </td>
+                  <td class="ta-left">
+                    <div class="concorso-titolo">
+                      Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco
+                    </div>
+                  </td>
+                  <td><span class="state state-ok">Ricevuta</span></td>
+                  <td><a href="#" class="link-alle">Allegati</a></td>
+                  <td class="ta-right">
+                    <div class="azioni azioni-col">
+                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- altri esempi -->
+                <tr data-title="Bando VFP4 Esercito Italiano - 2025">
+                  <td class="fa-cell vertical">
+                    <span class="fa-logo">
+                      <img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito">
+                    </span>
+                    <span class="fa-name">Esercito</span>
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-top">15 gennaio</span>
+                    <span class="date-year">2025</span>
+                  </td>
+                  <td class="ta-left"><div class="concorso-titolo">Bando VFP4 Esercito Italiano - 2025</div></td>
+                  <td><span class="state state-att">In lavorazione</span></td>
+                  <td><a href="#" class="link-alle">Allegati</a></td>
+                  <td class="ta-right">
+                    <div class="azioni azioni-col">
+                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr data-title="Concorso VFI Marina Militare">
+                  <td class="fa-cell vertical">
+                    <span class="fa-logo">
+                      <img src="https://i.postimg.cc/Sj08xy9D/logomm.png" alt="Marina">
+                    </span>
+                    <span class="fa-name">Marina</span>
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-top">01 marzo</span>
+                    <span class="date-year">2025</span>
+                  </td>
+                  <td class="ta-left"><div class="concorso-titolo">Concorso VFI Marina Militare</div></td>
+                  <td><span class="state state-ok">Ricevuta</span></td>
+                  <td><a href="#" class="link-alle">Allegati</a></td>
+                  <td class="ta-right">
+                    <div class="azioni azioni-col">
+                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr data-title="Concorso Allievi Aeronautica Militare">
+                  <td class="fa-cell vertical">
+                    <span class="fa-logo">
+                      <img src="https://i.postimg.cc/mgsXd4nY/logoam.png" alt="Aeronautica">
+                    </span>
+                    <span class="fa-name">Aeronautica</span>
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-top">10 aprile</span>
+                    <span class="date-year">2025</span>
+                  </td>
+                  <td class="ta-left"><div class="concorso-titolo">Concorso Allievi Aeronautica Militare</div></td>
+                  <td><span class="state state-att">In lavorazione</span></td>
+                  <td><a href="#" class="link-alle">Allegati</a></td>
+                  <td class="ta-right">
+                    <div class="azioni azioni-col">
+                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STAFF COMPLETO ========== -->
+    <section id="page-staff" class="page" data-page>
+      <h2 class="title-roman center">Il nostro staff</h2>
+
+      <!-- Owner -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Owner
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-gold">
+              <img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy">
+            </div>
+            <div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Founder -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Founder
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-silver">
+              <img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto" loading="lazy">
+            </div>
+            <div class="member-name">Anto</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-silver">
+              <img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony" loading="lazy">
+            </div>
+            <div class="member-name">Mony</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Co-Founder -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Co-Founder
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo" loading="lazy">
+            </div>
+            <div class="member-name">Gabbo</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez" loading="lazy">
+            </div>
+            <div class="member-name">Rodriguez</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss" loading="lazy">
+            </div>
+            <div class="member-name">Th3b00ss</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Admin
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo" loading="lazy">
+            </div>
+            <div class="member-name">Alexo</div>
+            <div class="member-role role-eup">Eup Creator</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri" loading="lazy">
+            </div>
+            <div class="member-name">Chri</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide" loading="lazy">
+            </div>
+            <div class="member-name">Il Davide</div>
+            <div class="member-role role-eup">Eup Creator</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Moderatore -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Moderatore
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales" loading="lazy">
+            </div>
+            <div class="member-name">Ales</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze" loading="lazy">
+            </div>
+            <div class="member-name">Blaze</div>
+            <div class="member-role role-grafico">Grafico</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco" loading="lazy">
+            </div>
+            <div class="member-name">Franco</div>
+            <div class="member-role role-grafico">Grafico</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio" loading="lazy">
+            </div>
+            <div class="member-name">Glaudio</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca" loading="lazy">
+            </div>
+            <div class="member-name">Luca</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger" loading="lazy">
+            </div>
+            <div class="member-name">Mattiger</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight" loading="lazy">
+            </div>
+            <div class="member-name">Voight</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Helper -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Helper
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-purple">
+              <img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre" loading="lazy">
+            </div>
+            <div class="member-name">Andre</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-purple">
+              <img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco" loading="lazy">
+            </div>
+            <div class="member-name">Falco</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PROFILO ========== -->
+    <section id="page-profile" class="page" data-page>
+      <div class="card">
+        <header class="card-head">
+          <div class="chip"><i class="fa-solid fa-user"></i></div>
+          <div>
+            <h3 class="title-roman">Profilo Utente</h3>
+            <p class="sub">Gestisci il tuo account</p>
+          </div>
+        </header>
+        <div class="avatar-box">
+          <div class="avatar-preview">
+            <i id="profAvatarIcon" class="fa-solid fa-circle-user"></i>
+            <img id="profAvatarImg" alt="Avatar">
+          </div>
+          <div class="actions">
+            <input type="file" id="avatarInput" accept="image/*" hidden>
+            <button class="btn btn-primary" id="btnUploadAvatar">
+              <i class="fa-solid fa-image"></i> Carica/Modifica
+            </button>
+            <button class="btn btn-ghost" id="btnRemoveAvatar">
+              <i class="fa-solid fa-trash"></i> Rimuovi
+            </button>
+          </div>
+        </div>
+        <div style="margin-top:20px;text-align:center;">
+          <p id="userInfo">Email: <span id="userEmail"></span></p>
+          <button class="btn btn-ghost" id="btnLogoutProfile" style="margin-top:15px;">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer class="site-footer">
     <div class="stripe"></div>
     <p>© 2025 Nova Roma Roleplay</p>
   </footer>
 
-  <script src="app.js"></script>
+  <!-- MODALI LOGIN / REGISTRO -->
+  <aside id="sheet-login" class="sheet" aria-hidden="true">
+    <div class="sheet-panel">
+      <button class="sheet-close" data-close="#sheet-login" aria-label="Chiudi">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <section class="sheet-body">
+        <header class="sheet-header">
+          <div class="chip blue"><i class="fa-solid fa-right-to-bracket"></i></div>
+          <div>
+            <h3 class="title-roman">Accedi</h3>
+            <p class="sub">Bentornato!</p>
+          </div>
+        </header>
+        <form id="loginForm" class="grid-one" novalidate>
+          <div class="field">
+            <input type="email" id="loginEmail" placeholder="Email" required autocomplete="username">
+          </div>
+          <div class="field pw-field">
+            <input type="password" id="loginPassword" placeholder="Password" required autocomplete="current-password" aria-describedby="loginPwToggle">
+            <button type="button" class="pw-toggle" data-target="loginPassword" id="loginPwToggle" aria-label="Mostra password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <button class="btn btn-primary full" type="submit">
+            <i class="fa-solid fa-key"></i> Accedi
+          </button>
+          <div class="divider"><span>oppure</span></div>
+          <button type="button" id="googleBtn" class="btn btn-google full">
+            <i class="fa-brands fa-google"></i> Accedi con Google
+          </button>
+          <p class="muted-line">
+            Non hai un account? <a href="#" id="switchToRegister">Registrati qui</a>
+          </p>
+        </form>
+      </section>
+    </div>
+  </aside>
+
+  <aside id="sheet-register" class="sheet" aria-hidden="true">
+    <div class="sheet-panel">
+      <button class="sheet-close" data-close="#sheet-register" aria-label="Chiudi">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <section class="sheet-body">
+        <header class="sheet-header">
+          <div class="chip green"><i class="fa-solid fa-user-plus"></i></div>
+          <div>
+            <h3 class="title-roman">Registrati</h3>
+            <p class="sub">Unisciti alla community</p>
+          </div>
+        </header>
+        <form id="registerForm" class="grid-one" novalidate>
+          <div class="field">
+            <input type="text" id="regNick" placeholder="Nickname" required minlength="3" autocomplete="nickname">
+          </div>
+          <div class="field">
+            <input type="email" id="regEmail" placeholder="Email" required autocomplete="email">
+          </div>
+          <div class="field pw-field">
+            <input type="password" id="regPass" placeholder="Password" required minlength="6" autocomplete="new-password" aria-describedby="regPwToggle">
+            <button type="button" class="pw-toggle" data-target="regPass" id="regPwToggle" aria-label="Mostra password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <div class="field pw-field">
+            <input type="password" id="regPass2" placeholder="Conferma password" required minlength="6" autocomplete="new-password" aria-describedby="regPw2Toggle">
+            <button type="button" class="pw-toggle" data-target="regPass2" id="regPw2Toggle" aria-label="Mostra password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <button class="btn btn-primary full" type="submit">
+            <i class="fa-solid fa-user-check"></i> Crea account
+          </button>
+          <p class="muted-line">
+            Hai già un account? <a href="#" id="switchToLogin">Accedi qui</a>
+          </p>
+        </form>
+      </section>
+    </div>
+  </aside>
+
+  <script>
+  /* ====== CONFIG ====== */
+  const GOOGLE_CLIENT_ID = '41807654736-fnre1iet9c7fae23etl0nqe1iet8rsqn.apps.googleusercontent.com';
+
+  /* ====== STORAGE ====== */
+  const USERS='nr_users_v1',SESSION='nr_session_v1',AVATAR='nr_avatar_v1_';
+
+  /* ====== UTILS ====== */
+  const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+  const usersGet=()=>JSON.parse(localStorage.getItem(USERS)||'[]');
+  const usersSet=u=>localStorage.setItem(USERS,JSON.stringify(u));
+  const sesGet=()=>localStorage.getItem(SESSION); const sesSet=e=>localStorage.setItem(SESSION,e); const sesDel=()=>localStorage.removeItem(SESSION);
+  const avSet=(e,d)=>localStorage.setItem(AVATAR+e,d); const avGet=e=>localStorage.getItem(AVATAR+e); const avDel=e=>localStorage.removeItem(AVATAR+e);
+
+  /* ====== TOAST ====== */
+  const toast=t=>{
+    const x=$('.toast');if(x)x.remove();
+    const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);
+    setTimeout(()=>el.classList.add('show'),10);
+    setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);
+  };
+
+  /* ====== NAV RIPPLE (bianco) ====== */
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.nav-link');if(!btn) return;
+    const rect=btn.getBoundingClientRect();
+    const ripple=document.createElement('span');
+    ripple.className='ripple';
+    ripple.style.left=`${(e.clientX??rect.left+rect.width/2)-rect.left}px`;
+    ripple.style.top =`${(e.clientY??rect.top +rect.height/2)-rect.top }px`;
+    btn.appendChild(ripple);
+    setTimeout(()=>ripple.remove(),600);
+  },{passive:true});
+
+  /* ====== ROUTER ====== */
+  function showPage(id){
+    $$('.page').forEach(p=>p.classList.remove('active'));
+    $$('.nav-link').forEach(l=>l.classList.remove('active'));
+    $(`#page-${id}`)?.classList.add('active');
+    $(`.nav-link[data-route="${id}"]`)?.classList.add('active');
+    if(id==='home')tryAutoplay();
+  }
+  document.addEventListener('click',e=>{
+    const r=e.target.closest('[data-route]');if(!r) return;
+    e.preventDefault(); showPage(r.dataset.route);
+  });
+
+  /* ====== MODALI LOGIN/REG ====== */
+  $('#openLogin')?.addEventListener('click',e=>{e.preventDefault();$('#sheet-login').classList.add('is-open')});
+  $('#openRegister')?.addEventListener('click',e=>{e.preventDefault();$('#sheet-register').classList.add('is-open')});
+  $$('.sheet-close').forEach(b=>b.addEventListener('click',()=>b.closest('.sheet').classList.remove('is-open')));
+  $('#switchToRegister')?.addEventListener('click',e=>{e.preventDefault();$('#sheet-login').classList.remove('is-open');$('#sheet-register').classList.add('is-open')});
+  $('#switchToLogin')?.addEventListener('click',e=>{e.preventDefault();$('#sheet-register').classList.remove('is-open');$('#sheet-login').classList.add('is-open')});
+
+  /* ====== EYE TOGGLE ====== */
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.pw-toggle');if(!btn) return;
+    e.preventDefault();
+    const input=document.getElementById(btn.dataset.target);if(!input) return;
+    const hidden=input.type==='password'; input.type=hidden?'text':'password';
+    const icon=btn.querySelector('i');
+    if(icon){icon.classList.toggle('fa-eye',!hidden);icon.classList.toggle('fa-eye-slash',hidden)}
+    btn.setAttribute('aria-label',hidden?'Nascondi password':'Mostra password');
+  });
+
+  /* ====== REGISTER ====== */
+  $('#registerForm')?.addEventListener('submit',e=>{
+    e.preventDefault();
+    const name=$('#regNick').value.trim();
+    const email=$('#regEmail').value.trim().toLowerCase();
+    const pw=$('#regPass').value; const pw2=$('#regPass2').value;
+    if(name.length<3)return toast('Nickname troppo corto');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return toast('Email non valida');
+    if(pw.length<6)return toast('Password troppo corta (min 6)');
+    if(pw!==pw2)return toast('Le password non coincidono');
+    const users=usersGet(); if(users.some(u=>u.email===email))return toast('Email già registrata');
+    users.push({name,email,password:pw}); usersSet(users);
+    toast('Registrazione ok! Ora accedi.');
+    $('#sheet-register').classList.remove('is-open');$('#sheet-login').classList.add('is-open');
+    $('#registerForm').reset();
+  });
+
+  /* ====== LOGIN ====== */
+  $('#loginForm')?.addEventListener('submit',e=>{
+    e.preventDefault();
+    const email=$('#loginEmail').value.trim().toLowerCase();
+    const pw=$('#loginPassword').value;
+    const u=usersGet().find(x=>x.email===email&&x.password===pw);
+    if(!u)return toast('Credenziali errate');
+    sesSet(email); updateAuthUI(); updateTopAvatar(); updateProfileAvatarUI();
+    $('#sheet-login').classList.remove('is-open'); showPage('home'); toast('Benvenuto, '+(u.name||''));
+    $('#loginForm').reset();
+  });
+
+  /* ====== LOGOUT ====== */
+  function logout(){sesDel();updateAuthUI();updateTopAvatar();updateProfileAvatarUI();showPage('home');toast('Logout effettuato')}
+  $('#btnLogout')?.addEventListener('click',e=>{e.preventDefault();logout()});
+  $('#btnLogoutProfile')?.addEventListener('click',e=>{e.preventDefault();logout()});
+
+  /* ====== GOOGLE SIGN-IN ====== */
+  let gisInitialized=false;
+  function waitForGIS(maxMs=6000){
+    return new Promise((resolve,reject)=>{
+      const t0=Date.now();
+      (function check(){
+        if(window.google&&google.accounts&&google.accounts.id)return resolve();
+        if(Date.now()-t0>maxMs)return reject(new Error('GIS non disponibile'));
+        setTimeout(check,100);
+      })();
+    });
+  }
+  async function ensureGIS(){
+    if(gisInitialized)return true;
+    await waitForGIS();
+    google.accounts.id.initialize({
+      client_id:GOOGLE_CLIENT_ID,
+      callback:handleGoogleCredential,
+      ux_mode:'popup',
+      auto_select:false,
+      itp_support:true,
+      use_fedcm_for_prompt:true
+    });
+    gisInitialized=true; return true;
+  }
+  $('#googleBtn')?.addEventListener('click',async()=>{
+    try{
+      await ensureGIS();
+      google.accounts.id.prompt(note=>{
+        if(note?.isNotDisplayed())toast('Apri in Full Page e autorizza codepen.io/cdpn.io nel client Google.');
+        if(note?.isSkippedMoment())toast('Accesso Google annullato.');
+      });
+    }catch(e){console.error(e);toast('Impossibile inizializzare Google Sign-In.')}
+  });
+  function parseJwt(token){
+    const base=token.split('.')[1];
+    const payload=atob(base.replace(/-/g,'+').replace(/_/g,'/'));
+    try{
+      return JSON.parse(decodeURIComponent(payload.split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')))
+    }catch{return JSON.parse(payload)}
+  }
+  function handleGoogleCredential(resp){
+    try{
+      const data=parseJwt(resp.credential||'');
+      const email=(data.email||'').toLowerCase();
+      const name=data.name||(email?email.split('@')[0]:'Utente');
+      const picture=data.picture||'';
+      if(!email)return toast('Accesso Google non valido');
+      const users=usersGet(); let u=users.find(x=>x.email===email);
+      if(!u){u={name,email,password:''};users.push(u);usersSet(users)}else{u.name=name;usersSet(users)}
+      if(picture){try{avSet(email,picture)}catch{}}
+      sesSet(email); updateAuthUI(); updateTopAvatar(); updateProfileAvatarUI();
+      $('#sheet-login').classList.remove('is-open'); showPage('home'); toast('Accesso con Google riuscito')
+    }catch{toast('Errore login Google')}
+  }
+
+  /* ====== PROFILE AVATAR ====== */
+  function updateProfileAvatarUI(){
+    const email=sesGet(); const img=$('#profAvatarImg'); const icon=$('#profAvatarIcon');
+    const btnRemove=$('#btnRemoveAvatar'); const userEmail=$('#userEmail');
+    if(!email){
+      if(img)img.style.display='none'; if(icon)icon.style.display='grid'; if(btnRemove)btnRemove.disabled=true;
+      if(userEmail)userEmail.textContent=''; return;
+    }
+    const av=avGet(email);
+    if(av){img.src=av;img.style.display='block';icon.style.display='none';btnRemove.disabled=false}
+    else {img.style.display='none';icon.style.display='grid';btnRemove.disabled=true}
+    if(userEmail)userEmail.textContent=email
+  }
+  $('#btnUploadAvatar')?.addEventListener('click',()=>{
+    const email=sesGet(); if(!email){toast('Devi essere loggato');return}
+    $('#avatarInput').click()
+  });
+  $('#avatarInput')?.addEventListener('change',e=>{
+    const file=e.target.files&&e.target.files[0]; if(!file)return;
+    if(!/^image\//.test(file.type))return toast('Seleziona un\'immagine');
+    if(file.size>3*1024*1024)return toast('Immagine troppo grande (max ~3MB)');
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const email=sesGet(); if(!email)return;
+      avSet(email,reader.result); updateTopAvatar(); updateProfileAvatarUI(); toast('Avatar aggiornato')
+    };
+    reader.readAsDataURL(file); e.target.value=''
+  });
+  $('#btnRemoveAvatar')?.addEventListener('click',()=>{
+    const email=sesGet(); if(!email)return; avDel(email); updateTopAvatar(); updateProfileAvatarUI(); toast('Avatar rimosso')
+  });
+  $('#topAvatar')?.addEventListener('click',()=>{if(!sesGet())return;showPage('profile')});
+
+  /* ====== AUTH UI ====== */
+  function updateTopAvatar(){
+    const email=sesGet(); const box=$('#topAvatar'); const img=$('#topAvatarImg'); const icon=$('#topAvatarIcon');
+    if(!email){box.hidden=true;return}
+    box.hidden=false; const av=avGet(email);
+    if(av){img.src=av;img.style.display='block';icon.style.display='none'}
+    else {img.style.display='none';icon.style.display='block'}
+  }
+  function updateAuthUI(){
+    const isLoggedIn=!!sesGet();
+    $('#goProfile').hidden=!isLoggedIn; $('#btnLogout').hidden=!isLoggedIn;
+    $('#openLogin').hidden=isLoggedIn;  $('#openRegister').hidden=isLoggedIn
+  }
+
+  /* ====== DONAZIONI ====== */
+  const OFFER_TEXT={
+    5:"Acquistando questo pacchetto otterai 50.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    10:"Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    15:"Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    20:"Acquistando questo pacchetto otterai 150.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    30:"Acquistando questo pacchetto otterrai 200.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    40:"Acquistando questo pacchetto otterrai 250.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    50:"Acquistando questo pacchetto otterai 300.000€ in gioco + un'auto a tua scelta (vedere discord)\n(Aprite un ticket su discord per ricevere le ricompense, le auto donatori in caso di wipe rimarranno al giocatore)",
+    70:"Acquistando questo pacchetto otterai 400.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)"
+  };
+  $('#donationsGrid')?.addEventListener('click',e=>{
+    const card=e.target.closest('.donation-card'); if(!card)return; e.preventDefault();
+    const price=card.dataset.price||'0'; const img=card.dataset.img||'';
+    $('#detailTitle').textContent='Pacchetto '+price+'€';
+    $('#detailPrice').textContent=price;
+    $('#detailImg').src=img;
+    $('#detailDesc').textContent=OFFER_TEXT[price]||'';
+    showPage('donation')
+  });
+  document.addEventListener('click',e=>{
+    if(e.target.id==='btnBackDon'){showPage('donations')}
+    if(e.target.id==='btnBuy'){toast('Pagamento non configurato — apri un ticket Discord.')}
+  });
+
+  /* ====== VIDEO AUTOPLAY ====== */
+  function tryAutoplay(){
+    const v=$('#nvVideo'); if(!v) return;
+    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
+    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
+    let tries=0, MAX=6;
+    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
+    v.addEventListener('loadeddata', go, { once:true }); go();
+    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
+    window.addEventListener('click',kick,{once:true,passive:true});
+    window.addEventListener('touchstart',kick,{once:true,passive:true});
+  }
+
+  /* ====== CONCORSI: azioni bottoni ====== */
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.azioni .btn-slim'); if(!btn) return;
+    const tr=btn.closest('tr'); const title=tr?.dataset?.title||'concorso';
+    const action=btn.dataset.action;
+    if(action==='annulla') toast(`Richiesta di annullamento per: ${title}`);
+    if(action==='aggiorna') toast(`Richiesta di aggiornamento per: ${title}`);
+  });
+
+  /* ====== CONCORSI: tabs attive + filtro ====== */
+  document.addEventListener('click',e=>{
+    const tab=e.target.closest('.concorsi-tabs .c-tab'); 
+    if(!tab) return;
+    e.preventDefault();
+
+    document.querySelectorAll('.concorsi-tabs .c-tab').forEach(t=>t.classList.remove('is-active'));
+    tab.classList.add('is-active');
+
+    const force=(tab.dataset.force||'all').trim().toLowerCase();
+    const rows=document.querySelectorAll('#page-concorsi .concorsi-table tbody tr');
+    rows.forEach(row=>{
+      if(force==='all'){ row.style.display=''; return; }
+      const name=(row.querySelector('.fa-name')?.textContent||'').trim().toLowerCase();
+      row.style.display=(name===force)?'':'none';
+    });
+  });
+
+  /* ====== COUNTDOWN ====== */
+  (function initCountdown(){
+    const target=new Date('2025-09-21T16:30:00+02:00').getTime();
+    const $d=id=>document.getElementById(id);
+    function tick(){
+      const now=Date.now(); let diff=Math.max(0,target-now);
+      const days=Math.floor(diff/86400000); diff%=86400000;
+      const hours=Math.floor(diff/3600000); diff%=3600000;
+      const mins=Math.floor(diff/60000); diff%=60000;
+      const secs=Math.floor(diff/1000);
+      const pad=n=>String(n).padStart(2,'0');
+      $d('cdDays').textContent=pad(days);
+      $d('cdHours').textContent=pad(hours);
+      $d('cdMins').textContent=pad(mins);
+      $d('cdSecs').textContent=pad(secs);
+    }
+    tick(); setInterval(tick,1000);
+  })();
+
+  /* ====== INIT ====== */
+  window.addEventListener('load',()=>{
+    showPage('home'); updateAuthUI(); updateTopAvatar(); updateProfileAvatarUI();
+  });
+  </script>
 </body>
 </html>
-

@@ -24,11 +24,11 @@
     overflow-x:hidden;
   }
 
-  /* <<< FIX mostre/nascondi >>> */
+  /* visibilità robusta */
   [hidden]{display:none !important;}
   .hidden{display:none !important;}
 
-  /* <<< FIX ICON FONTS (serve per i brand) >>> */
+  /* Icon fonts corretti (per Discord brand) */
   .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
   .fa-brands{font-family:"Font Awesome 6 Brands" !important}
 
@@ -48,7 +48,7 @@
     padding:8px 10px; border-radius:10px; text-transform:uppercase;
     letter-spacing:.06em; transition:color .3s ease; display:inline-flex; gap:8px; align-items:center;
   }
-  .nav-link i{font-size:1.05em}
+  .nav-link i{font-size:1.15em}
   .nav-link.active{ color:#fff }
   .nav-link:hover{ color:#fff }
   .nav-link::after{
@@ -221,17 +221,15 @@
       <a href="#" class="nav-link" data-route="concorsi">Concorsi</a>
       <a href="#" class="nav-link" data-route="staff">Staff</a>
 
-      <!-- Login Discord (icona + testo) -->
-      <a href="#" class="nav-link" id="btnDiscordLogin">
-        Login <i class="fa-brands fa-discord" aria-hidden="true"></i> Discord
+      <!-- SOLO ICONA per Login -->
+      <a href="#" class="nav-link" id="btnDiscordLogin" aria-label="Login con Discord" title="Login con Discord">
+        <i class="fa-brands fa-discord" aria-hidden="true"></i>
       </a>
 
       <a href="#" class="nav-link" id="goProfile" data-route="profile" hidden>Profilo</a>
 
-      <!-- Logout (visibile solo dopo login) -->
-      <a href="#" class="nav-link" id="btnLogout" hidden>
-        Logout <i class="fa-brands fa-discord" aria-hidden="true"></i>
-      </a>
+      <!-- SCRITTA Logout (appare solo quando loggato) -->
+      <a href="#" class="nav-link" id="btnLogout" hidden>Logout</a>
     </nav>
 
     <!-- Avatar: icona se sloggato, immagine se loggato -->
@@ -453,12 +451,11 @@
             <img id="profAvatarImg" alt="Avatar">
           </div>
           <div class="actions">
-            <button class="btn btn-discord" id="btnDiscordLogin2">
-              Login <i class="fa-brands fa-discord" aria-hidden="true"></i> Discord
+            <!-- Icona login anche qui quando sloggato -->
+            <button class="btn btn-discord" id="btnDiscordLogin2" title="Login con Discord" aria-label="Login con Discord">
+              <i class="fa-brands fa-discord" aria-hidden="true"></i>
             </button>
-            <button class="btn btn-ghost" id="btnLogoutProfile">
-              Logout <i class="fa-brands fa-discord" aria-hidden="true"></i>
-            </button>
+            <button class="btn btn-ghost" id="btnLogoutProfile">Logout</button>
           </div>
         </div>
         <div style="margin-top:20px;text-align:center;">
@@ -487,7 +484,7 @@
   const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
   function cdnDefaultAvatar(index=0){const i=Number(index)%5||0;return `https://cdn.discordapp.com/embed/avatars/${i}.png`;}
 
-  /* Ripple click */
+  /* Ripple click (effetto) */
   document.addEventListener('click',e=>{
     const btn=e.target.closest('.nav-link'); if(!btn) return;
     const rect=btn.getBoundingClientRect();
@@ -591,18 +588,18 @@
     }
   }
 
-  /* ===== AUTH UI (mostra/nasconde Login/Logout) ===== */
+  /* ===== AUTH UI (icone vs Logout) ===== */
   function updateAuthUI(){
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
 
-    // Navbar
-    $('#btnLogout').hidden        = !isIn;     // Logout visibile SOLO se loggato
-    $('#btnDiscordLogin').hidden  =  isIn;     // Login nascosto se loggato
+    // Navbar: icona login solo se sloggato, scritta Logout solo se loggato
+    $('#btnDiscordLogin').hidden  =  isIn;     // icona login sparisce quando loggato
+    $('#btnLogout').hidden        = !isIn;     // Logout appare quando loggato
     $('#goProfile').hidden        = !isIn;
 
-    // Sezione profilo
+    // Sezione profilo: mostra bottone icona login se sloggato, altrimenti Logout
     $('#btnLogoutProfile').hidden = !isIn;
     $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn);
 
@@ -667,7 +664,7 @@
       localStorage.setItem(OAUTH_TOKEN_KEY, at);
       localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
       toast('Accesso con Discord riuscito!');
-      updateAuthUI(); // abilita subito Logout, nasconde Login
+      updateAuthUI(); // subito: icona sparisce, appare Logout
     }catch(err){
       console.error(err);
       toast('Errore nel recupero profilo Discord.');
@@ -685,8 +682,7 @@
       if(location.hash) history.replaceState(null,'',location.pathname+location.search);
     }catch(_){}
 
-    // reset UI immediato
-    updateAuthUI();
+    updateAuthUI();   // torna icona login, nasconde Logout
     showPage('home');
     toast('Logout effettuato');
   }
@@ -697,7 +693,7 @@
   $('#btnLogout')?.addEventListener('click', logout, {capture:true});
   $('#btnLogoutProfile')?.addEventListener('click', logout, {capture:true});
 
-  // Clic avatar: vai al profilo se loggato
+  // Click avatar: vai al profilo se loggato
   $('#topAvatar')?.addEventListener('click',()=>{
     const tok=localStorage.getItem(OAUTH_TOKEN_KEY);
     if(tok) showPage('profile');
@@ -725,7 +721,7 @@
   /* Init */
   window.addEventListener('load', async ()=>{
     await handleOAuthRedirectFragment(); // gestisce login al ritorno da Discord
-    updateAuthUI();                       // mostra correttamente Login/Logout
+    updateAuthUI();                       // mostra icona o Logout correttamente
     showPage('home');
     tryAutoplay();
   });

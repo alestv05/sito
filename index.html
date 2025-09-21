@@ -23,7 +23,11 @@
     -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     overflow-x:hidden;
   }
-  i.fa, i[class^="fa-"], i[class*=" fa-"]{font-family:"Font Awesome 6 Free" !important}
+  /* <<< FIX ICON FONTS >>> */
+  .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
+  .fa-brands{font-family:"Font Awesome 6 Brands" !important}
+  /* (niente regola generica su i[class^="fa-"]!) */
+
   .noscript{background:#ffdd57;color:#111;padding:10px 14px;text-align:center;font-weight:800}
 
   /* NAVBAR */
@@ -220,13 +224,13 @@
 
       <a href="#" class="nav-link" id="goProfile" data-route="profile" hidden>Profilo</a>
 
-      <!-- Logout -->
+      <!-- Logout (visibile solo dopo login) -->
       <a href="#" class="nav-link" id="btnLogout" hidden>
         Logout <i class="fa-brands fa-discord" aria-hidden="true"></i>
       </a>
     </nav>
 
-    <!-- Avatar sempre visibile: icona quando sloggato, immagine quando loggato -->
+    <!-- Avatar: icona se sloggato, immagine se loggato -->
     <div class="top-avatar" id="topAvatar" title="Profilo">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
       <img id="topAvatarImg" alt="Avatar">
@@ -567,27 +571,18 @@
   function setAvatar(url){
     const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
     if(url){
-      topImg.src=url;
-      topImg.style.display='block';
-      topIcon.style.display='none';
+      topImg.src=url; topImg.style.display='block'; topIcon.style.display='none';
     }else{
-      // pulizia completa
-      topImg.removeAttribute('src');
-      topImg.src = '';
-      topImg.style.display='none';
+      topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none';
       topIcon.style.display='block';
     }
   }
   function setProfileAvatar(url){
     const img=$('#profAvatarImg'), ico=$('#profAvatarIcon');
     if(url){
-      img.src=url;
-      img.style.display='block';
-      ico.style.display='none';
+      img.src=url; img.style.display='block'; ico.style.display='none';
     }else{
-      img.removeAttribute('src');
-      img.src='';
-      img.style.display='none';
+      img.removeAttribute('src'); img.src=''; img.style.display='none';
       ico.style.display='grid';
     }
   }
@@ -598,13 +593,13 @@
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
 
+    // mostra/nasconde Login e Logout come richiesto
     $('#goProfile').hidden = !isIn;
-    $('#btnLogout').hidden = !isIn;
-    $('#btnDiscordLogin').hidden =  isIn;
+    $('#btnLogout').hidden = !isIn;          // Logout visibile SOLO quando loggato
+    $('#btnDiscordLogin').hidden =  isIn;     // Login nascosto quando loggato
     $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn);
     $('#btnLogoutProfile').hidden = !isIn;
 
-    // La bolla avatar è sempre visibile: icona se sloggato, immagine se loggato
     if(isIn){
       $('#userName').textContent = user.global_name || (user.username + (user.discriminator ? '#' + user.discriminator : ''));
       const avatar = user.avatar
@@ -638,6 +633,7 @@
     const params = new URLSearchParams(location.hash.slice(1));
     if(!(params.get('access_token') || params.get('error'))) return false;
 
+    // pulizia del frammento per non ri-triggerare al refresh
     history.replaceState(null, '', location.pathname + location.search);
 
     if(params.get('error')){
@@ -665,7 +661,7 @@
       localStorage.setItem(OAUTH_TOKEN_KEY, at);
       localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
       toast('Accesso con Discord riuscito!');
-      updateAuthUI();
+      updateAuthUI(); // <-- qui abilita subito Logout e avatar
     }catch(err){
       console.error(err);
       toast('Errore nel recupero profilo Discord.');
@@ -673,7 +669,7 @@
     return true;
   }
 
-  /* ===== Logout robusto ===== */
+  /* ===== Logout ===== */
   function logout(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
     try{
@@ -683,7 +679,7 @@
       if(location.hash) history.replaceState(null,'',location.pathname+location.search);
     }catch(_){}
 
-    // reset UI immediato e visibile
+    // reset UI immediato
     setAvatar(null);
     setProfileAvatar(null);
     $('#goProfile').hidden = true;
@@ -703,7 +699,7 @@
   $('#btnLogout')?.addEventListener('click', logout, {capture:true});
   $('#btnLogoutProfile')?.addEventListener('click', logout, {capture:true});
 
-  // Clic avatar: vai al profilo se loggato, altrimenti resta su home
+  // Clic avatar: vai al profilo se loggato
   $('#topAvatar')?.addEventListener('click',()=>{
     const tok=localStorage.getItem(OAUTH_TOKEN_KEY);
     if(tok) showPage('profile');
@@ -730,8 +726,8 @@
 
   /* Init */
   window.addEventListener('load', async ()=>{
-    await handleOAuthRedirectFragment();
-    updateAuthUI();
+    await handleOAuthRedirectFragment(); // gestisce login al ritorno da Discord
+    updateAuthUI();                       // mostra/nasconde Logout e icone
     showPage('home');
     tryAutoplay();
   });

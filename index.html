@@ -150,8 +150,10 @@
   .btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(11,109,214,.35)}
   .btn-ghost{background:transparent; border:1px solid #2a3a61; color:#fff}
   .btn-ghost:hover{background:rgba(42,58,97,.2)}
-  .btn.full{width:100%}
-  .btn-discord{background:#5865F2;color:#fff}
+  .btn-slim{padding:10px 14px; border-radius:8px; font-weight:900; background:#f4f7fb; cursor:pointer; text-transform:uppercase; letter-spacing:.02em}
+  .btn-outline{border:1px solid #dde6f5; color:#2a4365; box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+  .btn-outline:hover{background:#eef4ff}
+  .btn-mini{padding:8px 10px; border:1px solid #dde6f5; border-radius:8px; background:#f4f7fb; font-weight:900; cursor:pointer}
 
   .toast{
     position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
@@ -160,12 +162,6 @@
     transition:opacity .25s ease, transform .25s ease;
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
-
-  /* Profile */
-  .avatar-box{display:grid; gap:20px; justify-items:center}
-  .avatar-preview{width:150px; height:150px; border-radius:50%; background:#0f1528; border:2px solid #2a3a61; display:grid; place-items:center; overflow:hidden; box-shadow:var(--shadow)}
-  .avatar-preview img{width:100%; height:100%; object-fit:cover; display:none}
-  .avatar-preview i{font-size:88px; color:#9daccc}
 
   /* Footer */
   .site-footer{text-align:center; padding:30px 12px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
@@ -179,12 +175,18 @@
   #page-concorsi{ background:#f4f6fa; color:#1f2937; padding:0; }
   .concorsi-wrap{max-width:1100px; margin:0 auto; padding:28px 16px 40px}
   .concorsi-title{font-family:inherit; font-weight:900; letter-spacing:.02em; text-transform:none; margin-bottom:14px; font-size:clamp(28px,4.6vw,40px); color:#1d2430}
-  .concorsi-tabs{display:flex; gap:8px; align-items:center; padding:10px 0 18px; flex-wrap:wrap}
+
+  .concorsi-toolbar{display:flex; gap:8px; padding:12px; border-bottom:1px solid #edf1f7; background:#fafbff; align-items:center; justify-content:space-between; flex-wrap:wrap}
+  .toolbar-left{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .toolbar-right{display:flex; gap:12px; align-items:center}
+  .switch{display:inline-flex; gap:8px; align-items:center; font-weight:900; color:#2a3446}
+  .switch input{accent-color:#2a56c6; width:18px; height:18px}
+
+  .concorsi-tabs{display:flex; gap:8px; align-items:center; padding:12px 16px; flex-wrap:wrap}
   .c-tab{display:inline-flex; align-items:center; gap:8px; background:#eef2f9; color:#1f3a62; border:1px solid #d7e0f0; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:800; letter-spacing:.04em}
   .c-tab.is-active{background:#dae6fb; border-color:#bcd3f8}
 
   .concorsi-card{background:#ffffff; border:1px solid #dde3ef; border-radius:10px; overflow:hidden; box-shadow:0 10px 30px rgba(20,30,60,.06)}
-  .concorsi-toolbar{display:flex; gap:8px; padding:12px; border-bottom:1px solid #edf1f7; background:#fafbff; align-items:center; justify-content:space-between; flex-wrap:wrap}
   .concorsi-table{width:100%; border-collapse:separate; border-spacing:0}
   .concorsi-table thead th{background:#2f3a4a; color:#fff; padding:14px 18px; font-weight:900; letter-spacing:.04em; border-bottom:2px solid #202a39; white-space:nowrap; position:sticky; top:0}
   .concorsi-table tbody td{background:#fff; padding:22px 18px; border-bottom:1px solid #edf1f7; vertical-align:middle; white-space:nowrap}
@@ -205,10 +207,7 @@
   .link-alle{color:#1565c0; text-decoration:none; font-weight:900}
   .link-alle:hover{text-decoration:underline}
   .azioni{display:flex; gap:10px; justify-content:flex-end}
-  .azioni-col{flex-direction:column; align-items:flex-end}
-  .btn-slim{padding:10px 14px; border-radius:8px; font-weight:900; background:#f4f7fb; cursor:pointer; text-transform:uppercase; letter-spacing:.02em}
-  .btn-outline{border:1px solid #dde6f5; color:#2a4365; box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
-  .btn-outline:hover{background:#eef4ff}
+  .azioni-col{flex-direction:row; align-items:center; flex-wrap:wrap}
 
   /* Empty state */
   .empty-state{padding:24px; text-align:center; color:#42526e; font-weight:900}
@@ -290,7 +289,6 @@
     <section id="page-donations" class="page" data-page>
       <h2 class="title-roman">Sostieni Nova Roma</h2>
       <div id="donationsGrid" class="donations-grid">
-        <!-- ... voci pacchetti come prima ... -->
         <a href="#" class="donation-card" data-price="5" data-img="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png">
           <div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div>
           <div class="donation-caption">Pacchetto 5€</div>
@@ -303,7 +301,26 @@
           <div class="donation-thumb"><img src="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png" alt=""></div>
           <div class="donation-caption">Pacchetto 15€</div>
         </a>
-        <!-- ... altre card ... -->
+        <a href="#" class="donation-card" data-price="20" data-img="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 20€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="30" data-img="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 30€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="40" data-img="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 40€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="50" data-img="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 50€</div>
+        </a>
+        <a href="#" class="donation-card" data-price="70" data-img="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png">
+          <div class="donation-thumb"><img src="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png" alt=""></div>
+          <div class="donation-caption">Pacchetto 70€</div>
+        </a>
       </div>
     </section>
 
@@ -336,13 +353,18 @@
       <div class="concorsi-wrap">
         <h1 class="concorsi-title">I miei concorsi</h1>
 
-        <!-- Toolbar visibile solo da loggato (per testare/gestire) -->
+        <!-- Toolbar -->
         <div class="concorsi-toolbar" id="concorsiToolbar" hidden>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <div class="toolbar-left">
             <button class="btn-slim btn-outline" id="btnAddConcorso"><i class="fa-solid fa-plus"></i> Aggiungi concorso</button>
-            <button class="btn-slim btn-outline" id="btnClearConcorsi"><i class="fa-solid fa-trash"></i> Svuota concorsi</button>
+            <button class="btn-slim btn-outline" id="btnClearConcorsi"><i class="fa-solid fa-trash"></i> Svuota concorsi utente</button>
           </div>
-          <small style="color:#52607a;">(Solo locale per utente corrente)</small>
+          <div class="toolbar-right">
+            <label class="switch" id="viewAllWrap" hidden>
+              <input type="checkbox" id="chkViewAll">
+              <span>Vedi tutti</span>
+            </label>
+          </div>
         </div>
 
         <nav class="concorsi-tabs" aria-label="Sezioni concorsi">
@@ -351,11 +373,12 @@
           <a href="#" class="c-tab" data-force="Marina">Marina</a>
           <a href="#" class="c-tab" data-force="Aeronautica">Aeronautica</a>
         </nav>
+
         <div class="concorsi-card">
           <div class="concorsi-table-wrap">
             <table class="concorsi-table" aria-describedby="tabella-concorsi">
               <thead>
-                <tr>
+                <tr id="concorsiHeadRow">
                   <th class="ta-left">Forza Armata</th>
                   <th>Data</th>
                   <th class="ta-left">Concorso</th>
@@ -375,7 +398,7 @@
     <!-- STAFF (sempre visibile) -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman center">Il nostro staff</h2>
-      <!-- (contenuti staff invariati) -->
+      <!-- Popola come preferisci -->
     </section>
 
     <!-- PROFILO -->
@@ -413,54 +436,25 @@
   </footer>
 
   <script>
-  /* ===== Discord OAuth (implicit flow) ===== */
+  /* ===== Config ===== */
   const DISCORD_CLIENT_ID = '1419444744563720404';
   const DISCORD_SCOPE = 'identify';
   const REDIRECT_URI = 'https://alestv05.github.io/sito/';
-
   const OAUTH_TOKEN_KEY = 'nr_discord_token_v1';
   const OAUTH_USER_KEY  = 'nr_discord_user_v1';
-
-  /* ===== Storage Concorsi (per utente) ===== */
   const CONCORSI_PREFIX = 'nr_concorsi_user_';
-  // Struttura concorso: { forza:'Esercito'|'Marina'|'Aeronautica', dataISO:'YYYY-MM-DD', titolo:'...', stato:'Ricevuta'|'In lavorazione', allegati:true|false }
+  const ADMIN_ID = '640478852308664360';
 
-  /* ===== Utils / UI ===== */
+  /* ===== Utils ===== */
   const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
   const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
   function cdnDefaultAvatar(index=0){const i=Number(index)%5||0;return `https://cdn.discordapp.com/embed/avatars/${i}.png`; }
-
-  const protectedRoutes = new Set(['donations','donation','concorsi']);
-
-  /* Ripple click (effetto) */
-  document.addEventListener('click',e=>{
-    const btn=e.target.closest('.nav-link'); if(!btn) return;
-    const rect=btn.getBoundingClientRect();
-    const r=document.createElement('span'); r.className='ripple';
-    r.style.left=`${(e.clientX??rect.left+rect.width/2)-rect.left}px`;
-    r.style.top =`${(e.clientY??rect.top +rect.height/2)-rect.top }px`;
-    btn.appendChild(r); setTimeout(()=>r.remove(),600);
-  },{passive:true});
-
-  /* Helpers auth */
   const isLoggedIn = () => !!(localStorage.getItem(OAUTH_TOKEN_KEY) && localStorage.getItem(OAUTH_USER_KEY));
   const getUser = () => JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+  const isAdmin = () => (getUser()?.id === ADMIN_ID);
 
-  function storageKeyForUser(uid){ return CONCORSI_PREFIX + uid; }
-  function loadUserConcorsi(){
-    const user = getUser(); if(!user) return [];
-    try{
-      const raw = localStorage.getItem(storageKeyForUser(user.id));
-      const list = raw ? JSON.parse(raw) : [];
-      return Array.isArray(list) ? list : [];
-    }catch{ return []; }
-  }
-  function saveUserConcorsi(list){
-    const user = getUser(); if(!user) return;
-    localStorage.setItem(storageKeyForUser(user.id), JSON.stringify(list||[]));
-  }
-
-  /* Router con guardia */
+  /* ===== Router con guardia ===== */
+  const protectedRoutes = new Set(['donations','donation','concorsi']);
   function showPage(id){
     if(protectedRoutes.has(id) && !isLoggedIn()){
       toast('Devi effettuare il login per accedere.');
@@ -474,17 +468,26 @@
     if(id==='home') tryAutoplay();
     if(id==='concorsi'){
       $('#concorsiToolbar').hidden = !isLoggedIn();
+      $('#viewAllWrap').hidden = !isAdmin();
       renderConcorsi();
     }
   }
-
-  // click sulle voci di menu
   document.addEventListener('click',e=>{
     const r=e.target.closest('[data-route]'); if(!r) return;
     e.preventDefault(); showPage(r.dataset.route);
   });
 
-  /* Donazioni (snip) */
+  /* Ripple click */
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.nav-link'); if(!btn) return;
+    const rect=btn.getBoundingClientRect();
+    const r=document.createElement('span'); r.className='ripple';
+    r.style.left=`${(e.clientX??rect.left+rect.width/2)-rect.left}px`;
+    r.style.top =`${(e.clientY??rect.top +rect.height/2)-rect.top }px`;
+    btn.appendChild(r); setTimeout(()=>r.remove(),600);
+  },{passive:true});
+
+  /* ===== Donazioni (testo) ===== */
   const OFFER_TEXT={
     5:"Acquistando questo pacchetto otterai 50.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
     10:"Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
@@ -506,122 +509,24 @@
     showPage('donation');
   });
   document.addEventListener('click',e=>{
-    const btn = e.target.closest('#btnBackDon,#btnBuy');
-    if(!btn) return;
-    if(btn.id==='btnBackDon') showPage('donations');
-    if(btn.id==='btnBuy') toast('Pagamento non configurato — apri un ticket Discord.');
+    if(e.target.id==='btnBackDon') showPage('donations');
+    if(e.target.id==='btnBuy') toast('Pagamento non configurato — apri un ticket Discord.');
   });
 
-  /* ====== CONCORSI: render ====== */
-  function formatDateIT(iso){
-    if(!iso) return '';
-    const d = new Date(iso+'T12:00:00');
-    const mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
-    return `${String(d.getDate()).padStart(2,'0')} ${mesi[d.getMonth()]}|${d.getFullYear()}`;
+  /* ===== Video ===== */
+  function tryAutoplay(){
+    const v=$('#nvVideo'); if(!v) return;
+    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
+    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
+    let tries=0, MAX=6;
+    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
+    v.addEventListener('loadeddata', go, { once:true }); go();
+    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
+    window.addEventListener('click',kick,{once:true,passive:true});
+    window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
-  function renderConcorsi(){
-    const body = $('#concorsiBody');
-    const empty = $('#concorsiEmpty');
-    const list = isLoggedIn() ? loadUserConcorsi() : [];
-
-    body.innerHTML = '';
-    const activeTab = document.querySelector('.concorsi-tabs .c-tab.is-active');
-    const force = (activeTab?.dataset.force || 'all').toLowerCase();
-
-    const filtered = list.filter(c => force==='all' ? true : (c.forza||'').toLowerCase()===force);
-
-    if(!filtered.length){
-      empty.textContent = 'Nessun concorso effettuato';
-      empty.hidden = false;
-      return;
-    }
-    empty.hidden = true;
-
-    filtered.forEach(c=>{
-      const [giornoMese, anno] = formatDateIT(c.dataISO).split('|');
-      const statoClass = (c.stato||'').toLowerCase().includes('ricev') ? 'state-ok' : 'state-att';
-      const logoMap = { 'esercito':'https://i.postimg.cc/rp99Zt4c/logoei.png', 'marina':'https://i.postimg.cc/Sj08xy9D/logomm.png', 'aeronautica':'https://i.postimg.cc/mgsXd4nY/logoam.png' };
-      const forzaKey = (c.forza||'').toLowerCase();
-      const logo = logoMap[forzaKey] || logoMap['esercito'];
-
-      const tr = document.createElement('tr');
-      tr.dataset.title = c.titolo || 'Concorso';
-
-      tr.innerHTML = `
-        <td class="fa-cell vertical" data-label="Forza Armata">
-          <span class="fa-logo"><img src="${logo}" alt="${c.forza||''}"></span>
-          <span class="fa-name">${c.forza||''}</span>
-        </td>
-        <td class="date-cell" data-label="Data">
-          <span class="date-top">${giornoMese}</span>
-          <span class="date-year">${anno}</span>
-        </td>
-        <td class="ta-left" data-label="Concorso"><div class="concorso-titolo">${c.titolo||''}</div></td>
-        <td data-label="Stato"><span class="state ${statoClass}">${c.stato||''}</span></td>
-        <td data-label="Allegati">${c.allegati?'<a href="#" class="link-alle">Allegati</a>':'—'}</td>
-        <td class="ta-right" data-label="Azioni">
-          <div class="azioni azioni-col">
-            <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
-            <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
-          </div>
-        </td>
-      `;
-      body.appendChild(tr);
-    });
-  }
-
-  // Azioni riga concorsi (demo)
-  document.addEventListener('click',e=>{
-    const btn=e.target.closest('.azioni .btn-slim'); if(!btn) return;
-    const tr=btn.closest('tr'); const title=tr?.dataset?.title||'concorso';
-    const action=btn.dataset.action;
-    if(action==='annulla') toast(`Richiesta di annullamento per: ${title}`);
-    if(action==='aggiorna') toast(`Richiesta di aggiornamento per: ${title}`);
-  });
-
-  // Tabs filtro concorsi
-  document.addEventListener('click',e=>{
-    const tab=e.target.closest('.concorsi-tabs .c-tab'); 
-    if(!tab) return;
-    e.preventDefault();
-    document.querySelectorAll('.concorsi-tabs .c-tab').forEach(t=>t.classList.remove('is-active'));
-    tab.classList.add('is-active');
-    renderConcorsi();
-  });
-
-  /* ====== Toolbar concorsi: add/clear (solo locale) ====== */
-  document.addEventListener('click', e=>{
-    if(e.target.id==='btnAddConcorso'){
-      e.preventDefault();
-      if(!isLoggedIn()) return toast('Fai login per aggiungere un concorso');
-      const forza = prompt('Forza Armata (Esercito / Marina / Aeronautica):','Esercito');
-      if(!forza) return;
-      const titolo = prompt('Titolo concorso:','Volontari in ferma iniziale (VFI)');
-      if(!titolo) return;
-      const dataISO = prompt('Data (YYYY-MM-DD):','2025-07-07');
-      if(!/^\d{4}-\d{2}-\d{2}$/.test(dataISO)) return toast('Data non valida (YYYY-MM-DD).');
-      const stato = prompt('Stato (Ricevuta / In lavorazione):','Ricevuta') || 'Ricevuta';
-      const allegati = confirm('Hai allegati? OK = Sì, Annulla = No');
-
-      const list = loadUserConcorsi();
-      list.push({ forza:cap(forza.trim()), titolo: titolo.trim(), dataISO, stato: cap(stato.trim()), allegati });
-      saveUserConcorsi(list);
-      toast('Concorso aggiunto');
-      renderConcorsi();
-    }
-    if(e.target.id==='btnClearConcorsi'){
-      e.preventDefault();
-      if(!isLoggedIn()) return;
-      if(!confirm('Sicuro di svuotare i tuoi concorsi?')) return;
-      saveUserConcorsi([]);
-      renderConcorsi();
-      toast('Concorsi svuotati');
-    }
-  });
-  function cap(s){ return s ? s[0].toUpperCase()+s.slice(1).toLowerCase() : s; }
-
-  /* ===== AVATAR HELPERS ===== */
+  /* ===== AUTH UI ===== */
   function setAvatar(url){
     const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
     if(url){ topImg.src=url; topImg.style.display='block'; topIcon.style.display='none'; }
@@ -632,8 +537,6 @@
     if(url){ img.src=url; img.style.display='block'; ico.style.display='none'; }
     else{ img.removeAttribute('src'); img.src=''; img.style.display='none'; ico.style.display='grid'; }
   }
-
-  /* ===== AUTH UI ===== */
   function updateAuthUI(){
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
@@ -660,13 +563,11 @@
       $('#userName').textContent = '';
       setAvatar(null);
       setProfileAvatar(null);
-
       const active = document.querySelector('.page.active')?.id?.replace('page-','');
       if(protectedRoutes.has(active)) showPage('home');
     }
   }
 
-  /* ===== Discord login flow ===== */
   function beginDiscordLogin(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
     const state = Math.random().toString(36).slice(2);
@@ -714,7 +615,8 @@
       toast('Accesso con Discord riuscito!');
       updateAuthUI();
       $('#concorsiToolbar').hidden = false;
-      renderConcorsi(); // subito aggiornato
+      $('#viewAllWrap').hidden = !isAdmin();
+      renderConcorsi();
     }catch(err){
       console.error(err);
       toast('Errore nel recupero profilo Discord.');
@@ -722,7 +624,6 @@
     return true;
   }
 
-  /* ===== Logout ===== */
   function logout(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
     try{
@@ -736,35 +637,36 @@
     toast('Logout effettuato');
   }
 
-  /* Bind bottoni */
   $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
   $('#btnDiscordLogin2')?.addEventListener('click', beginDiscordLogin);
   $('#btnLogout')?.addEventListener('click', logout, {capture:true});
   $('#btnLogoutProfile')?.addEventListener('click', logout, {capture:true});
-
-  // Click avatar: vai al profilo se loggato
   $('#topAvatar')?.addEventListener('click',()=>{ if(isLoggedIn()) showPage('profile'); });
 
-  /* Video */
-  function tryAutoplay(){
-    const v=$('#nvVideo'); if(!v) return;
-    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
-    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
-    let tries=0, MAX=6;
-    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
-    v.addEventListener('loadeddata', go, { once:true }); go();
-    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
-    window.addEventListener('click',kick,{once:true,passive:true});
-    window.addEventListener('touchstart',kick,{once:true,passive:true});
+  /* ====== Concorsi: storage helpers ====== */
+  function storageKeyForUser(uid){ return CONCORSI_PREFIX + uid; }
+  function loadConcorsiForUser(uid){
+    try{
+      const raw = localStorage.getItem(storageKeyForUser(uid));
+      const list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list : [];
+    }catch{ return []; }
+  }
+  function saveConcorsiForUser(uid, list){
+    localStorage.setItem(storageKeyForUser(uid), JSON.stringify(list||[]));
+  }
+  function scanAllConcorsi(){ // admin: unisce tutti gli utenti presenti in localStorage
+    const out=[];
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k && k.startsWith(CONCORSI_PREFIX)){
+        const uid=k.substring(CONCORSI_PREFIX.length);
+        const arr = loadConcorsiForUser(uid);
+        arr.forEach(c=> out.push({...c, ownerId: uid}));
+      }
+    }
+    return out;
   }
 
-  /* Init */
-  window.addEventListener('load', async ()=>{
-    await handleOAuthRedirectFragment();
-    updateAuthUI();
-    showPage('home');
-    tryAutoplay();
-  });
-  </script>
-</body>
-</html>
+  /* ====== Concorsi: render ====== */
+  function format

@@ -24,9 +24,11 @@
     overflow-x:hidden;
   }
 
+  /* visibilità robusta */
   [hidden]{display:none !important;}
   .hidden{display:none !important;}
 
+  /* Icon fonts (per l’icona Discord) */
   .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
   .fa-brands{font-family:"Font Awesome 6 Brands" !important}
 
@@ -39,7 +41,7 @@
     border-bottom:1px solid #23314f; padding:8px 14px;
     display:flex; align-items:center; justify-content:space-between;
   }
-  .nav{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+  .nav{display:flex; gap:14px; align-items:center}
   .nav-link{
     position:relative; overflow:hidden;
     color:#eaf0ff; text-decoration:none; font-weight:800;
@@ -81,6 +83,7 @@
   }
   @keyframes float{from{transform:translateY(-6px)} to{transform:translateY(6px)}}
 
+  /* MESSAGGIO SITO IN COSTRUZIONE */
   .under-construction{
     position:relative; z-index:3;
     display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center;
@@ -150,10 +153,8 @@
   .btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(11,109,214,.35)}
   .btn-ghost{background:transparent; border:1px solid #2a3a61; color:#fff}
   .btn-ghost:hover{background:rgba(42,58,97,.2)}
-  .btn-slim{padding:10px 14px; border-radius:8px; font-weight:900; background:#f4f7fb; cursor:pointer; text-transform:uppercase; letter-spacing:.02em}
-  .btn-outline{border:1px solid #dde6f5; color:#2a4365; box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
-  .btn-outline:hover{background:#eef4ff}
-  .btn-mini{padding:8px 10px; border:1px solid #dde6f5; border-radius:8px; background:#f4f7fb; font-weight:900; cursor:pointer}
+  .btn.full{width:100%}
+  .btn-discord{background:#5865F2;color:#fff}
 
   .toast{
     position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
@@ -162,6 +163,12 @@
     transition:opacity .25s ease, transform .25s ease;
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* Profile */
+  .avatar-box{display:grid; gap:20px; justify-items:center}
+  .avatar-preview{width:150px; height:150px; border-radius:50%; background:#0f1528; border:2px solid #2a3a61; display:grid; place-items:center; overflow:hidden; box-shadow:var(--shadow)}
+  .avatar-preview img{width:100%; height:100%; object-fit:cover; display:none}
+  .avatar-preview i{font-size:88px; color:#9daccc}
 
   /* Footer */
   .site-footer{text-align:center; padding:30px 12px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
@@ -175,20 +182,12 @@
   #page-concorsi{ background:#f4f6fa; color:#1f2937; padding:0; }
   .concorsi-wrap{max-width:1100px; margin:0 auto; padding:28px 16px 40px}
   .concorsi-title{font-family:inherit; font-weight:900; letter-spacing:.02em; text-transform:none; margin-bottom:14px; font-size:clamp(28px,4.6vw,40px); color:#1d2430}
-
-  .concorsi-toolbar{display:flex; gap:8px; padding:12px; border-bottom:1px solid #edf1f7; background:#fafbff; align-items:center; justify-content:space-between; flex-wrap:wrap}
-  .toolbar-left{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-  .toolbar-right{display:flex; gap:12px; align-items:center}
-  .switch{display:inline-flex; gap:8px; align-items:center; font-weight:900; color:#2a3446}
-  .switch input{accent-color:#2a56c6; width:18px; height:18px}
-
-  .concorsi-tabs{display:flex; gap:8px; align-items:center; padding:12px 16px; flex-wrap:wrap}
+  .concorsi-tabs{display:flex; gap:8px; align-items:center; padding:10px 0 18px}
   .c-tab{display:inline-flex; align-items:center; gap:8px; background:#eef2f9; color:#1f3a62; border:1px solid #d7e0f0; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:800; letter-spacing:.04em}
   .c-tab.is-active{background:#dae6fb; border-color:#bcd3f8}
-
   .concorsi-card{background:#ffffff; border:1px solid #dde3ef; border-radius:10px; overflow:hidden; box-shadow:0 10px 30px rgba(20,30,60,.06)}
   .concorsi-table{width:100%; border-collapse:separate; border-spacing:0}
-  .concorsi-table thead th{background:#2f3a4a; color:#fff; padding:14px 18px; font-weight:900; letter-spacing:.04em; border-bottom:2px solid #202a39; white-space:nowrap; position:sticky; top:0}
+  .concorsi-table thead th{background:#2f3a4a; color:#fff; padding:14px 18px; font-weight:900; letter-spacing:.04em; border-bottom:2px solid #202a39; white-space:nowrap}
   .concorsi-table tbody td{background:#fff; padding:22px 18px; border-bottom:1px solid #edf1f7; vertical-align:middle; white-space:nowrap}
   .ta-left{text-align:left}
   .ta-right{text-align:right}
@@ -207,23 +206,14 @@
   .link-alle{color:#1565c0; text-decoration:none; font-weight:900}
   .link-alle:hover{text-decoration:underline}
   .azioni{display:flex; gap:10px; justify-content:flex-end}
-  .azioni-col{flex-direction:row; align-items:center; flex-wrap:wrap}
-
-  /* Empty state */
-  .empty-state{padding:24px; text-align:center; color:#42526e; font-weight:900}
-
-  /* MOBILE: tabella -> card */
+  .azioni-col{flex-direction:column; align-items:flex-end}
+  .btn-slim{padding:10px 14px; border-radius:8px; font-weight:900; background:#f4f7fb; cursor:pointer; text-transform:uppercase; letter-spacing:.02em}
+  .btn-outline{border:1px solid #dde6f5; color:#2a4365; box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+  .btn-outline:hover{background:#eef4ff}
   @media (max-width: 720px){
-    .concorsi-table thead{display:none}
-    .concorsi-table, .concorsi-table tbody, .concorsi-table tr, .concorsi-table td{display:block; width:100%}
-    .concorsi-table tr{border-bottom:1px solid #edf1f7}
-    .concorsi-table tbody td{display:flex; justify-content:space-between; align-items:center; padding:12px 16px}
-    .concorsi-table tbody td::before{
-      content:attr(data-label);
-      font-weight:900; color:#2b3545; margin-right:12px; text-transform:uppercase; letter-spacing:.04em;
-    }
-    .azioni{justify-content:flex-start}
-    .azioni-col{align-items:flex-start}
+    .concorso-titolo{max-width:unset}
+    .concorsi-table thead th:nth-child(1),
+    .concorsi-table tbody td:nth-child(1){position:sticky; left:0; background:#fff}
   }
   </style>
 </head>
@@ -268,11 +258,12 @@
           <div class="logo-glow"></div>
         </div>
 
+        <!-- ===== MESSAGGIO SITO IN COSTRUZIONE ===== -->
         <div class="under-construction" aria-live="polite">
           <h1 class="uc-title">SITO IN COSTRUZIONE</h1>
         </div>
 
-        <!-- Trailer -->
+        <!-- Trailer (lasciato invariato) -->
         <div class="home-video">
           <div class="home-video-head">
             <i class="fa-solid fa-film"></i>
@@ -352,33 +343,17 @@
     <section id="page-concorsi" class="page" data-page>
       <div class="concorsi-wrap">
         <h1 class="concorsi-title">I miei concorsi</h1>
-
-        <!-- Toolbar -->
-        <div class="concorsi-toolbar" id="concorsiToolbar" hidden>
-          <div class="toolbar-left">
-            <button class="btn-slim btn-outline" id="btnAddConcorso"><i class="fa-solid fa-plus"></i> Aggiungi concorso</button>
-            <button class="btn-slim btn-outline" id="btnClearConcorsi"><i class="fa-solid fa-trash"></i> Svuota concorsi utente</button>
-          </div>
-          <div class="toolbar-right">
-            <label class="switch" id="viewAllWrap" hidden>
-              <input type="checkbox" id="chkViewAll">
-              <span>Vedi tutti</span>
-            </label>
-          </div>
-        </div>
-
         <nav class="concorsi-tabs" aria-label="Sezioni concorsi">
           <a href="#" class="c-tab is-active" data-force="all"><i class="fa-solid fa-house"></i> Home</a>
           <a href="#" class="c-tab" data-force="Esercito">Esercito</a>
           <a href="#" class="c-tab" data-force="Marina">Marina</a>
           <a href="#" class="c-tab" data-force="Aeronautica">Aeronautica</a>
         </nav>
-
         <div class="concorsi-card">
           <div class="concorsi-table-wrap">
             <table class="concorsi-table" aria-describedby="tabella-concorsi">
               <thead>
-                <tr id="concorsiHeadRow">
+                <tr>
                   <th class="ta-left">Forza Armata</th>
                   <th>Data</th>
                   <th class="ta-left">Concorso</th>
@@ -387,9 +362,73 @@
                   <th class="ta-right">Azioni</th>
                 </tr>
               </thead>
-              <tbody id="concorsiBody"></tbody>
+              <tbody>
+                <tr data-title="Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco">
+                  <td class="fa-cell vertical">
+                    <span class="fa-logo"><img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito"></span>
+                    <span class="fa-name">Esercito</span>
+                  </td>
+                  <td class="date-cell"><span class="date-top">07 luglio</span><span class="date-year">2025</span></td>
+                  <td class="ta-left"><div class="concorso-titolo">Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco</div></td>
+                  <td><span class="state state-ok">Ricevuta</span></td>
+                  <td><a href="#" class="link-alle">Allegati</a></td>
+                  <td class="ta-right">
+                    <div class="azioni azioni-col">
+                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-title="Bando VFP4 Esercito Italiano - 2025">
+                  <td class="fa-cell vertical">
+                    <span class="fa-logo"><img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito"></span>
+                    <span class="fa-name">Esercito</span>
+                  </td>
+                  <td class="date-cell"><span class="date-top">15 gennaio</span><span class="date-year">2025</span></td>
+                  <td class="ta-left"><div class="concorso-titolo">Bando VFP4 Esercito Italiano - 2025</div></td>
+                  <td><span class="state state-att">In lavorazione</span></td>
+                  <td><a href="#" class="link-alle">Allegati</a></td>
+                  <td class="ta-right">
+                    <div class="azioni azioni-col">
+                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-title="Concorso VFI Marina Militare">
+                  <td class="fa-cell vertical">
+                    <span class="fa-logo"><img src="https://i.postimg.cc/Sj08xy9D/logomm.png" alt="Marina"></span>
+                    <span class="fa-name">Marina</span>
+                  </td>
+                  <td class="date-cell"><span class="date-top">01 marzo</span><span class="date-year">2025</span></td>
+                  <td class="ta-left"><div class="concorso-titolo">Concorso VFI Marina Militare</div></td>
+                  <td><span class="state state-ok">Ricevuta</span></td>
+                  <td><a href="#" class="link-alle">Allegati</a></td>
+                  <td class="ta-right">
+                    <div class="azioni azioni-col">
+                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-title="Concorso Allievi Aeronautica Militare">
+                  <td class="fa-cell vertical">
+                    <span class="fa-logo"><img src="https://i.postimg.cc/mgsXd4nY/logoam.png" alt="Aeronautica"></span>
+                    <span class="fa-name">Aeronautica</span>
+                  </td>
+                  <td class="date-cell"><span class="date-top">10 aprile</span><span class="date-year">2025</span></td>
+                  <td class="ta-left"><div class="concorso-titolo">Concorso Allievi Aeronautica Militare</div></td>
+                  <td><span class="state state-att">In lavorazione</span></td>
+                  <td><a href="#" class="link-alle">Allegati</a></td>
+                  <td class="ta-right">
+                    <div class="azioni azioni-col">
+                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
             </table>
-            <div id="concorsiEmpty" class="empty-state" hidden>Nessun concorso effettuato</div>
           </div>
         </div>
       </div>
@@ -398,7 +437,176 @@
     <!-- STAFF (sempre visibile) -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman center">Il nostro staff</h2>
-      <!-- Popola come preferisci -->
+
+      <!-- Owner -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Owner
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-gold">
+              <img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy">
+            </div>
+            <div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Founder -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Founder
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-silver">
+              <img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto" loading="lazy">
+            </div>
+            <div class="member-name">Anto</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-silver">
+              <img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony" loading="lazy">
+            </div>
+            <div class="member-name">Mony</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Co-Founder -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Co-Founder
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo" loading="lazy">
+            </div>
+            <div class="member-name">Gabbo</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez" loading="lazy">
+            </div>
+            <div class="member-name">Rodriguez</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss" loading="lazy">
+            </div>
+            <div class="member-name">Th3b00ss</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Admin
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo" loading="lazy">
+            </div>
+            <div class="member-name">Alexo</div>
+            <div class="member-role role-eup">Eup Creator</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri" loading="lazy">
+            </div>
+            <div class="member-name">Chri</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide" loading="lazy">
+            </div>
+            <div class="member-name">Il Davide</div>
+            <div class="member-role role-eup">Eup Creator</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Moderatore -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Moderatore
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales" loading="lazy">
+            </div>
+            <div class="member-name">Ales</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze" loading="lazy">
+            </div>
+            <div class="member-name">Blaze</div>
+            <div class="member-role role-grafico">Grafico</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco" loading="lazy">
+            </div>
+            <div class="member-name">Franco</div>
+            <div class="member-role role-grafico">Grafico</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio" loading="lazy">
+            </div>
+            <div class="member-name">Glaudio</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca" loading="lazy">
+            </div>
+            <div class="member-name">Luca</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger" loading="lazy">
+            </div>
+            <div class="member-name">Mattiger</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight" loading="lazy">
+            </div>
+            <div class="member-name">Voight</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Helper -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Helper
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-purple">
+              <img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre" loading="lazy">
+            </div>
+            <div class="member-name">Andre</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-purple">
+              <img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco" loading="lazy">
+            </div>
+            <div class="member-name">Falco</div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- PROFILO -->
@@ -417,6 +625,7 @@
             <img id="profAvatarImg" alt="Avatar">
           </div>
           <div class="actions">
+            <!-- bottone login (icona + testo) quando sloggato -->
             <button class="btn btn-discord" id="btnDiscordLogin2" title="Login con Discord">
               Login <i class="fa-brands fa-discord" aria-hidden="true"></i>
             </button>
@@ -436,48 +645,22 @@
   </footer>
 
   <script>
-  /* ===== Config ===== */
+  /* ===== Discord OAuth (implicit flow) ===== */
   const DISCORD_CLIENT_ID = '1419444744563720404';
   const DISCORD_SCOPE = 'identify';
   const REDIRECT_URI = 'https://alestv05.github.io/sito/';
+
   const OAUTH_TOKEN_KEY = 'nr_discord_token_v1';
   const OAUTH_USER_KEY  = 'nr_discord_user_v1';
-  const CONCORSI_PREFIX = 'nr_concorsi_user_';
-  const ADMIN_ID = '640478852308664360';
 
-  /* ===== Utils ===== */
+  /* ===== Utils / UI ===== */
   const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
   const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
   function cdnDefaultAvatar(index=0){const i=Number(index)%5||0;return `https://cdn.discordapp.com/embed/avatars/${i}.png`; }
-  const isLoggedIn = () => !!(localStorage.getItem(OAUTH_TOKEN_KEY) && localStorage.getItem(OAUTH_USER_KEY));
-  const getUser = () => JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-  const isAdmin = () => (getUser()?.id === ADMIN_ID);
 
-  /* ===== Router con guardia ===== */
   const protectedRoutes = new Set(['donations','donation','concorsi']);
-  function showPage(id){
-    if(protectedRoutes.has(id) && !isLoggedIn()){
-      toast('Devi effettuare il login per accedere.');
-      id='home';
-    }
-    $$('.page').forEach(p=>p.classList.remove('active'));
-    $$('.nav-link').forEach(l=>l.classList.remove('active'));
-    $(`#page-${id}`)?.classList.add('active');
-    $(`.nav-link[data-route="${id}"]`)?.classList.add('active');
 
-    if(id==='home') tryAutoplay();
-    if(id==='concorsi'){
-      $('#concorsiToolbar').hidden = !isLoggedIn();
-      $('#viewAllWrap').hidden = !isAdmin();
-      renderConcorsi();
-    }
-  }
-  document.addEventListener('click',e=>{
-    const r=e.target.closest('[data-route]'); if(!r) return;
-    e.preventDefault(); showPage(r.dataset.route);
-  });
-
-  /* Ripple click */
+  /* Ripple click (effetto) */
   document.addEventListener('click',e=>{
     const btn=e.target.closest('.nav-link'); if(!btn) return;
     const rect=btn.getBoundingClientRect();
@@ -487,7 +670,29 @@
     btn.appendChild(r); setTimeout(()=>r.remove(),600);
   },{passive:true});
 
-  /* ===== Donazioni (testo) ===== */
+  /* Helpers auth */
+  const isLoggedIn = () => !!(localStorage.getItem(OAUTH_TOKEN_KEY) && localStorage.getItem(OAUTH_USER_KEY));
+
+  /* Router con guardia */
+  function showPage(id){
+    if(protectedRoutes.has(id) && !isLoggedIn()){
+      toast('Devi effettuare il login per accedere.');
+      id='home';
+    }
+    $$('.page').forEach(p=>p.classList.remove('active'));
+    $$('.nav-link').forEach(l=>l.classList.remove('active'));
+    $(`#page-${id}`)?.classList.add('active');
+    $(`.nav-link[data-route="${id}"]`)?.classList.add('active');
+    if(id==='home') tryAutoplay();
+  }
+
+  // click sulle voci di menu
+  document.addEventListener('click',e=>{
+    const r=e.target.closest('[data-route]'); if(!r) return;
+    e.preventDefault(); showPage(r.dataset.route);
+  });
+
+  /* Donazioni */
   const OFFER_TEXT={
     5:"Acquistando questo pacchetto otterai 50.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
     10:"Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
@@ -509,11 +714,34 @@
     showPage('donation');
   });
   document.addEventListener('click',e=>{
-    if(e.target.id==='btnBackDon') showPage('donations');
-    if(e.target.id==='btnBuy') toast('Pagamento non configurato — apri un ticket Discord.');
+    if(e.target.id==='btnBackDon'){showPage('donations')}
+    if(e.target.id==='btnBuy'){toast('Pagamento non configurato — apri un ticket Discord.')}
   });
 
-  /* ===== Video ===== */
+  /* Concorsi tabs/actions */
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.azioni .btn-slim'); if(!btn) return;
+    const tr=btn.closest('tr'); const title=tr?.dataset?.title||'concorso';
+    const action=btn.dataset.action;
+    if(action==='annulla') toast(`Richiesta di annullamento per: ${title}`);
+    if(action==='aggiorna') toast(`Richiesta di aggiornamento per: ${title}`);
+  });
+  document.addEventListener('click',e=>{
+    const tab=e.target.closest('.concorsi-tabs .c-tab'); 
+    if(!tab) return;
+    e.preventDefault();
+    document.querySelectorAll('.concorsi-tabs .c-tab').forEach(t=>t.classList.remove('is-active'));
+    tab.classList.add('is-active');
+    const force=(tab.dataset.force||'all').trim().toLowerCase();
+    const rows=document.querySelectorAll('#page-concorsi .concorsi-table tbody tr');
+    rows.forEach(row=>{
+      if(force==='all'){ row.style.display=''; return; }
+      const name=(row.querySelector('.fa-name')?.textContent||'').trim().toLowerCase();
+      row.style.display=(name===force)?'':'none';
+    });
+  });
+
+  /* Video */
   function tryAutoplay(){
     const v=$('#nvVideo'); if(!v) return;
     v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
@@ -526,29 +754,42 @@
     window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
-  /* ===== AUTH UI ===== */
+  /* ===== AVATAR HELPERS ===== */
   function setAvatar(url){
     const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
-    if(url){ topImg.src=url; topImg.style.display='block'; topIcon.style.display='none'; }
-    else{ topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none'; topIcon.style.display='block'; }
+    if(url){
+      topImg.src=url; topImg.style.display='block'; topIcon.style.display='none';
+    }else{
+      topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none';
+      topIcon.style.display='block';
+    }
   }
   function setProfileAvatar(url){
     const img=$('#profAvatarImg'), ico=$('#profAvatarIcon');
-    if(url){ img.src=url; img.style.display='block'; ico.style.display='none'; }
-    else{ img.removeAttribute('src'); img.src=''; img.style.display='none'; ico.style.display='grid'; }
+    if(url){
+      img.src=url; img.style.display='block'; ico.style.display='none';
+    }else{
+      img.removeAttribute('src'); img.src=''; img.style.display='none';
+      ico.style.display='grid';
+    }
   }
+
+  /* ===== AUTH UI ===== */
   function updateAuthUI(){
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
 
+    // Navbar: voci protette
     $('#navDonations').hidden = !isIn;
     $('#navConcorsi').hidden  = !isIn;
 
+    // Login/Logout/Profile
     $('#btnDiscordLogin').hidden  =  isIn;
     $('#btnLogout').hidden        = !isIn;
     $('#goProfile').hidden        = !isIn;
 
+    // Sezione profilo
     $('#btnLogoutProfile').hidden = !isIn;
     $('#btnDiscordLogin2')?.classList.toggle('hidden', isIn);
 
@@ -563,11 +804,14 @@
       $('#userName').textContent = '';
       setAvatar(null);
       setProfileAvatar(null);
+
+      // Se sei su una pagina protetta e fai logout => torna Home
       const active = document.querySelector('.page.active')?.id?.replace('page-','');
       if(protectedRoutes.has(active)) showPage('home');
     }
   }
 
+  /* ===== Discord login flow ===== */
   function beginDiscordLogin(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
     const state = Math.random().toString(36).slice(2);
@@ -586,6 +830,7 @@
     const params = new URLSearchParams(location.hash.slice(1));
     if(!(params.get('access_token') || params.get('error'))) return false;
 
+    // rimuove il #fragment dall’URL
     history.replaceState(null, '', location.pathname + location.search);
 
     if(params.get('error')){
@@ -613,10 +858,7 @@
       localStorage.setItem(OAUTH_TOKEN_KEY, at);
       localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
       toast('Accesso con Discord riuscito!');
-      updateAuthUI();
-      $('#concorsiToolbar').hidden = false;
-      $('#viewAllWrap').hidden = !isAdmin();
-      renderConcorsi();
+      updateAuthUI(); // mostra subito voci protette
     }catch(err){
       console.error(err);
       toast('Errore nel recupero profilo Discord.');
@@ -624,6 +866,7 @@
     return true;
   }
 
+  /* ===== Logout ===== */
   function logout(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
     try{
@@ -637,36 +880,37 @@
     toast('Logout effettuato');
   }
 
+  /* Bind bottoni */
   $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
   $('#btnDiscordLogin2')?.addEventListener('click', beginDiscordLogin);
   $('#btnLogout')?.addEventListener('click', logout, {capture:true});
   $('#btnLogoutProfile')?.addEventListener('click', logout, {capture:true});
-  $('#topAvatar')?.addEventListener('click',()=>{ if(isLoggedIn()) showPage('profile'); });
 
-  /* ====== Concorsi: storage helpers ====== */
-  function storageKeyForUser(uid){ return CONCORSI_PREFIX + uid; }
-  function loadConcorsiForUser(uid){
-    try{
-      const raw = localStorage.getItem(storageKeyForUser(uid));
-      const list = raw ? JSON.parse(raw) : [];
-      return Array.isArray(list) ? list : [];
-    }catch{ return []; }
-  }
-  function saveConcorsiForUser(uid, list){
-    localStorage.setItem(storageKeyForUser(uid), JSON.stringify(list||[]));
-  }
-  function scanAllConcorsi(){ // admin: unisce tutti gli utenti presenti in localStorage
-    const out=[];
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i);
-      if(k && k.startsWith(CONCORSI_PREFIX)){
-        const uid=k.substring(CONCORSI_PREFIX.length);
-        const arr = loadConcorsiForUser(uid);
-        arr.forEach(c=> out.push({...c, ownerId: uid}));
-      }
-    }
-    return out;
+  // Click avatar: vai al profilo se loggato
+  $('#topAvatar')?.addEventListener('click',()=>{
+    if(isLoggedIn()) showPage('profile');
+  });
+
+  /* Video */
+  function tryAutoplay(){
+    const v=$('#nvVideo'); if(!v) return;
+    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
+    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
+    let tries=0, MAX=6;
+    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
+    v.addEventListener('loadeddata', go, { once:true }); go();
+    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
+    window.addEventListener('click',kick,{once:true,passive:true});
+    window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
-  /* ====== Concorsi: render ====== */
-  function format
+  /* Init */
+  window.addEventListener('load', async ()=>{
+    await handleOAuthRedirectFragment(); // gestisce login al ritorno da Discord
+    updateAuthUI();                       // Home/Staff vs +Donazioni/+Concorsi
+    showPage('home');
+    tryAutoplay();
+  });
+  </script>
+</body>
+</html>

@@ -24,11 +24,9 @@
     overflow-x:hidden;
   }
 
-  /* visibilità robusta */
   [hidden]{display:none !important;}
   .hidden{display:none !important;}
 
-  /* Icon fonts (per l’icona Discord) */
   .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
   .fa-brands{font-family:"Font Awesome 6 Brands" !important}
 
@@ -83,7 +81,7 @@
   }
   @keyframes float{from{transform:translateY(-6px)} to{transform:translateY(6px)}}
 
-  /* MESSAGGIO SITO IN COSTRUZIONE */
+  /* SITO IN COSTRUZIONE */
   .under-construction{
     position:relative; z-index:3;
     display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center;
@@ -182,12 +180,13 @@
   #page-concorsi{ background:#f4f6fa; color:#1f2937; padding:0; }
   .concorsi-wrap{max-width:1100px; margin:0 auto; padding:28px 16px 40px}
   .concorsi-title{font-family:inherit; font-weight:900; letter-spacing:.02em; text-transform:none; margin-bottom:14px; font-size:clamp(28px,4.6vw,40px); color:#1d2430}
-  .concorsi-tabs{display:flex; gap:8px; align-items:center; padding:10px 0 18px}
+  .concorsi-tabs{display:flex; gap:8px; align-items:center; padding:10px 0 18px; flex-wrap:wrap}
   .c-tab{display:inline-flex; align-items:center; gap:8px; background:#eef2f9; color:#1f3a62; border:1px solid #d7e0f0; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:800; letter-spacing:.04em}
   .c-tab.is-active{background:#dae6fb; border-color:#bcd3f8}
+
   .concorsi-card{background:#ffffff; border:1px solid #dde3ef; border-radius:10px; overflow:hidden; box-shadow:0 10px 30px rgba(20,30,60,.06)}
   .concorsi-table{width:100%; border-collapse:separate; border-spacing:0}
-  .concorsi-table thead th{background:#2f3a4a; color:#fff; padding:14px 18px; font-weight:900; letter-spacing:.04em; border-bottom:2px solid #202a39; white-space:nowrap}
+  .concorsi-table thead th{background:#2f3a4a; color:#fff; padding:14px 18px; font-weight:900; letter-spacing:.04em; border-bottom:2px solid #202a39; white-space:nowrap; position:sticky; top:0}
   .concorsi-table tbody td{background:#fff; padding:22px 18px; border-bottom:1px solid #edf1f7; vertical-align:middle; white-space:nowrap}
   .ta-left{text-align:left}
   .ta-right{text-align:right}
@@ -210,10 +209,22 @@
   .btn-slim{padding:10px 14px; border-radius:8px; font-weight:900; background:#f4f7fb; cursor:pointer; text-transform:uppercase; letter-spacing:.02em}
   .btn-outline{border:1px solid #dde6f5; color:#2a4365; box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
   .btn-outline:hover{background:#eef4ff}
+
+  /* Empty state */
+  .empty-state{padding:24px; text-align:center; color:#42526e; font-weight:900}
+
+  /* MOBILE: tabella -> card */
   @media (max-width: 720px){
-    .concorso-titolo{max-width:unset}
-    .concorsi-table thead th:nth-child(1),
-    .concorsi-table tbody td:nth-child(1){position:sticky; left:0; background:#fff}
+    .concorsi-table thead{display:none}
+    .concorsi-table, .concorsi-table tbody, .concorsi-table tr, .concorsi-table td{display:block; width:100%}
+    .concorsi-table tr{border-bottom:1px solid #edf1f7}
+    .concorsi-table tbody td{display:flex; justify-content:space-between; align-items:center; padding:12px 16px}
+    .concorsi-table tbody td::before{
+      content:attr(data-label);
+      font-weight:900; color:#2b3545; margin-right:12px; text-transform:uppercase; letter-spacing:.04em;
+    }
+    .azioni{justify-content:flex-start}
+    .azioni-col{align-items:flex-start}
   }
   </style>
 </head>
@@ -258,12 +269,11 @@
           <div class="logo-glow"></div>
         </div>
 
-        <!-- ===== MESSAGGIO SITO IN COSTRUZIONE ===== -->
         <div class="under-construction" aria-live="polite">
           <h1 class="uc-title">SITO IN COSTRUZIONE</h1>
         </div>
 
-        <!-- Trailer (lasciato invariato) -->
+        <!-- Trailer -->
         <div class="home-video">
           <div class="home-video-head">
             <i class="fa-solid fa-film"></i>
@@ -362,73 +372,11 @@
                   <th class="ta-right">Azioni</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr data-title="Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco">
-                  <td class="fa-cell vertical">
-                    <span class="fa-logo"><img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito"></span>
-                    <span class="fa-name">Esercito</span>
-                  </td>
-                  <td class="date-cell"><span class="date-top">07 luglio</span><span class="date-year">2025</span></td>
-                  <td class="ta-left"><div class="concorso-titolo">Volontari in ferma iniziale (VFI) nell'Esercito Italiano - 3° Blocco</div></td>
-                  <td><span class="state state-ok">Ricevuta</span></td>
-                  <td><a href="#" class="link-alle">Allegati</a></td>
-                  <td class="ta-right">
-                    <div class="azioni azioni-col">
-                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
-                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr data-title="Bando VFP4 Esercito Italiano - 2025">
-                  <td class="fa-cell vertical">
-                    <span class="fa-logo"><img src="https://i.postimg.cc/rp99Zt4c/logoei.png" alt="Esercito"></span>
-                    <span class="fa-name">Esercito</span>
-                  </td>
-                  <td class="date-cell"><span class="date-top">15 gennaio</span><span class="date-year">2025</span></td>
-                  <td class="ta-left"><div class="concorso-titolo">Bando VFP4 Esercito Italiano - 2025</div></td>
-                  <td><span class="state state-att">In lavorazione</span></td>
-                  <td><a href="#" class="link-alle">Allegati</a></td>
-                  <td class="ta-right">
-                    <div class="azioni azioni-col">
-                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
-                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr data-title="Concorso VFI Marina Militare">
-                  <td class="fa-cell vertical">
-                    <span class="fa-logo"><img src="https://i.postimg.cc/Sj08xy9D/logomm.png" alt="Marina"></span>
-                    <span class="fa-name">Marina</span>
-                  </td>
-                  <td class="date-cell"><span class="date-top">01 marzo</span><span class="date-year">2025</span></td>
-                  <td class="ta-left"><div class="concorso-titolo">Concorso VFI Marina Militare</div></td>
-                  <td><span class="state state-ok">Ricevuta</span></td>
-                  <td><a href="#" class="link-alle">Allegati</a></td>
-                  <td class="ta-right">
-                    <div class="azioni azioni-col">
-                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
-                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr data-title="Concorso Allievi Aeronautica Militare">
-                  <td class="fa-cell vertical">
-                    <span class="fa-logo"><img src="https://i.postimg.cc/mgsXd4nY/logoam.png" alt="Aeronautica"></span>
-                    <span class="fa-name">Aeronautica</span>
-                  </td>
-                  <td class="date-cell"><span class="date-top">10 aprile</span><span class="date-year">2025</span></td>
-                  <td class="ta-left"><div class="concorso-titolo">Concorso Allievi Aeronautica Militare</div></td>
-                  <td><span class="state state-att">In lavorazione</span></td>
-                  <td><a href="#" class="link-alle">Allegati</a></td>
-                  <td class="ta-right">
-                    <div class="azioni azioni-col">
-                      <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
-                      <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
-                    </div>
-                  </td>
-                </tr>
+              <tbody id="concorsiBody">
+                <!-- righe generate via JS -->
               </tbody>
             </table>
+            <div id="concorsiEmpty" class="empty-state" hidden>Nessun concorso effettuato</div>
           </div>
         </div>
       </div>
@@ -625,7 +573,6 @@
             <img id="profAvatarImg" alt="Avatar">
           </div>
           <div class="actions">
-            <!-- bottone login (icona + testo) quando sloggato -->
             <button class="btn btn-discord" id="btnDiscordLogin2" title="Login con Discord">
               Login <i class="fa-brands fa-discord" aria-hidden="true"></i>
             </button>
@@ -653,6 +600,10 @@
   const OAUTH_TOKEN_KEY = 'nr_discord_token_v1';
   const OAUTH_USER_KEY  = 'nr_discord_user_v1';
 
+  /* ===== Storage Concorsi (per utente) ===== */
+  const CONCORSI_PREFIX = 'nr_concorsi_user_';
+  // Struttura concorso: { forza: 'Esercito'|'Marina'|'Aeronautica', dataISO:'2025-07-07', titolo:'...', stato:'Ricevuta'|'In lavorazione', allegati:true|false }
+
   /* ===== Utils / UI ===== */
   const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
   const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
@@ -672,6 +623,7 @@
 
   /* Helpers auth */
   const isLoggedIn = () => !!(localStorage.getItem(OAUTH_TOKEN_KEY) && localStorage.getItem(OAUTH_USER_KEY));
+  const getUser = () => JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
 
   /* Router con guardia */
   function showPage(id){
@@ -683,7 +635,9 @@
     $$('.nav-link').forEach(l=>l.classList.remove('active'));
     $(`#page-${id}`)?.classList.add('active');
     $(`.nav-link[data-route="${id}"]`)?.classList.add('active');
+
     if(id==='home') tryAutoplay();
+    if(id==='concorsi') renderConcorsi(); // aggiorna quando entri
   }
 
   // click sulle voci di menu
@@ -714,11 +668,90 @@
     showPage('donation');
   });
   document.addEventListener('click',e=>{
-    if(e.target.id==='btnBackDon'){showPage('donations')}
-    if(e.target.id==='btnBuy'){toast('Pagamento non configurato — apri un ticket Discord.')}
+    const btn = e.target.closest('#btnBackDon,#btnBuy');
+    if(!btn) return;
+    if(btn.id==='btnBackDon') showPage('donations');
+    if(btn.id==='btnBuy') toast('Pagamento non configurato — apri un ticket Discord.');
   });
 
-  /* Concorsi tabs/actions */
+  /* ====== CONCORSI: caricamento/render per utente ====== */
+  function storageKeyForUser(uid){ return CONCORSI_PREFIX + uid; }
+  function loadUserConcorsi(){
+    const user = getUser(); if(!user) return [];
+    try{
+      const raw = localStorage.getItem(storageKeyForUser(user.id));
+      const list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list : [];
+    }catch{ return []; }
+  }
+  // Facile sostituzione backend: sostituisci loadUserConcorsi() con fetch(...) e poi chiama renderConcorsi(list).
+
+  function formatDateIT(iso){
+    if(!iso) return '';
+    const d = new Date(iso+'T12:00:00'); // evita timezone flip
+    const mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+    return `${String(d.getDate()).padStart(2,'0')} ${mesi[d.getMonth()]}|${d.getFullYear()}`;
+  }
+
+  function renderConcorsi(forceFilter='all'){
+    const body = $('#concorsiBody');
+    const empty = $('#concorsiEmpty');
+    const list = isLoggedIn() ? loadUserConcorsi() : [];
+
+    body.innerHTML = '';
+    if(!list.length){
+      empty.hidden = false;
+      return;
+    }
+    empty.hidden = true;
+
+    // applica filtro corrente se presente
+    const activeTab = document.querySelector('.concorsi-tabs .c-tab.is-active');
+    const force = (activeTab?.dataset.force || forceFilter).toLowerCase();
+
+    list
+      .filter(c => force==='all' ? true : (c.forza||'').toLowerCase()===force)
+      .forEach(c=>{
+        // split data IT
+        const [giornoMese, anno] = formatDateIT(c.dataISO).split('|');
+        const statoClass = (c.stato||'').toLowerCase().includes('ricev') ? 'state-ok' : 'state-att';
+        const logoMap = { 'esercito':'https://i.postimg.cc/rp99Zt4c/logoei.png', 'marina':'https://i.postimg.cc/Sj08xy9D/logomm.png', 'aeronautica':'https://i.postimg.cc/mgsXd4nY/logoam.png' };
+        const forzaKey = (c.forza||'').toLowerCase();
+        const logo = logoMap[forzaKey] || logoMap['esercito'];
+
+        const tr = document.createElement('tr');
+        tr.dataset.title = c.titolo || 'Concorso';
+
+        tr.innerHTML = `
+          <td class="fa-cell vertical" data-label="Forza Armata">
+            <span class="fa-logo"><img src="${logo}" alt="${c.forza||''}"></span>
+            <span class="fa-name">${c.forza||''}</span>
+          </td>
+          <td class="date-cell" data-label="Data">
+            <span class="date-top">${giornoMese}</span>
+            <span class="date-year">${anno}</span>
+          </td>
+          <td class="ta-left" data-label="Concorso"><div class="concorso-titolo">${c.titolo||''}</div></td>
+          <td data-label="Stato"><span class="state ${statoClass}">${c.stato||''}</span></td>
+          <td data-label="Allegati">${c.allegati?'<a href="#" class="link-alle">Allegati</a>':'—'}</td>
+          <td class="ta-right" data-label="Azioni">
+            <div class="azioni azioni-col">
+              <button class="btn-slim btn-outline" data-action="annulla">ANNULLA</button>
+              <button class="btn-slim btn-outline" data-action="aggiorna">AGGIORNA</button>
+            </div>
+          </td>
+        `;
+        body.appendChild(tr);
+      });
+
+    // se filtro vuota tutto, mostra empty
+    if(!body.children.length){
+      empty.textContent = 'Nessun concorso effettuato';
+      empty.hidden = false;
+    }
+  }
+
+  // Azioni riga concorsi
   document.addEventListener('click',e=>{
     const btn=e.target.closest('.azioni .btn-slim'); if(!btn) return;
     const tr=btn.closest('tr'); const title=tr?.dataset?.title||'concorso';
@@ -726,52 +759,27 @@
     if(action==='annulla') toast(`Richiesta di annullamento per: ${title}`);
     if(action==='aggiorna') toast(`Richiesta di aggiornamento per: ${title}`);
   });
+
+  // Tabs filtro concorsi
   document.addEventListener('click',e=>{
     const tab=e.target.closest('.concorsi-tabs .c-tab'); 
     if(!tab) return;
     e.preventDefault();
     document.querySelectorAll('.concorsi-tabs .c-tab').forEach(t=>t.classList.remove('is-active'));
     tab.classList.add('is-active');
-    const force=(tab.dataset.force||'all').trim().toLowerCase();
-    const rows=document.querySelectorAll('#page-concorsi .concorsi-table tbody tr');
-    rows.forEach(row=>{
-      if(force==='all'){ row.style.display=''; return; }
-      const name=(row.querySelector('.fa-name')?.textContent||'').trim().toLowerCase();
-      row.style.display=(name===force)?'':'none';
-    });
+    renderConcorsi(tab.dataset.force||'all');
   });
-
-  /* Video */
-  function tryAutoplay(){
-    const v=$('#nvVideo'); if(!v) return;
-    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
-    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
-    let tries=0, MAX=6;
-    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
-    v.addEventListener('loadeddata', go, { once:true }); go();
-    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
-    window.addEventListener('click',kick,{once:true,passive:true});
-    window.addEventListener('touchstart',kick,{once:true,passive:true});
-  }
 
   /* ===== AVATAR HELPERS ===== */
   function setAvatar(url){
     const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
-    if(url){
-      topImg.src=url; topImg.style.display='block'; topIcon.style.display='none';
-    }else{
-      topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none';
-      topIcon.style.display='block';
-    }
+    if(url){ topImg.src=url; topImg.style.display='block'; topIcon.style.display='none'; }
+    else{ topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none'; topIcon.style.display='block'; }
   }
   function setProfileAvatar(url){
     const img=$('#profAvatarImg'), ico=$('#profAvatarIcon');
-    if(url){
-      img.src=url; img.style.display='block'; ico.style.display='none';
-    }else{
-      img.removeAttribute('src'); img.src=''; img.style.display='none';
-      ico.style.display='grid';
-    }
+    if(url){ img.src=url; img.style.display='block'; ico.style.display='none'; }
+    else{ img.removeAttribute('src'); img.src=''; img.style.display='none'; ico.style.display='grid'; }
   }
 
   /* ===== AUTH UI ===== */
@@ -858,7 +866,8 @@
       localStorage.setItem(OAUTH_TOKEN_KEY, at);
       localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
       toast('Accesso con Discord riuscito!');
-      updateAuthUI(); // mostra subito voci protette
+      updateAuthUI();
+      renderConcorsi(); // aggiorna lista appena loggato
     }catch(err){
       console.error(err);
       toast('Errore nel recupero profilo Discord.');
@@ -887,9 +896,7 @@
   $('#btnLogoutProfile')?.addEventListener('click', logout, {capture:true});
 
   // Click avatar: vai al profilo se loggato
-  $('#topAvatar')?.addEventListener('click',()=>{
-    if(isLoggedIn()) showPage('profile');
-  });
+  $('#topAvatar')?.addEventListener('click',()=>{ if(isLoggedIn()) showPage('profile'); });
 
   /* Video */
   function tryAutoplay(){
@@ -906,11 +913,29 @@
 
   /* Init */
   window.addEventListener('load', async ()=>{
-    await handleOAuthRedirectFragment(); // gestisce login al ritorno da Discord
-    updateAuthUI();                       // Home/Staff vs +Donazioni/+Concorsi
+    await handleOAuthRedirectFragment();
+    updateAuthUI();
     showPage('home');
     tryAutoplay();
   });
+
+
+  /* ==========================
+     OPZIONALE: SEED DI TEST
+     (commenta o rimuovi in prod)
+     Esempio per aggiungere concorsi all'utente loggato da console:
+     saveTestConcorsi();
+  ========================== */
+  function saveTestConcorsi(){
+    const u = getUser(); if(!u){ toast('Fai login prima'); return; }
+    const demo = [
+      { forza:'Esercito', dataISO:'2025-07-07', titolo:"Volontari in ferma iniziale (VFI) - 3° Blocco", stato:'Ricevuta', allegati:true },
+      { forza:'Marina', dataISO:'2025-03-01', titolo:"Concorso VFI Marina Militare", stato:'Ricevuta', allegati:false },
+      { forza:'Aeronautica', dataISO:'2025-04-10', titolo:"Concorso Allievi Aeronautica Militare", stato:'In lavorazione', allegati:true },
+    ];
+    localStorage.setItem(storageKeyForUser(u.id), JSON.stringify(demo));
+    toast('Concorsi di test salvati'); renderConcorsi();
+  }
   </script>
 </body>
 </html>

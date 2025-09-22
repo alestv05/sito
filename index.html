@@ -83,16 +83,30 @@
   }
   @keyframes float{from{transform:translateY(-6px)} to{transform:translateY(6px)}}
 
-  /* Countdown / Video */
-  .countdown-container{position:relative; z-index:3; margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:800px}
-  .hero-announcement{display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; width:100%}
-  .badge-opening{display:inline-flex; align-items:center; gap:8px; color:#fff; background:linear-gradient(135deg,#58a6ff,#0b6dd6); border:1px solid #2a3a61; box-shadow:var(--shadow); padding:8px 14px; border-radius:999px; text-transform:uppercase; letter-spacing:.06em; font-weight:900}
-  .hero-title{margin:4px 0 0; font-size:clamp(28px,5.4vw,60px); font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-shadow:0 2px 10px rgba(0,0,0,.5)}
-  .countdown{display:flex; gap:12px; justify-content:center; align-items:center; background:#0f1625; border:1px solid #2a3a61; border-radius:16px; padding:12px 16px; width:max-content; box-shadow:var(--shadow); margin-top:10px}
-  .cd-box{min-width:80px; text-align:center; background:#121e36; border:1px solid #2a3a61; border-radius:12px; padding:10px 8px}
-  .cd-box span{display:block; font-size:clamp(24px,4.5vw,38px); font-weight:900; line-height:1}
-  .cd-box label{display:block; margin-top:4px; font-size:12px; color:#9daccc; letter-spacing:.1em; text-transform:uppercase}
-  .home-video{display:grid; place-items:center; margin-top:60px; width:100%}
+  /* MESSAGGIO SITO IN COSTRUZIONE */
+  .under-construction{
+    position:relative; z-index:3;
+    display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center;
+    width:100%; max-width:900px;
+  }
+  .uc-title{
+    font-size:clamp(36px,8vw,90px);
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    text-shadow:0 2px 10px rgba(0,0,0,.5);
+    line-height:1.05;
+  }
+  .uc-sub{
+    font-family:inherit;
+    font-size:clamp(14px,2.6vw,20px);
+    color:var(--muted);
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+
+  /* Video */
+  .home-video{display:grid; place-items:center; margin-top:40px; width:100%}
   .home-video-head{display:flex; align-items:center; gap:8px; color:#cfe0ff; background:#0f1625; border:1px solid #2a3a61; padding:6px 10px; border-radius:10px; margin-bottom:10px; text-transform:uppercase}
   .home-video-frame{width:min(95vw,var(--home-video-max)); max-width:var(--home-video-max); min-width:var(--home-video-min); background:#0f1528; border:2px solid #2a3a61; border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
   .home-video-frame video{display:block; width:100%; height:auto}
@@ -251,23 +265,13 @@
           <div class="logo-glow"></div>
         </div>
 
-        <div class="countdown-container">
-          <div class="hero-announcement">
-            <div class="badge-opening">
-              <i class="fa-solid fa-bullhorn"></i>
-              <span>NUOVA APERTURA <strong>21 Settembre 2025</strong> ore <strong>16:30</strong></span>
-            </div>
-            <h1 class="hero-title">NOVA ROMA ROLEPLAY</h1>
-          </div>
-
-          <div id="nrCountdown" class="countdown" aria-live="polite">
-            <div class="cd-box"><span id="cdDays">00</span><label>Giorni</label></div>
-            <div class="cd-box"><span id="cdHours">00</span><label>Ore</label></div>
-            <div class="cd-box"><span id="cdMins">00</span><label>Min</label></div>
-            <div class="cd-box"><span id="cdSecs">00</span><label>Sec</label></div>
-          </div>
+        <!-- ===== MESSAGGIO SITO IN COSTRUZIONE (sostituisce badge/titolo/countdown) ===== -->
+        <div class="under-construction" aria-live="polite">
+          <h1 class="uc-title">SITO IK COSTRUZIONE</h1>
+          <p class="uc-sub">Stiamo lavorando per voi</p>
         </div>
 
+        <!-- Trailer (lasciato invariato) -->
         <div class="home-video">
           <div class="home-video-head">
             <i class="fa-solid fa-film"></i>
@@ -894,38 +898,6 @@
   $('#topAvatar')?.addEventListener('click',()=>{
     if(isLoggedIn()) showPage('profile');
   });
-
-  /* Countdown */
-  (function initCountdown(){
-    const target=new Date('2025-09-21T16:30:00+02:00').getTime();
-    const $d=id=>document.getElementById(id);
-    function tick(){
-      const now=Date.now(); let diff=Math.max(0,target-now);
-      const days=Math.floor(diff/86400000); diff%=86400000;
-      const hours=Math.floor(diff/3600000); diff%=3600000;
-      const mins=Math.floor(diff/60000); diff%=60000;
-      const secs=Math.floor(diff/1000);
-      const pad=n=>String(n).padStart(2,'0');
-      $d('cdDays').textContent=pad(days);
-      $d('cdHours').textContent=pad(hours);
-      $d('cdMins').textContent=pad(mins);
-      $d('cdSecs').textContent=pad(secs);
-    }
-    tick(); setInterval(tick,1000);
-  })();
-
-  /* Video */
-  function tryAutoplay(){
-    const v=$('#nvVideo'); if(!v) return;
-    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
-    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
-    let tries=0, MAX=6;
-    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
-    v.addEventListener('loadeddata', go, { once:true }); go();
-    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
-    window.addEventListener('click',kick,{once:true,passive:true});
-    window.addEventListener('touchstart',kick,{once:true,passive:true});
-  }
 
   /* Init */
   window.addEventListener('load', async ()=>{

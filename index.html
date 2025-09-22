@@ -97,13 +97,6 @@
     text-shadow:0 2px 10px rgba(0,0,0,.5);
     line-height:1.05;
   }
-  .uc-sub{
-    font-family:inherit;
-    font-size:clamp(14px,2.6vw,20px);
-    color:var(--muted);
-    letter-spacing:.06em;
-    text-transform:uppercase;
-  }
 
   /* Video */
   .home-video{display:grid; place-items:center; margin-top:40px; width:100%}
@@ -265,10 +258,9 @@
           <div class="logo-glow"></div>
         </div>
 
-        <!-- ===== MESSAGGIO SITO IN COSTRUZIONE (sostituisce badge/titolo/countdown) ===== -->
+        <!-- ===== MESSAGGIO SITO IN COSTRUZIONE ===== -->
         <div class="under-construction" aria-live="polite">
-          <h1 class="uc-title">SITO IK COSTRUZIONE</h1>
-          <p class="uc-sub">Stiamo lavorando per voi</p>
+          <h1 class="uc-title">SITO IN COSTRUZIONE</h1>
         </div>
 
         <!-- Trailer (lasciato invariato) -->
@@ -898,6 +890,19 @@
   $('#topAvatar')?.addEventListener('click',()=>{
     if(isLoggedIn()) showPage('profile');
   });
+
+  /* Video */
+  function tryAutoplay(){
+    const v=$('#nvVideo'); if(!v) return;
+    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
+    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
+    let tries=0, MAX=6;
+    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
+    v.addEventListener('loadeddata', go, { once:true }); go();
+    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
+    window.addEventListener('click',kick,{once:true,passive:true});
+    window.addEventListener('touchstart',kick,{once:true,passive:true});
+  }
 
   /* Init */
   window.addEventListener('load', async ()=>{

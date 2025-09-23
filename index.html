@@ -71,6 +71,11 @@
   .top-avatar{display:flex; gap:8px; align-items:center; cursor:default}
   #topAvatarIcon{font-size:28px}
   #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none}
+  .top-username{
+    margin-left:6px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+    padding:4px 8px; border-radius:8px; border:1px solid #2a3a61; background:#0f1625;
+    color:#cfe0ff; white-space:nowrap;
+  }
 
   /* HERO */
   .hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 16px; overflow:hidden}
@@ -236,6 +241,7 @@
     <div class="top-avatar" id="topAvatar" title="Utente">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
       <img id="topAvatarImg" alt="Avatar">
+      <span id="topUsername" class="top-username" hidden></span>
     </div>
   </header>
 
@@ -632,7 +638,7 @@
     window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
-  /* AVATAR (solo in header) */
+  /* ====== Avatar + Username in header ====== */
   function setAvatar(url){
     const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
     if(url){
@@ -640,6 +646,30 @@
     }else{
       topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none';
       topIcon.style.display='block';
+    }
+  }
+  function formatDiscordName(user){
+    if(!user) return '';
+    const disc = user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '';
+    return (user.global_name || user.username || 'Utente') + disc;
+  }
+  function setUserHeader(user){
+    // avatar
+    const avatar = user?.avatar
+      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
+      : cdnDefaultAvatar(user?.discriminator||0);
+    setAvatar(avatar);
+    // username
+    const el = $('#topUsername');
+    const name = formatDiscordName(user);
+    if(name){
+      el.textContent = name;
+      el.hidden = false;
+      $('#topAvatar').title = name;
+    }else{
+      el.textContent = '';
+      el.hidden = true;
+      $('#topAvatar').title = 'Utente';
     }
   }
 
@@ -654,12 +684,11 @@
     $('#btnLogout').hidden       = !isIn;
 
     if(isIn){
-      const avatar = user?.avatar
-        ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
-        : cdnDefaultAvatar(user?.discriminator||0);
-      setAvatar(avatar);
+      setUserHeader(user);
     }else{
       setAvatar(null);
+      const el = $('#topUsername'); el.textContent=''; el.hidden = true;
+      $('#topAvatar').title = 'Utente';
       const active = document.querySelector('.page.active')?.id?.replace('page-','');
       if(['donations','donation'].includes(active)) showPage('home');
     }
@@ -703,7 +732,6 @@
 
     // Attendo messaggio dal popup
     const onMsg = async (ev)=>{
-      // Verifica provenienza: deve essere il redirect origin
       if(ev.origin !== originOf(REDIRECT_URI)) return;
       const data = ev.data || {};
       if(data.type!=='discord_oauth') return;
@@ -753,10 +781,8 @@
         expires_in: Number(params.get('expires_in')||3600),
         state: params.get('state')
       };
-      // invia al dominio della pagina principale
       const targetOrigin = window.opener.location ? window.opener.location.origin : '*';
       window.opener.postMessage(payload, targetOrigin);
-      // Mostra un micro messaggio prima di chiudere
       document.body.innerHTML = '<div style="padding:20px;font:600 16px sans-serif;color:#eaf0ff;background:#0f1625">Autenticazione completata, puoi chiudere questa finestra…</div>';
       setTimeout(()=>window.close(), 250);
       return true;
@@ -823,7 +849,7 @@
       }catch(err){
         clearTimeout(t);
         if(attempt===retries) throw err;
-        await delay(300); // breve pausa e riprovo
+        await delay(300);
       }
     }
   }
@@ -860,16 +886,9 @@
     tryAutoplay();
   });
 
-  // Ricalcola timer quando torna il focus (per sicurezza)
   window.addEventListener('focus', scheduleAutoLogout);
-
-  /* ====== SICUREZZA MINIMA POSTMESSAGE (se mai servisse lato opener) ======
-     Nota: la pagina popup invia postMessage all'opener; qui ascoltiamo solo
-     i messaggi che arrivano dal nostro redirect origin e di tipo atteso.
-  ======================================================================= */
   window.addEventListener('message',(ev)=>{
     if(ev.origin !== originOf(REDIRECT_URI)) return;
-    // (già gestito in beginDiscordLogin -> onMsg)
   });
 
   </script>

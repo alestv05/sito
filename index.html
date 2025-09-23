@@ -194,9 +194,7 @@
     .card{margin:22px auto; padding:18px}
     .page{padding:28px 12px}
     .donations-grid{grid-template-columns:repeat(2,1fr); gap:14px}
-    .donation-caption{font-size:1rem}
     .donation-detail{grid-template-columns:1fr}
-    .donation-info .price{font-size:1.8rem}
     .staff-section{margin:28px auto}
     .staff-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   }
@@ -222,6 +220,9 @@
     <nav class="nav" id="mainNav">
       <a href="#" class="nav-link active" data-route="home">Home</a>
 
+      <!-- Sempre visibile -->
+      <a href="#" class="nav-link" data-route="staff">Staff</a>
+
       <!-- Visibile SOLO dopo login -->
       <a href="#" class="nav-link" id="navDonations" data-route="donations" hidden>Donazioni</a>
 
@@ -233,7 +234,7 @@
       <a href="#" class="nav-link" id="btnLogout" hidden>Logout</a>
     </nav>
 
-    <!-- Avatar (solo icona/immagine, niente profilo) -->
+    <!-- Avatar (solo immagine/icona) -->
     <div class="top-avatar" id="topAvatar" title="Utente">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
       <img id="topAvatarImg" alt="Avatar">
@@ -260,6 +261,181 @@
           </div>
           <div class="home-video-frame">
             <video id="nvVideo" src="https://files.catbox.moe/vq53u8.mp4" muted autoplay loop playsinline webkit-playsinline preload="auto"></video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAFF (sempre visibile) -->
+    <section id="page-staff" class="page" data-page>
+      <h2 class="title-roman center">Il nostro staff</h2>
+
+      <!-- Owner -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Owner
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-gold">
+              <img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy">
+            </div>
+            <div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Founder -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Founder
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-silver">
+              <img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto" loading="lazy">
+            </div>
+            <div class="member-name">Anto</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-silver">
+              <img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony" loading="lazy">
+            </div>
+            <div class="member-name">Mony</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Co-Founder -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Co-Founder
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo" loading="lazy">
+            </div>
+            <div class="member-name">Gabbo</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez" loading="lazy">
+            </div>
+            <div class="member-name">Rodriguez</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss" loading="lazy">
+            </div>
+            <div class="member-name">Th3b00ss</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Admin
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo" loading="lazy">
+            </div>
+            <div class="member-name">Alexo</div>
+            <div class="member-role role-eup">Eup Creator</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri" loading="lazy">
+            </div>
+            <div class="member-name">Chri</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide" loading="lazy">
+            </div>
+            <div class="member-name">Il Davide</div>
+            <div class="member-role role-eup">Eup Creator</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Moderatore -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Moderatore
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales" loading="lazy">
+            </div>
+            <div class="member-name">Ales</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze" loading="lazy">
+            </div>
+            <div class="member-name">Blaze</div>
+            <div class="member-role role-grafico">Grafico</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco" loading="lazy">
+            </div>
+            <div class="member-name">Franco</div>
+            <div class="member-role role-grafico">Grafico</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio" loading="lazy">
+            </div>
+            <div class="member-name">Glaudio</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca" loading="lazy">
+            </div>
+            <div class="member-name">Luca</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger" loading="lazy">
+            </div>
+            <div class="member-name">Mattiger</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight" loading="lazy">
+            </div>
+            <div class="member-name">Voight</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Helper -->
+      <div class="staff-section">
+        <h3 class="title-roman role">
+          <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Helper
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-purple">
+              <img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre" loading="lazy">
+            </div>
+            <div class="member-name">Andre</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-purple">
+              <img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco" loading="lazy">
+            </div>
+            <div class="member-name">Falco</div>
           </div>
         </div>
       </div>
@@ -445,17 +621,14 @@
     }
   }
 
-  /* AUTH UI (senza profilo/concorsi) */
+  /* AUTH UI */
   function updateAuthUI(){
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
 
-    // voce Donazioni
-    $('#navDonations').hidden = !isIn;
-
-    // login/logout
-    $('#btnDiscordLogin').hidden =  isIn;
+    $('#navDonations').hidden = !isIn;     // Donazioni visibile solo da loggati
+    $('#btnDiscordLogin').hidden =  isIn;  // Login/Logout
     $('#btnLogout').hidden       = !isIn;
 
     if(isIn){

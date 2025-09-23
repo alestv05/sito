@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NOVA ROMA Roleplay</title>
 
+  <!-- Performance hints per Discord -->
+  <link rel="preconnect" href="https://discord.com" crossorigin>
+  <link rel="dns-prefetch" href="//discord.com">
+  <link rel="preconnect" href="https://cdn.discordapp.com" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.discordapp.com">
+
   <!-- Font & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -159,19 +165,19 @@
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
+  /* Loader minimo per login */
+  .loader{
+    position:fixed; inset:auto 12px 12px auto;
+    background:#0f1625; border:1px solid #2a3a61; padding:8px 12px; border-radius:10px;
+    font-weight:800; z-index:1100; display:none;
+  }
+  .loader.show{display:block}
+
   /* Footer */
   .site-footer{text-align:center; padding:30px 12px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
   .stripe{height:8px; width:220px; margin:0 auto 12px; border-radius:6px; background:linear-gradient(90deg,#009246 0 33%, #fff 33% 66%, #ce2b37 66% 100%); border:1px solid #2a3a61}
-  /* Icone social sotto il copyright */
-  .footer-icons{
-    margin-top:10px;
-    display:flex; justify-content:center; align-items:center; gap:18px;
-  }
-  .footer-icons a{
-    color:#eaf0ff; text-decoration:none;
-    display:inline-grid; place-items:center;
-    width:32px; height:32px;
-  }
+  .footer-icons{margin-top:10px; display:flex; justify-content:center; align-items:center; gap:18px;}
+  .footer-icons a{color:#eaf0ff; text-decoration:none; display:inline-grid; place-items:center; width:32px; height:32px;}
   .footer-icons i{font-size:24px; line-height:1}
   .footer-icons a.ig:hover{color:#d62976}
   .footer-icons a.yt:hover{color:#ff0000}
@@ -219,22 +225,14 @@
   <header class="site-header">
     <nav class="nav" id="mainNav">
       <a href="#" class="nav-link active" data-route="home">Home</a>
-
-      <!-- Sempre visibile -->
       <a href="#" class="nav-link" data-route="staff">Staff</a>
-
-      <!-- Visibile SOLO dopo login -->
       <a href="#" class="nav-link" id="navDonations" data-route="donations" hidden>Donazioni</a>
-
       <a href="#" class="nav-link" id="btnDiscordLogin" title="Login con Discord">
         Login <i class="fa-brands fa-discord" aria-hidden="true"></i>
       </a>
-
-      <!-- Logout (solo da loggato) -->
       <a href="#" class="nav-link" id="btnLogout" hidden>Logout</a>
     </nav>
 
-    <!-- Avatar (solo immagine/icona) -->
     <div class="top-avatar" id="topAvatar" title="Utente">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
       <img id="topAvatarImg" alt="Avatar">
@@ -266,7 +264,7 @@
       </div>
     </section>
 
-    <!-- STAFF (sempre visibile) -->
+    <!-- STAFF -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman center">Il nostro staff</h2>
 
@@ -509,7 +507,6 @@
     <div class="stripe"></div>
     <p>© 2025 Nova Roma Roleplay</p>
 
-    <!-- SOLO ICONE sotto il copyright -->
     <div class="footer-icons" aria-label="Social">
       <a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener" aria-label="Instagram">
         <i class="fa-brands fa-instagram" aria-hidden="true"></i>
@@ -526,21 +523,46 @@
     </div>
   </footer>
 
+  <div class="loader" id="loginLoader">Login in corso…</div>
+
   <script>
-  /* ===== Discord OAuth (implicit flow) ===== */
+  /* ===== Discord OAuth (implicit flow) con popup veloce ===== */
   const DISCORD_CLIENT_ID = '1419444744563720404';
   const DISCORD_SCOPE = 'identify';
-  const REDIRECT_URI = 'https://alestv05.github.io/sito/';
+  const REDIRECT_URI = 'https://alestv05.github.io/sito/'; // invariato
 
+  /* Storage keys */
   const OAUTH_TOKEN_KEY = 'nr_discord_token_v1';
   const OAUTH_USER_KEY  = 'nr_discord_user_v1';
+  const OAUTH_EXP_KEY   = 'nr_discord_expires_at_v1';
 
   /* Utils */
   const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+  const delay=ms=>new Promise(r=>setTimeout(r,ms));
   const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
-  function cdnDefaultAvatar(index=0){const i=Number(index)%5||0;return `https://cdn.discordapp.com/embed/avatars/${i}.png`; }
+  const showLoader=(on)=>{$('#loginLoader')?.classList.toggle('show',!!on);};
+  const originOf = url => new URL(url, location.href).origin;
 
+  function cdnDefaultAvatar(index=0){const i=Number(index)%5||0;return `https://cdn.discordapp.com/embed/avatars/${i}.png`; }
   const protectedRoutes = new Set(['donations','donation']);
+
+  const nowMs = ()=>Date.now();
+  const getToken = ()=>{
+    const token = localStorage.getItem(OAUTH_TOKEN_KEY);
+    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
+    if(!token || !exp) return null;
+    if(nowMs() >= exp){ // scaduto
+      clearSession();
+      return null;
+    }
+    return token;
+  };
+  function clearSession(){
+    localStorage.removeItem(OAUTH_TOKEN_KEY);
+    localStorage.removeItem(OAUTH_USER_KEY);
+    localStorage.removeItem(OAUTH_EXP_KEY);
+    sessionStorage.removeItem('oauth_state');
+  }
 
   /* Ripple nav */
   document.addEventListener('click',e=>{
@@ -552,7 +574,7 @@
     btn.appendChild(r); setTimeout(()=>r.remove(),600);
   },{passive:true});
 
-  const isLoggedIn = () => !!(localStorage.getItem(OAUTH_TOKEN_KEY) && localStorage.getItem(OAUTH_USER_KEY));
+  const isLoggedIn = () => !!(getToken() && localStorage.getItem(OAUTH_USER_KEY));
 
   /* Router */
   function showPage(id){
@@ -623,7 +645,7 @@
 
   /* AUTH UI */
   function updateAuthUI(){
-    const token = localStorage.getItem(OAUTH_TOKEN_KEY);
+    const token = getToken();
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
 
@@ -643,28 +665,104 @@
     }
   }
 
-  /* Discord login */
-  function beginDiscordLogin(e){
-    if(e){ e.preventDefault(); e.stopPropagation(); }
-    const state = Math.random().toString(36).slice(2);
-    sessionStorage.setItem('oauth_state', state);
+  /* ==== POPUP OAUTH ==== */
+  function buildAuthURL(state){
     const authUrl = new URL('https://discord.com/oauth2/authorize');
     authUrl.searchParams.set('client_id', DISCORD_CLIENT_ID);
     authUrl.searchParams.set('redirect_uri', REDIRECT_URI);
     authUrl.searchParams.set('response_type', 'token');
     authUrl.searchParams.set('scope', DISCORD_SCOPE);
     authUrl.searchParams.set('state', state);
-    window.location.assign(authUrl.toString());
+    return authUrl.toString();
   }
 
+  function beginDiscordLogin(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    if(getToken()){ toast('Sei già loggato.'); return; }
+
+    const state = Math.random().toString(36).slice(2);
+    sessionStorage.setItem('oauth_state', state);
+
+    const url = buildAuthURL(state);
+    const w = 520, h = 700;
+    const y = window.top.outerHeight/2 + window.top.screenY - (h/2);
+    const x = window.top.outerWidth/2  + window.top.screenX - (w/2);
+    const popup = window.open(url, 'discord_oauth',
+      `width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes`);
+
+    showLoader(true);
+    $('#btnDiscordLogin').classList.add('disabled');
+
+    let popupBlocked = !popup || popup.closed || typeof popup.closed==='undefined';
+
+    if(popupBlocked){
+      // Fallback: redirect pieno
+      window.location.assign(url);
+      return;
+    }
+
+    // Attendo messaggio dal popup
+    const onMsg = async (ev)=>{
+      // Verifica provenienza: deve essere il redirect origin
+      if(ev.origin !== originOf(REDIRECT_URI)) return;
+      const data = ev.data || {};
+      if(data.type!=='discord_oauth') return;
+
+      window.removeEventListener('message', onMsg);
+      try{
+        await finalizeOAuth({
+          access_token: data.access_token,
+          token_type: data.token_type || 'Bearer',
+          expires_in: data.expires_in || 3600,
+          stateReceived: data.state
+        });
+        popup && popup.close();
+      }finally{
+        showLoader(false);
+        $('#btnDiscordLogin').classList.remove('disabled');
+      }
+    };
+    window.addEventListener('message', onMsg);
+
+    // Watcher: se chiude senza fare login
+    const timer = setInterval(()=>{
+      if(popup.closed){
+        clearInterval(timer);
+        window.removeEventListener('message', onMsg);
+        showLoader(false);
+        $('#btnDiscordLogin').classList.remove('disabled');
+      }
+    }, 500);
+  }
+
+  // Gestione del frammento #access_token (sia in pagina principale che nel popup)
   async function handleOAuthRedirectFragment(){
     if(!location.hash.startsWith('#')) return false;
     const params = new URLSearchParams(location.hash.slice(1));
     if(!(params.get('access_token') || params.get('error'))) return false;
 
-    // pulizia URL
+    // Pulizia URL (niente hash)
     history.replaceState(null, '', location.pathname + location.search);
 
+    // Se siamo nel popup: postMessage all'opener e chiudi
+    if(window.opener && typeof window.opener.postMessage==='function'){
+      const payload = {
+        type:'discord_oauth',
+        access_token: params.get('access_token'),
+        token_type: params.get('token_type') || 'Bearer',
+        expires_in: Number(params.get('expires_in')||3600),
+        state: params.get('state')
+      };
+      // invia al dominio della pagina principale
+      const targetOrigin = window.opener.location ? window.opener.location.origin : '*';
+      window.opener.postMessage(payload, targetOrigin);
+      // Mostra un micro messaggio prima di chiudere
+      document.body.innerHTML = '<div style="padding:20px;font:600 16px sans-serif;color:#eaf0ff;background:#0f1625">Autenticazione completata, puoi chiudere questa finestra…</div>';
+      setTimeout(()=>window.close(), 250);
+      return true;
+    }
+
+    // Flusso redirect pieno (senza popup)
     if(params.get('error')){
       toast('Accesso Discord annullato.');
       return true;
@@ -672,6 +770,7 @@
 
     const at = params.get('access_token');
     const tokenType = params.get('token_type') || 'Bearer';
+    const expiresIn = Number(params.get('expires_in')||3600);
     const state = params.get('state');
     const expected = sessionStorage.getItem('oauth_state');
     sessionStorage.removeItem('oauth_state');
@@ -681,32 +780,68 @@
       return true;
     }
 
+    showLoader(true);
     try{
-      const res = await fetch('https://discord.com/api/users/@me', {
-        headers:{ 'Authorization': `${tokenType} ${at}` }
-      });
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      const user = await res.json();
-      localStorage.setItem(OAUTH_TOKEN_KEY, at);
-      localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
-      toast('Accesso con Discord riuscito!');
-      updateAuthUI();
-    }catch(err){
-      console.error(err);
+      await finalizeOAuth({ access_token: at, token_type: tokenType, expires_in: expiresIn, stateReceived: state });
+    }catch(_){
       toast('Errore nel recupero profilo Discord.');
+    }finally{
+      showLoader(false);
     }
     return true;
   }
 
-  /* Logout */
+  async function finalizeOAuth({access_token, token_type='Bearer', expires_in=3600}){
+    if(!access_token) throw new Error('Missing token');
+
+    // salva token + scadenza (skew -30s)
+    const expiresAt = nowMs() + (Number(expires_in)||3600)*1000 - 30000;
+    localStorage.setItem(OAUTH_TOKEN_KEY, access_token);
+    localStorage.setItem(OAUTH_EXP_KEY, String(expiresAt));
+
+    // fetch profilo con timeout + retry
+    const user = await fetchWithTimeoutRetry(
+      'https://discord.com/api/users/@me',
+      { headers:{ 'Authorization': `${token_type} ${access_token}` } },
+      6000, 1
+    );
+    localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
+
+    updateAuthUI();
+    toast('Accesso con Discord riuscito!');
+  }
+
+  async function fetchWithTimeoutRetry(url, options={}, timeoutMs=6000, retries=1){
+    for(let attempt=0; attempt<=retries; attempt++){
+      const ctrl = new AbortController();
+      const t = setTimeout(()=>ctrl.abort(), timeoutMs);
+      try{
+        const res = await fetch(url, { ...options, signal: ctrl.signal });
+        clearTimeout(t);
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        return await res.json();
+      }catch(err){
+        clearTimeout(t);
+        if(attempt===retries) throw err;
+        await delay(300); // breve pausa e riprovo
+      }
+    }
+  }
+
+  /* Logout + auto-logout allo scadere */
+  let expTimer = null;
+  function scheduleAutoLogout(){
+    if(expTimer) clearTimeout(expTimer);
+    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
+    if(!exp) return;
+    const wait = Math.max(0, exp - nowMs());
+    expTimer = setTimeout(()=>{ logout(); toast('Sessione scaduta, effettua di nuovo il login.'); }, wait);
+  }
+
   function logout(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
-    try{
-      localStorage.removeItem(OAUTH_TOKEN_KEY);
-      localStorage.removeItem(OAUTH_USER_KEY);
-      sessionStorage.removeItem('oauth_state');
-      if(location.hash) history.replaceState(null,'',location.pathname+location.search);
-    }catch(_){}
+    clearSession();
+    if(location.hash) history.replaceState(null,'',location.pathname+location.search);
     updateAuthUI();
     showPage('home');
     toast('Logout effettuato');
@@ -718,12 +853,25 @@
 
   /* Init */
   window.addEventListener('load', async ()=>{
-    await handleOAuthRedirectFragment();
+    await handleOAuthRedirectFragment(); // gestisce sia popup che redirect pieno
     updateAuthUI();
+    scheduleAutoLogout();
     showPage('home');
     tryAutoplay();
   });
+
+  // Ricalcola timer quando torna il focus (per sicurezza)
+  window.addEventListener('focus', scheduleAutoLogout);
+
+  /* ====== SICUREZZA MINIMA POSTMESSAGE (se mai servisse lato opener) ======
+     Nota: la pagina popup invia postMessage all'opener; qui ascoltiamo solo
+     i messaggi che arrivano dal nostro redirect origin e di tipo atteso.
+  ======================================================================= */
+  window.addEventListener('message',(ev)=>{
+    if(ev.origin !== originOf(REDIRECT_URI)) return;
+    // (già gestito in beginDiscordLogin -> onMsg)
+  });
+
   </script>
 </body>
 </html>
-

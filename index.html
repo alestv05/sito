@@ -14,6 +14,8 @@
     --bg:#070b14; --surface:#121a2a; --text:#eaf0ff; --muted:#9daccc;
     --primary:#58a6ff; --primary2:#0b6dd6; --shadow:0 18px 40px rgba(0,0,0,.55);
     --logo-size:clamp(280px,45vw,560px); --home-video-max:440px; --home-video-min:280px;
+    /* Altezza barra social fissa */
+    --social-h:64px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -22,13 +24,15 @@
     font-family:'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
     -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     overflow-x:hidden;
+    /* spazio per non far coprire i contenuti dalla barra social fissa */
+    padding-bottom:var(--social-h);
   }
 
   /* visibilità robusta */
   [hidden]{display:none !important;}
   .hidden{display:none !important;}
 
-  /* Icon fonts (per l’icona Discord) */
+  /* Icon fonts (per le icone Font Awesome) */
   .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
   .fa-brands{font-family:"Font Awesome 6 Brands" !important}
 
@@ -39,7 +43,7 @@
     position:sticky; top:0; z-index:20;
     background:#0f1625dd; backdrop-filter:saturate(140%) blur(6px);
     border-bottom:1px solid #23314f; padding:8px 14px;
-    display:flex; align-items:center; justify-content:space-between
+    display:flex; align-items:center; justify-content:space-between;
   }
   .nav{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
   .nav-link{
@@ -157,7 +161,8 @@
   .btn-discord{background:#5865F2;color:#fff}
 
   .toast{
-    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
+    position:fixed; left:50%; bottom:calc(var(--social-h) + 12px);
+    transform:translateX(-50%) translateY(20px);
     background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow);
     padding:12px 16px; border-radius:12px; font-weight:800; z-index:1000; opacity:0;
     transition:opacity .25s ease, transform .25s ease;
@@ -215,6 +220,7 @@
 
   /* Smartphone (≤600px) */
   @media (max-width:600px){
+    :root{ --social-h:56px; }
     .site-header{padding:6px 10px}
     .nav{gap:8px; overflow-x:auto; scrollbar-width:thin}
     .nav-link{padding:7px 8px; font-size:.95rem}
@@ -236,10 +242,8 @@
 
     .concorsi-wrap{padding:18px 12px 26px}
     .concorsi-tabs{gap:6px}
-    .concorsi-card{border-radius:8px}
-    /* scrolling orizzontale per tabella */
+    .concorsi-card{border-radius:8px; overflow:auto}
     .concorsi-table{min-width:640px}
-    .concorsi-card{overflow:auto}
   }
 
   /* Tablet (601px–1024px) */
@@ -257,7 +261,33 @@
     .donations-grid{grid-template-columns:repeat(4,1fr)}
     .staff-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
   }
-  /* =================== FINE RESPONSIVE =================== */
+
+  /* ============== BARRA SOCIALE FISSA (NUOVA) ============== */
+  .social-fixed{
+    position:fixed; left:0; right:0; bottom:0; z-index:2000;
+    background:#0f1625f2; backdrop-filter:saturate(140%) blur(6px);
+    border-top:1px solid #23314f;
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    padding:10px 12px; height:var(--social-h);
+  }
+  .social-fixed .social-btn{
+    width:44px; height:44px; border-radius:12px;
+    display:grid; place-items:center; text-decoration:none;
+    color:#eaf0ff; background:#162137; border:1px solid #2a3a61;
+    box-shadow:0 6px 16px rgba(0,0,0,.3);
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .social-fixed .social-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 22px rgba(0,0,0,.4);
+    border-color:#3a57a1;
+  }
+  .social-fixed .social-btn i{font-size:22px; line-height:1}
+  /* brand tint leggero al passaggio */
+  .social-btn.ig:hover{border-color:#d62976}
+  .social-btn.yt:hover{border-color:#ff0000}
+  .social-btn.tt:hover{border-color:#25f4ee}
+  .social-btn.dc:hover{border-color:#5865F2}
   </style>
 </head>
 <body>
@@ -687,6 +717,23 @@
     <p>© 2025 Nova Roma Roleplay</p>
   </footer>
 
+  <!-- ===== BARRA SOCIAL FISSA (sotto al tricolore) ===== -->
+  <nav class="social-fixed" aria-label="Social">
+    <!-- Sostituisci # con i tuoi link -->
+    <a class="social-btn ig" href="#" target="_blank" rel="noopener" aria-label="Instagram">
+      <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+    </a>
+    <a class="social-btn yt" href="#" target="_blank" rel="noopener" aria-label="YouTube">
+      <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+    </a>
+    <a class="social-btn tt" href="#" target="_blank" rel="noopener" aria-label="TikTok">
+      <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+    </a>
+    <a class="social-btn dc" href="#" target="_blank" rel="noopener" aria-label="Discord">
+      <i class="fa-brands fa-discord" aria-hidden="true"></i>
+    </a>
+  </nav>
+
   <script>
   /* ===== Discord OAuth (implicit flow) ===== */
   const DISCORD_CLIENT_ID = '1419444744563720404';
@@ -784,7 +831,7 @@
     });
   });
 
-  /* Video */
+  /* Video autoplay robusto */
   function tryAutoplay(){
     const v=$('#nvVideo'); if(!v) return;
     v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
@@ -933,19 +980,6 @@
   $('#topAvatar')?.addEventListener('click',()=>{
     if(isLoggedIn()) showPage('profile');
   });
-
-  /* Video */
-  function tryAutoplay(){
-    const v=$('#nvVideo'); if(!v) return;
-    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
-    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
-    let tries=0, MAX=6;
-    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
-    v.addEventListener('loadeddata', go, { once:true }); go();
-    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
-    window.addEventListener('click',kick,{once:true,passive:true});
-    window.addEventListener('touchstart',kick,{once:true,passive:true});
-  }
 
   /* Init */
   window.addEventListener('load', async ()=>{

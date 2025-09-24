@@ -31,7 +31,6 @@
   }
 
   [hidden]{display:none !important;}
-  .hidden{display:none !important;}
   .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
   .fa-brands{font-family:"Font Awesome 6 Brands" !important}
   .noscript{background:#ffdd57;color:#111;padding:10px 14px;text-align:center;font-weight:800}
@@ -51,14 +50,13 @@
     letter-spacing:.06em; transition:color .3s ease; display:inline-flex; gap:8px; align-items:center;
   }
   .nav-link i{font-size:1.15em}
-  .nav-link.active{ color:#fff }
-  .nav-link:hover{ color:#fff }
+  .nav-link.active,.nav-link:hover{ color:#fff }
   .nav-link::after{
     content:""; position:absolute; left:12px; right:12px; bottom:6px; height:2px;
     background:#ffffff; transform:scaleX(0); transform-origin:left;
     transition:transform .25s ease; border-radius:2px;
   }
-  .nav-link:hover::after, .nav-link.active::after{ transform:scaleX(1) }
+  .nav-link:hover::after,.nav-link.active::after{ transform:scaleX(1) }
   .ripple{
     position:absolute; width:10px; height:10px; border-radius:50%;
     pointer-events:none;
@@ -71,11 +69,8 @@
   .top-avatar{display:flex; gap:8px; align-items:center; cursor:default}
   #topAvatarIcon{font-size:28px}
   #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none}
-  .top-username{
-    margin-left:6px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
-    padding:4px 8px; border-radius:8px; border:1px solid #2a3a61; background:#0f1625;
-    color:#cfe0ff; white-space:nowrap;
-  }
+  /* Nome utente inline, semplice testo */
+  #topUsername{font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:#cfe0ff}
 
   /* HERO */
   .hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 16px; overflow:hidden}
@@ -118,6 +113,16 @@
   .chip{width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:#1b2747; border:1px solid #2a3a61}
   .sub{color:#9daccc; font-size:.9rem}
 
+  /* Discord widget card */
+  .discord-card{max-width:980px; margin:26px auto 0; background:#111a2c; border:1px solid #2a3a61; border-radius:16px; padding:18px; box-shadow:var(--shadow)}
+  .discord-head{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+  .discord-stats{display:flex; gap:14px; flex-wrap:wrap; color:#cfe0ff; font-weight:800}
+  .discord-stats .pill{border:1px solid #2a3a61; border-radius:999px; padding:4px 10px; background:#0f1625}
+  .discord-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(48px,1fr)); gap:10px; margin-top:14px}
+  .discord-user{display:grid; justify-items:center; gap:6px}
+  .discord-user img{width:48px; height:48px; border-radius:50%; object-fit:cover; border:1px solid #2a3a61; background:#0f1528}
+  .discord-user span{font-size:.85rem; text-align:center; color:#9daccc; word-break:break-word}
+
   /* Donations */
   #page-donations{position:relative; padding:40px 20px}
   .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; max-width:920px; margin:0 auto}
@@ -152,7 +157,7 @@
   .role-eup{color:#4a90e2}
   .role-grafico{color:#ff4dd2}
 
-  /* Buttons / Toast */
+  /* Buttons / Toast / Loader */
   .actions{display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap}
   .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; border:0; cursor:pointer; font-weight:800; text-transform:uppercase; letter-spacing:.06em; transition:transform .12s ease,box-shadow .12s ease; font-family:inherit}
   .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2)); color:#fff; box-shadow:0 10px 22px rgba(11,109,214,.25)}
@@ -162,15 +167,12 @@
   .btn-discord{background:#5865F2;color:#fff}
 
   .toast{
-    position:fixed; left:50%; bottom:24px;
-    transform:translateX(-50%) translateY(20px);
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
     background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow);
     padding:12px 16px; border-radius:12px; font-weight:800; z-index:1000; opacity:0;
     transition:opacity .25s ease, transform .25s ease;
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
-
-  /* Loader minimo per login */
   .loader{
     position:fixed; inset:auto 12px 12px auto;
     background:#0f1625; border:1px solid #2a3a61; padding:8px 12px; border-radius:10px;
@@ -193,7 +195,7 @@
   .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
   .page.active{display:block}
 
-  /* ===================== RESPONSIVE ===================== */
+  /* Responsive */
   @media (max-width:600px){
     .site-header{padding:6px 10px}
     .nav{gap:8px; overflow-x:auto; scrollbar-width:thin}
@@ -241,7 +243,7 @@
     <div class="top-avatar" id="topAvatar" title="Utente">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
       <img id="topAvatarImg" alt="Avatar">
-      <span id="topUsername" class="top-username" hidden></span>
+      <span id="topUsername" hidden></span>
     </div>
   </header>
 
@@ -267,10 +269,31 @@
             <video id="nvVideo" src="https://files.catbox.moe/vq53u8.mp4" muted autoplay loop playsinline webkit-playsinline preload="auto"></video>
           </div>
         </div>
+
+        <!-- ======= DISCORD COMMUNITY (sulla Home) ======= -->
+        <div class="discord-card" id="discordCard">
+          <div class="discord-head">
+            <i class="fa-brands fa-discord"></i>
+            <h3 class="title-roman" style="margin:0">Community Discord</h3>
+          </div>
+          <div class="discord-stats" id="discordStats">
+            <span class="pill">Caricamento dati server…</span>
+          </div>
+          <div id="discordMembers" class="discord-grid" aria-live="polite"></div>
+          <div id="discordWidgetWrap" style="margin-top:14px; display:none">
+            <iframe id="discordWidget"
+              title="Discord"
+              width="100%" height="380"
+              allowtransparency="true" frameborder="0"
+              sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+            </iframe>
+          </div>
+        </div>
+        <!-- ============================================ -->
       </div>
     </section>
 
-    <!-- STAFF -->
+    <!-- STAFF (sempre visibile) -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman center">Il nostro staff</h2>
 
@@ -532,10 +555,12 @@
   <div class="loader" id="loginLoader">Login in corso…</div>
 
   <script>
-  /* ===== Discord OAuth (implicit flow) con popup veloce ===== */
+  /* ===== CONFIG ===== */
   const DISCORD_CLIENT_ID = '1419444744563720404';
   const DISCORD_SCOPE = 'identify';
   const REDIRECT_URI = 'https://alestv05.github.io/sito/'; // invariato
+  const DISCORD_INVITE_URL = 'https://discord.gg/EubyJqDGwU';
+  const INVITE_CODE = DISCORD_INVITE_URL.split('/').filter(Boolean).pop();
 
   /* Storage keys */
   const OAUTH_TOKEN_KEY = 'nr_discord_token_v1';
@@ -548,27 +573,10 @@
   const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
   const showLoader=(on)=>{$('#loginLoader')?.classList.toggle('show',!!on);};
   const originOf = url => new URL(url, location.href).origin;
+  const cdnDefaultAvatar = (i=0)=>`https://cdn.discordapp.com/embed/avatars/${(Number(i)%5)||0}.png`;
 
-  function cdnDefaultAvatar(index=0){const i=Number(index)%5||0;return `https://cdn.discordapp.com/embed/avatars/${i}.png`; }
   const protectedRoutes = new Set(['donations','donation']);
-
   const nowMs = ()=>Date.now();
-  const getToken = ()=>{
-    const token = localStorage.getItem(OAUTH_TOKEN_KEY);
-    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
-    if(!token || !exp) return null;
-    if(nowMs() >= exp){ // scaduto
-      clearSession();
-      return null;
-    }
-    return token;
-  };
-  function clearSession(){
-    localStorage.removeItem(OAUTH_TOKEN_KEY);
-    localStorage.removeItem(OAUTH_USER_KEY);
-    localStorage.removeItem(OAUTH_EXP_KEY);
-    sessionStorage.removeItem('oauth_state');
-  }
 
   /* Ripple nav */
   document.addEventListener('click',e=>{
@@ -580,14 +588,159 @@
     btn.appendChild(r); setTimeout(()=>r.remove(),600);
   },{passive:true});
 
-  const isLoggedIn = () => !!(getToken() && localStorage.getItem(OAUTH_USER_KEY));
+  /* ====== LOGIN DISCORD (popup + fallback) ====== */
+  const getToken = ()=>{
+    const token = localStorage.getItem(OAUTH_TOKEN_KEY);
+    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
+    if(!token || !exp) return null;
+    if(nowMs() >= exp){ clearSession(); return null; }
+    return token;
+  };
+  const isLoggedIn = ()=>!!(getToken() && localStorage.getItem(OAUTH_USER_KEY));
+  function clearSession(){
+    localStorage.removeItem(OAUTH_TOKEN_KEY);
+    localStorage.removeItem(OAUTH_USER_KEY);
+    localStorage.removeItem(OAUTH_EXP_KEY);
+    sessionStorage.removeItem('oauth_state');
+  }
+
+  /* Video */
+  function tryAutoplay(){
+    const v=$('#nvVideo'); if(!v) return;
+    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
+    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
+    let tries=0, MAX=6;
+    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
+    v.addEventListener('loadeddata', go, { once:true }); go();
+    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
+    window.addEventListener('click',kick,{once:true,passive:true});
+    window.addEventListener('touchstart',kick,{once:true,passive:true});
+  }
+
+  /* Username + avatar (inline) */
+  function formatDiscordName(user){
+    if(!user) return '';
+    const disc = user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '';
+    return (user.global_name || user.username || 'Utente') + disc;
+  }
+  function setAvatar(url){
+    const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
+    if(url){ topImg.src=url; topImg.style.display='block'; topIcon.style.display='none'; }
+    else { topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none'; topIcon.style.display='block'; }
+  }
+  function setUserHeader(user){
+    const avatar = user?.avatar
+      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
+      : cdnDefaultAvatar(user?.discriminator||0);
+    setAvatar(avatar);
+    const name = formatDiscordName(user);
+    const el = $('#topUsername');
+    if(name){ el.textContent = name; el.hidden = false; $('#topAvatar').title = name; }
+    else { el.textContent = ''; el.hidden = true; $('#topAvatar').title='Utente'; }
+  }
+  function updateAuthUI(){
+    const token = getToken();
+    const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+    const isIn = !!(token && user);
+    $('#navDonations').hidden = !isIn;
+    $('#btnDiscordLogin').hidden =  isIn;
+    $('#btnLogout').hidden       = !isIn;
+    if(isIn) setUserHeader(user);
+    else { setAvatar(null); const n=$('#topUsername'); n.textContent=''; n.hidden=true; $('#topAvatar').title='Utente';
+      const active = document.querySelector('.page.active')?.id?.replace('page-','');
+      if(['donations','donation'].includes(active)) showPage('home');
+    }
+  }
+
+  function buildAuthURL(state){
+    const u = new URL('https://discord.com/oauth2/authorize');
+    u.searchParams.set('client_id', DISCORD_CLIENT_ID);
+    u.searchParams.set('redirect_uri', REDIRECT_URI);
+    u.searchParams.set('response_type', 'token');
+    u.searchParams.set('scope', DISCORD_SCOPE);
+    u.searchParams.set('state', state);
+    return u.toString();
+  }
+  function beginDiscordLogin(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    if(getToken()){ toast('Sei già loggato.'); return; }
+    const state = Math.random().toString(36).slice(2);
+    sessionStorage.setItem('oauth_state', state);
+    const url = buildAuthURL(state);
+    const w = 520, h = 700;
+    const y = window.top.outerHeight/2 + window.top.screenY - (h/2);
+    const x = window.top.outerWidth/2  + window.top.screenX - (w/2);
+    const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes`);
+    showLoader(true); $('#btnDiscordLogin').classList.add('disabled');
+    if(!popup || popup.closed || typeof popup.closed==='undefined'){ window.location.assign(url); return; }
+    const onMsg = async (ev)=>{
+      if(ev.origin !== originOf(REDIRECT_URI)) return;
+      const data = ev.data||{}; if(data.type!=='discord_oauth') return;
+      window.removeEventListener('message', onMsg);
+      try{
+        await finalizeOAuth({ access_token:data.access_token, token_type:data.token_type||'Bearer', expires_in:data.expires_in||3600 });
+        popup && popup.close();
+      }finally{ showLoader(false); $('#btnDiscordLogin').classList.remove('disabled'); }
+    };
+    window.addEventListener('message', onMsg);
+    const timer=setInterval(()=>{ if(popup.closed){ clearInterval(timer); window.removeEventListener('message', onMsg); showLoader(false); $('#btnDiscordLogin').classList.remove('disabled'); } },500);
+  }
+  async function handleOAuthRedirectFragment(){
+    if(!location.hash.startsWith('#')) return false;
+    const params=new URLSearchParams(location.hash.slice(1));
+    if(!(params.get('access_token')||params.get('error'))) return false;
+    history.replaceState(null,'',location.pathname+location.search);
+    if(window.opener && typeof window.opener.postMessage==='function'){
+      const payload = { type:'discord_oauth', access_token:params.get('access_token'),
+        token_type: params.get('token_type')||'Bearer', expires_in:Number(params.get('expires_in')||3600), state:params.get('state') };
+      const targetOrigin = window.opener.location ? window.opener.location.origin : '*';
+      window.opener.postMessage(payload, targetOrigin);
+      document.body.innerHTML = '<div style="padding:20px;font:600 16px sans-serif;color:#eaf0ff;background:#0f1625">Autenticazione completata, puoi chiudere questa finestra…</div>';
+      setTimeout(()=>window.close(),250);
+      return true;
+    }
+    if(params.get('error')){ toast('Accesso Discord annullato.'); return true; }
+    const at=params.get('access_token'); const tokenType=params.get('token_type')||'Bearer'; const expiresIn=Number(params.get('expires_in')||3600);
+    const state=params.get('state'); const expected=sessionStorage.getItem('oauth_state'); sessionStorage.removeItem('oauth_state');
+    if(!at || (expected && expected!==state)){ toast('Verifica OAuth fallita.'); return true; }
+    showLoader(true);
+    try{ await finalizeOAuth({access_token:at, token_type:tokenType, expires_in:expiresIn}); }catch(_){ toast('Errore nel recupero profilo Discord.'); }
+    finally{ showLoader(false); }
+    return true;
+  }
+  async function finalizeOAuth({access_token, token_type='Bearer', expires_in=3600}){
+    if(!access_token) throw new Error('Missing token');
+    const expiresAt = nowMs() + (Number(expires_in)||3600)*1000 - 30000;
+    localStorage.setItem(OAUTH_TOKEN_KEY, access_token);
+    localStorage.setItem(OAUTH_EXP_KEY, String(expiresAt));
+    const user = await fetchWithTimeoutRetry('https://discord.com/api/users/@me', { headers:{ 'Authorization': `${token_type} ${access_token}` } }, 6000, 1);
+    localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
+    updateAuthUI(); toast('Accesso con Discord riuscito!');
+  }
+  async function fetchWithTimeoutRetry(url, options={}, timeoutMs=6000, retries=1){
+    for(let a=0; a<=retries; a++){
+      const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(), timeoutMs);
+      try{ const res=await fetch(url,{...options, signal:ctrl.signal}); clearTimeout(t);
+        if(!res.ok) throw new Error('HTTP '+res.status); return await res.json();
+      }catch(err){ clearTimeout(t); if(a===retries) throw err; await delay(300); }
+    }
+  }
+  let expTimer=null;
+  function scheduleAutoLogout(){
+    if(expTimer) clearTimeout(expTimer);
+    const exp=Number(localStorage.getItem(OAUTH_EXP_KEY)||0); if(!exp) return;
+    const wait=Math.max(0, exp-nowMs());
+    expTimer=setTimeout(()=>{ logout(); toast('Sessione scaduta, effettua di nuovo il login.'); }, wait);
+  }
+  function logout(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    clearSession(); if(location.hash) history.replaceState(null,'',location.pathname+location.search);
+    updateAuthUI(); showPage('home'); toast('Logout effettuato');
+  }
 
   /* Router */
   function showPage(id){
-    if(protectedRoutes.has(id) && !isLoggedIn()){
-      toast('Devi effettuare il login per accedere.');
-      id='home';
-    }
+    if(protectedRoutes.has(id) && !isLoggedIn()){ toast('Devi effettuare il login per accedere.'); id='home'; }
     $$('.page').forEach(p=>p.classList.remove('active'));
     $$('.nav-link').forEach(l=>l.classList.remove('active'));
     $(`#page-${id}`)?.classList.add('active');
@@ -625,252 +778,66 @@
     if(e.target.id==='btnBuy'){toast('Pagamento non configurato — apri un ticket Discord.')}
   });
 
-  /* Video */
-  function tryAutoplay(){
-    const v=$('#nvVideo'); if(!v) return;
-    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
-    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
-    let tries=0, MAX=6;
-    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
-    v.addEventListener('loadeddata', go, { once:true }); go();
-    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
-    window.addEventListener('click',kick,{once:true,passive:true});
-    window.addEventListener('touchstart',kick,{once:true,passive:true});
-  }
+  /* ====== DISCORD HOME WIDGET ======
+     - Risolvo l'invito -> guild id + conteggi
+     - Provo widget.json -> lista online
+     - Sempre mostro iframe ufficiale se ho guild id
+  =================================== */
+  async function loadDiscordHome(){
+    const stats = $('#discordStats');
+    const grid  = $('#discordMembers');
+    const wWrap = $('#discordWidgetWrap');
+    const wIfr  = $('#discordWidget');
 
-  /* ====== Avatar + Username in header ====== */
-  function setAvatar(url){
-    const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
-    if(url){
-      topImg.src=url; topImg.style.display='block'; topIcon.style.display='none';
-    }else{
-      topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none';
-      topIcon.style.display='block';
-    }
-  }
-  function formatDiscordName(user){
-    if(!user) return '';
-    const disc = user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '';
-    return (user.global_name || user.username || 'Utente') + disc;
-  }
-  function setUserHeader(user){
-    // avatar
-    const avatar = user?.avatar
-      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
-      : cdnDefaultAvatar(user?.discriminator||0);
-    setAvatar(avatar);
-    // username
-    const el = $('#topUsername');
-    const name = formatDiscordName(user);
-    if(name){
-      el.textContent = name;
-      el.hidden = false;
-      $('#topAvatar').title = name;
-    }else{
-      el.textContent = '';
-      el.hidden = true;
-      $('#topAvatar').title = 'Utente';
-    }
-  }
-
-  /* AUTH UI */
-  function updateAuthUI(){
-    const token = getToken();
-    const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    const isIn = !!(token && user);
-
-    $('#navDonations').hidden = !isIn;     // Donazioni visibile solo da loggati
-    $('#btnDiscordLogin').hidden =  isIn;  // Login/Logout
-    $('#btnLogout').hidden       = !isIn;
-
-    if(isIn){
-      setUserHeader(user);
-    }else{
-      setAvatar(null);
-      const el = $('#topUsername'); el.textContent=''; el.hidden = true;
-      $('#topAvatar').title = 'Utente';
-      const active = document.querySelector('.page.active')?.id?.replace('page-','');
-      if(['donations','donation'].includes(active)) showPage('home');
-    }
-  }
-
-  /* ==== POPUP OAUTH ==== */
-  function buildAuthURL(state){
-    const authUrl = new URL('https://discord.com/oauth2/authorize');
-    authUrl.searchParams.set('client_id', DISCORD_CLIENT_ID);
-    authUrl.searchParams.set('redirect_uri', REDIRECT_URI);
-    authUrl.searchParams.set('response_type', 'token');
-    authUrl.searchParams.set('scope', DISCORD_SCOPE);
-    authUrl.searchParams.set('state', state);
-    return authUrl.toString();
-  }
-
-  function beginDiscordLogin(e){
-    if(e){ e.preventDefault(); e.stopPropagation(); }
-    if(getToken()){ toast('Sei già loggato.'); return; }
-
-    const state = Math.random().toString(36).slice(2);
-    sessionStorage.setItem('oauth_state', state);
-
-    const url = buildAuthURL(state);
-    const w = 520, h = 700;
-    const y = window.top.outerHeight/2 + window.top.screenY - (h/2);
-    const x = window.top.outerWidth/2  + window.top.screenX - (w/2);
-    const popup = window.open(url, 'discord_oauth',
-      `width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes`);
-
-    showLoader(true);
-    $('#btnDiscordLogin').classList.add('disabled');
-
-    let popupBlocked = !popup || popup.closed || typeof popup.closed==='undefined';
-
-    if(popupBlocked){
-      // Fallback: redirect pieno
-      window.location.assign(url);
-      return;
-    }
-
-    // Attendo messaggio dal popup
-    const onMsg = async (ev)=>{
-      if(ev.origin !== originOf(REDIRECT_URI)) return;
-      const data = ev.data || {};
-      if(data.type!=='discord_oauth') return;
-
-      window.removeEventListener('message', onMsg);
-      try{
-        await finalizeOAuth({
-          access_token: data.access_token,
-          token_type: data.token_type || 'Bearer',
-          expires_in: data.expires_in || 3600,
-          stateReceived: data.state
-        });
-        popup && popup.close();
-      }finally{
-        showLoader(false);
-        $('#btnDiscordLogin').classList.remove('disabled');
-      }
-    };
-    window.addEventListener('message', onMsg);
-
-    // Watcher: se chiude senza fare login
-    const timer = setInterval(()=>{
-      if(popup.closed){
-        clearInterval(timer);
-        window.removeEventListener('message', onMsg);
-        showLoader(false);
-        $('#btnDiscordLogin').classList.remove('disabled');
-      }
-    }, 500);
-  }
-
-  // Gestione del frammento #access_token (sia in pagina principale che nel popup)
-  async function handleOAuthRedirectFragment(){
-    if(!location.hash.startsWith('#')) return false;
-    const params = new URLSearchParams(location.hash.slice(1));
-    if(!(params.get('access_token') || params.get('error'))) return false;
-
-    // Pulizia URL (niente hash)
-    history.replaceState(null, '', location.pathname + location.search);
-
-    // Se siamo nel popup: postMessage all'opener e chiudi
-    if(window.opener && typeof window.opener.postMessage==='function'){
-      const payload = {
-        type:'discord_oauth',
-        access_token: params.get('access_token'),
-        token_type: params.get('token_type') || 'Bearer',
-        expires_in: Number(params.get('expires_in')||3600),
-        state: params.get('state')
-      };
-      const targetOrigin = window.opener.location ? window.opener.location.origin : '*';
-      window.opener.postMessage(payload, targetOrigin);
-      document.body.innerHTML = '<div style="padding:20px;font:600 16px sans-serif;color:#eaf0ff;background:#0f1625">Autenticazione completata, puoi chiudere questa finestra…</div>';
-      setTimeout(()=>window.close(), 250);
-      return true;
-    }
-
-    // Flusso redirect pieno (senza popup)
-    if(params.get('error')){
-      toast('Accesso Discord annullato.');
-      return true;
-    }
-
-    const at = params.get('access_token');
-    const tokenType = params.get('token_type') || 'Bearer';
-    const expiresIn = Number(params.get('expires_in')||3600);
-    const state = params.get('state');
-    const expected = sessionStorage.getItem('oauth_state');
-    sessionStorage.removeItem('oauth_state');
-
-    if(!at || (expected && expected!==state)){
-      toast('Verifica OAuth fallita.');
-      return true;
-    }
-
-    showLoader(true);
     try{
-      await finalizeOAuth({ access_token: at, token_type: tokenType, expires_in: expiresIn, stateReceived: state });
-    }catch(_){
-      toast('Errore nel recupero profilo Discord.');
-    }finally{
-      showLoader(false);
-    }
-    return true;
-  }
+      // 1) risolvo invito per avere guild id e counts
+      const inv = await fetchWithTimeoutRetry(
+        `https://discord.com/api/invites/${encodeURIComponent(INVITE_CODE)}?with_counts=true&with_expiration=true`,
+        {}, 6000, 1
+      );
+      const guild = inv?.guild || {};
+      const guildId = guild.id;
+      const gName  = guild.name || 'Server Discord';
+      const approxTotal  = inv.approximate_member_count ?? null;
+      const approxOnline = inv.approximate_presence_count ?? null;
 
-  async function finalizeOAuth({access_token, token_type='Bearer', expires_in=3600}){
-    if(!access_token) throw new Error('Missing token');
+      // Stats pill
+      const pills=[];
+      pills.push(`<span class="pill">${gName}</span>`);
+      if(approxTotal!=null) pills.push(`<span class="pill">Membri: ${approxTotal}</span>`);
+      if(approxOnline!=null) pills.push(`<span class="pill">Online: ${approxOnline}</span>`);
+      pills.push(`<a class="pill" href="${DISCORD_INVITE_URL}" target="_blank" rel="noopener">Unisciti</a>`);
+      stats.innerHTML = pills.join(' ');
 
-    // salva token + scadenza (skew -30s)
-    const expiresAt = nowMs() + (Number(expires_in)||3600)*1000 - 30000;
-    localStorage.setItem(OAUTH_TOKEN_KEY, access_token);
-    localStorage.setItem(OAUTH_EXP_KEY, String(expiresAt));
+      // 2) widget.json (richiede widget attivato nelle impostazioni del server)
+      if(guildId){
+        try{
+          const wjson = await fetchWithTimeoutRetry(
+            `https://discord.com/api/guilds/${guildId}/widget.json`, {}, 6000, 0
+          );
+          if(Array.isArray(wjson.members) && wjson.members.length){
+            grid.innerHTML = wjson.members.map(m=>{
+              const name = (m.nickname || m.username || '').replace(/[<>&]/g,'');
+              const img = m.avatar_url || cdnDefaultAvatar(0);
+              return `<div class="discord-user" title="${name}">
+                        <img src="${img}" alt="">
+                        <span>${name}</span>
+                      </div>`;
+            }).join('');
+          }else{
+            grid.innerHTML = '';
+          }
+        }catch(_){
+          grid.innerHTML = '';
+        }
 
-    // fetch profilo con timeout + retry
-    const user = await fetchWithTimeoutRetry(
-      'https://discord.com/api/users/@me',
-      { headers:{ 'Authorization': `${token_type} ${access_token}` } },
-      6000, 1
-    );
-    localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
-
-    updateAuthUI();
-    toast('Accesso con Discord riuscito!');
-  }
-
-  async function fetchWithTimeoutRetry(url, options={}, timeoutMs=6000, retries=1){
-    for(let attempt=0; attempt<=retries; attempt++){
-      const ctrl = new AbortController();
-      const t = setTimeout(()=>ctrl.abort(), timeoutMs);
-      try{
-        const res = await fetch(url, { ...options, signal: ctrl.signal });
-        clearTimeout(t);
-        if(!res.ok) throw new Error('HTTP '+res.status);
-        return await res.json();
-      }catch(err){
-        clearTimeout(t);
-        if(attempt===retries) throw err;
-        await delay(300);
+        // 3) iframe ufficiale (sempre, così vedi lista canali/utenti online)
+        wIfr.src = `https://discord.com/widget?id=${guildId}&theme=dark`;
+        wWrap.style.display = 'block';
       }
+    }catch(_err){
+      stats.innerHTML = `<span class="pill">Impossibile contattare Discord</span> <a class="pill" href="${DISCORD_INVITE_URL}" target="_blank" rel="noopener">Apri su Discord</a>`;
     }
-  }
-
-  /* Logout + auto-logout allo scadere */
-  let expTimer = null;
-  function scheduleAutoLogout(){
-    if(expTimer) clearTimeout(expTimer);
-    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
-    if(!exp) return;
-    const wait = Math.max(0, exp - nowMs());
-    expTimer = setTimeout(()=>{ logout(); toast('Sessione scaduta, effettua di nuovo il login.'); }, wait);
-  }
-
-  function logout(e){
-    if(e){ e.preventDefault(); e.stopPropagation(); }
-    clearSession();
-    if(location.hash) history.replaceState(null,'',location.pathname+location.search);
-    updateAuthUI();
-    showPage('home');
-    toast('Logout effettuato');
   }
 
   /* Bind */
@@ -879,17 +846,14 @@
 
   /* Init */
   window.addEventListener('load', async ()=>{
-    await handleOAuthRedirectFragment(); // gestisce sia popup che redirect pieno
-    updateAuthUI();
-    scheduleAutoLogout();
-    showPage('home');
-    tryAutoplay();
+    await handleOAuthRedirectFragment();
+    updateAuthUI(); scheduleAutoLogout(); showPage('home'); tryAutoplay();
+    loadDiscordHome(); // carica il riquadro Discord in Home
   });
-
   window.addEventListener('focus', scheduleAutoLogout);
-  window.addEventListener('message',(ev)=>{
-    if(ev.origin !== originOf(REDIRECT_URI)) return;
-  });
+
+  // Sicurezza postMessage (popup OAuth)
+  window.addEventListener('message',(ev)=>{ if(ev.origin !== originOf(REDIRECT_URI)) return; });
 
   </script>
 </body>

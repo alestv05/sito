@@ -69,7 +69,7 @@
   .top-avatar{display:flex; gap:8px; align-items:center; cursor:default}
   #topAvatarIcon{font-size:28px}
   #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none}
-  /* Nome utente inline, semplice testo */
+  /* Nome utente inline */
   #topUsername{font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:#cfe0ff}
 
   /* HERO */
@@ -113,15 +113,22 @@
   .chip{width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:#1b2747; border:1px solid #2a3a61}
   .sub{color:#9daccc; font-size:.9rem}
 
-  /* Discord widget card */
+  /* Discord widget card (nuovo) */
   .discord-card{max-width:980px; margin:26px auto 0; background:#111a2c; border:1px solid #2a3a61; border-radius:16px; padding:18px; box-shadow:var(--shadow)}
   .discord-head{display:flex; align-items:center; gap:10px; margin-bottom:12px}
-  .discord-stats{display:flex; gap:14px; flex-wrap:wrap; color:#cfe0ff; font-weight:800}
-  .discord-stats .pill{border:1px solid #2a3a61; border-radius:999px; padding:4px 10px; background:#0f1625}
+  .discord-stats{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .pill{border:1px solid #2a3a61; border-radius:999px; padding:4px 10px; background:#0f1625; color:#cfe0ff; font-weight:800}
+  .discord-tools{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+  .discord-tools input{
+    background:#0f1625; border:1px solid #2a3a61; color:#eaf0ff; border-radius:10px; padding:8px 10px; min-width:220px;
+    font-weight:700; letter-spacing:.02em;
+  }
   .discord-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(48px,1fr)); gap:10px; margin-top:14px}
   .discord-user{display:grid; justify-items:center; gap:6px}
   .discord-user img{width:48px; height:48px; border-radius:50%; object-fit:cover; border:1px solid #2a3a61; background:#0f1528}
   .discord-user span{font-size:.85rem; text-align:center; color:#9daccc; word-break:break-word}
+  .status-dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px}
+  .s-online{background:#3ba55d}.s-idle{background:#faa81a}.s-dnd{background:#ed4245}.s-offline{background:#6b7c99}
 
   /* Donations */
   #page-donations{position:relative; padding:40px 20px}
@@ -270,16 +277,25 @@
           </div>
         </div>
 
-        <!-- ======= DISCORD COMMUNITY (sulla Home) ======= -->
+        <!-- ======= DISCORD COMMUNITY (HOME) ======= -->
         <div class="discord-card" id="discordCard">
           <div class="discord-head">
             <i class="fa-brands fa-discord"></i>
             <h3 class="title-roman" style="margin:0">Community Discord</h3>
           </div>
+
           <div class="discord-stats" id="discordStats">
-            <span class="pill">Caricamento dati server…</span>
+            <span class="pill">Caricamento…</span>
           </div>
+
+          <div class="discord-tools">
+            <input id="memberSearch" type="search" placeholder="Cerca utente…" aria-label="Cerca utente" />
+            <a class="pill" id="toggleMore" href="#">Mostra tutti</a>
+            <a class="pill" id="openDiscord" href="https://discord.gg/EubyJqDGwU" target="_blank" rel="noopener">Apri su Discord</a>
+          </div>
+
           <div id="discordMembers" class="discord-grid" aria-live="polite"></div>
+
           <div id="discordWidgetWrap" style="margin-top:14px; display:none">
             <iframe id="discordWidget"
               title="Discord"
@@ -289,7 +305,7 @@
             </iframe>
           </div>
         </div>
-        <!-- ============================================ -->
+        <!-- ======================================== -->
       </div>
     </section>
 
@@ -574,9 +590,9 @@
   const showLoader=(on)=>{$('#loginLoader')?.classList.toggle('show',!!on);};
   const originOf = url => new URL(url, location.href).origin;
   const cdnDefaultAvatar = (i=0)=>`https://cdn.discordapp.com/embed/avatars/${(Number(i)%5)||0}.png`;
+  const nowMs = ()=>Date.now();
 
   const protectedRoutes = new Set(['donations','donation']);
-  const nowMs = ()=>Date.now();
 
   /* Ripple nav */
   document.addEventListener('click',e=>{
@@ -588,7 +604,7 @@
     btn.appendChild(r); setTimeout(()=>r.remove(),600);
   },{passive:true});
 
-  /* ====== LOGIN DISCORD (popup + fallback) ====== */
+  /* ======= LOGIN DISCORD (popup + fallback) ======= */
   const getToken = ()=>{
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
@@ -778,83 +794,163 @@
     if(e.target.id==='btnBuy'){toast('Pagamento non configurato — apri un ticket Discord.')}
   });
 
-  /* ====== DISCORD HOME WIDGET ======
-     - Risolvo l'invito -> guild id + conteggi
-     - Provo widget.json -> lista online
-     - Sempre mostro iframe ufficiale se ho guild id
-  =================================== */
-  async function loadDiscordHome(){
+  /* ====== DISCORD (HOME) ACCURATE ======
+     - Risolvo invito -> prendo guildId
+     - widget.json -> unica fonte per utenti online + conteggi
+     - UI: filtro, show more, refresh 30s
+  ====================================== */
+  const DISCORD = {
+    guildId: null,
+    members: [],
+    presenceCount: 0,
+    name: 'Server Discord',
+    MAX_PREVIEW: 24,
+    expanded: false,
+  };
+
+  function statusClass(s){
+    switch(s){
+      case 'online': return 's-online';
+      case 'idle': return 's-idle';
+      case 'dnd': return 's-dnd';
+      default: return 's-offline';
+    }
+  }
+  function sanitize(t){ return String(t||'').replace(/[<>&]/g,''); }
+
+  function renderDiscordUI(){
     const stats = $('#discordStats');
     const grid  = $('#discordMembers');
+    const search = ($('#memberSearch').value||'').toLowerCase().trim();
+
+    // filtro + sort per stato
+    const order = { online:0, idle:1, dnd:2, offline:3 };
+    let list = DISCORD.members
+      .filter(m => !search || (m.nickname||m.username||'').toLowerCase().includes(search))
+      .sort((a,b)=> (order[a.status]??9) - (order[b.status]??9) || (a.nickname||a.username||'').localeCompare(b.nickname||b.username||''));
+
+    const totalShown = list.length;
+    const limit = DISCORD.expanded ? list.length : Math.min(list.length, DISCORD.MAX_PREVIEW);
+
+    const shown = list.slice(0, limit);
+
+    // stats: solo dati del widget, niente stime
+    stats.innerHTML = `
+      <span class="pill">${sanitize(DISCORD.name)}</span>
+      <span class="pill"><span class="status-dot s-online"></span>Online: ${DISCORD.presenceCount}</span>
+      <span class="pill">Visualizzati: ${shown.length}${totalShown>shown.length ? ' / '+totalShown : ''}</span>
+    `;
+
+    // griglia
+    grid.innerHTML = shown.map(m=>{
+      const name = sanitize(m.nickname || m.username || '');
+      const img  = m.avatar_url || cdnDefaultAvatar(0);
+      const sc   = statusClass(m.status);
+      return `
+        <div class="discord-user" title="${name}">
+          <img src="${img}" alt="">
+          <span><span class="status-dot ${sc}"></span>${name}</span>
+        </div>
+      `;
+    }).join('');
+
+    // toggle bottone
+    const toggle = $('#toggleMore');
+    toggle.textContent = DISCORD.expanded ? 'Mostra meno' : 'Mostra tutti';
+    toggle.style.display = (totalShown > DISCORD.MAX_PREVIEW) ? 'inline-flex' : 'none';
+  }
+
+  async function resolveInviteForGuildId(){
+    const inv = await fetchWithTimeoutRetry(
+      `https://discord.com/api/invites/${encodeURIComponent(INVITE_CODE)}?with_counts=false`,
+      {}, 6000, 1
+    );
+    DISCORD.guildId = inv?.guild?.id || null;
+    DISCORD.name = inv?.guild?.name || DISCORD.name;
+    return DISCORD.guildId;
+  }
+
+  async function fetchWidget(){
+    if(!DISCORD.guildId) return null;
+    const data = await fetchWithTimeoutRetry(
+      `https://discord.com/api/guilds/${DISCORD.guildId}/widget.json`,
+      {}, 6000, 0
+    );
+    // aggiorna stato interno
+    DISCORD.name = data.name || DISCORD.name;
+    DISCORD.presenceCount = Number(data.presence_count || 0);
+    DISCORD.members = Array.isArray(data.members) ? data.members.map(m=>({
+      id: m.id,
+      username: m.username,
+      nickname: m.nick || m.nickname || m.username,
+      avatar_url: m.avatar_url,
+      status: m.status || 'online'
+    })) : [];
+    return data;
+  }
+
+  async function loadDiscordAccurate(){
+    const stats = $('#discordStats');
     const wWrap = $('#discordWidgetWrap');
     const wIfr  = $('#discordWidget');
 
     try{
-      // 1) risolvo invito per avere guild id e counts
-      const inv = await fetchWithTimeoutRetry(
-        `https://discord.com/api/invites/${encodeURIComponent(INVITE_CODE)}?with_counts=true&with_expiration=true`,
-        {}, 6000, 1
-      );
-      const guild = inv?.guild || {};
-      const guildId = guild.id;
-      const gName  = guild.name || 'Server Discord';
-      const approxTotal  = inv.approximate_member_count ?? null;
-      const approxOnline = inv.approximate_presence_count ?? null;
-
-      // Stats pill
-      const pills=[];
-      pills.push(`<span class="pill">${gName}</span>`);
-      if(approxTotal!=null) pills.push(`<span class="pill">Membri: ${approxTotal}</span>`);
-      if(approxOnline!=null) pills.push(`<span class="pill">Online: ${approxOnline}</span>`);
-      pills.push(`<a class="pill" href="${DISCORD_INVITE_URL}" target="_blank" rel="noopener">Unisciti</a>`);
-      stats.innerHTML = pills.join(' ');
-
-      // 2) widget.json (richiede widget attivato nelle impostazioni del server)
-      if(guildId){
-        try{
-          const wjson = await fetchWithTimeoutRetry(
-            `https://discord.com/api/guilds/${guildId}/widget.json`, {}, 6000, 0
-          );
-          if(Array.isArray(wjson.members) && wjson.members.length){
-            grid.innerHTML = wjson.members.map(m=>{
-              const name = (m.nickname || m.username || '').replace(/[<>&]/g,'');
-              const img = m.avatar_url || cdnDefaultAvatar(0);
-              return `<div class="discord-user" title="${name}">
-                        <img src="${img}" alt="">
-                        <span>${name}</span>
-                      </div>`;
-            }).join('');
-          }else{
-            grid.innerHTML = '';
-          }
-        }catch(_){
-          grid.innerHTML = '';
-        }
-
-        // 3) iframe ufficiale (sempre, così vedi lista canali/utenti online)
-        wIfr.src = `https://discord.com/widget?id=${guildId}&theme=dark`;
-        wWrap.style.display = 'block';
+      if(!DISCORD.guildId) await resolveInviteForGuildId();
+      if(!DISCORD.guildId){
+        stats.innerHTML = `<span class="pill">Impossibile ottenere l'ID del server</span>
+                           <a class="pill" href="${DISCORD_INVITE_URL}" target="_blank" rel="noopener">Apri su Discord</a>`;
+        return;
       }
-    }catch(_err){
-      stats.innerHTML = `<span class="pill">Impossibile contattare Discord</span> <a class="pill" href="${DISCORD_INVITE_URL}" target="_blank" rel="noopener">Apri su Discord</a>`;
+
+      // Carica widget.json e render
+      await fetchWidget();
+      renderDiscordUI();
+
+      // mostra iframe ufficiale (comodo per i canali / online live)
+      wIfr.src = `https://discord.com/widget?id=${DISCORD.guildId}&theme=dark`;
+      wWrap.style.display = 'block';
+    }catch(err){
+      // Fallback chiaro: nessuna cifra fasulla
+      stats.innerHTML = `<span class="pill">Widget non disponibile</span>
+                         <a class="pill" href="${DISCORD_INVITE_URL}" target="_blank" rel="noopener">Apri su Discord</a>`;
+      wWrap.style.display = 'none';
     }
+  }
+
+  // refresh periodico
+  let widgetTimer=null;
+  function startWidgetAutoRefresh(){
+    if(widgetTimer) clearInterval(widgetTimer);
+    widgetTimer = setInterval(async ()=>{
+      try{
+        if(!DISCORD.guildId) return;
+        await fetchWidget();
+        renderDiscordUI();
+      }catch(_){}
+    }, 30000); // 30s
   }
 
   /* Bind */
   $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
   $('#btnLogout')?.addEventListener('click', logout, {capture:true});
 
+  // UI Discord: filtro + toggle
+  $('#memberSearch')?.addEventListener('input', ()=>renderDiscordUI());
+  $('#toggleMore')?.addEventListener('click', (e)=>{ e.preventDefault(); DISCORD.expanded=!DISCORD.expanded; renderDiscordUI(); });
+
   /* Init */
   window.addEventListener('load', async ()=>{
     await handleOAuthRedirectFragment();
     updateAuthUI(); scheduleAutoLogout(); showPage('home'); tryAutoplay();
-    loadDiscordHome(); // carica il riquadro Discord in Home
+
+    // Discord (accurato)
+    await loadDiscordAccurate();
+    startWidgetAutoRefresh();
   });
   window.addEventListener('focus', scheduleAutoLogout);
 
   // Sicurezza postMessage (popup OAuth)
   window.addEventListener('message',(ev)=>{ if(ev.origin !== originOf(REDIRECT_URI)) return; });
-
   </script>
 </body>
 </html>

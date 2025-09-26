@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NOVA ROMA Roleplay</title>
 
-  <!-- Performance hints per Discord -->
+  <!-- Preconnect Discord -->
   <link rel="preconnect" href="https://discord.com" crossorigin>
   <link rel="dns-prefetch" href="//discord.com">
   <link rel="preconnect" href="https://cdn.discordapp.com" crossorigin>
@@ -29,7 +29,6 @@
     -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     overflow-x:hidden;
   }
-
   [hidden]{display:none !important;}
   .fa-solid{font-family:"Font Awesome 6 Free" !important; font-weight:900 !important}
   .fa-brands{font-family:"Font Awesome 6 Brands" !important}
@@ -49,7 +48,6 @@
     padding:8px 10px; border-radius:10px; text-transform:uppercase;
     letter-spacing:.06em; transition:color .3s ease; display:inline-flex; gap:8px; align-items:center;
   }
-  .nav-link i{font-size:1.15em}
   .nav-link.active,.nav-link:hover{ color:#fff }
   .nav-link::after{
     content:""; position:absolute; left:12px; right:12px; bottom:6px; height:2px;
@@ -57,48 +55,24 @@
     transition:transform .25s ease; border-radius:2px;
   }
   .nav-link:hover::after,.nav-link.active::after{ transform:scaleX(1) }
-  .ripple{
-    position:absolute; width:10px; height:10px; border-radius:50%;
-    pointer-events:none;
-    background:radial-gradient(closest-side, rgba(255,255,255,.65), rgba(255,255,255,.25) 60%, rgba(255,255,255,0) 70%);
-    transform:translate(-50%,-50%) scale(0);
-    animation:ripple .6s ease-out forwards; mix-blend-mode:screen;
-  }
-  @keyframes ripple{ to{ transform:translate(-50%,-50%) scale(18); opacity:0 } }
 
-  .top-avatar{display:flex; gap:8px; align-items:center; cursor:default}
+  .top-avatar{display:flex; gap:8px; align-items:center}
   #topAvatarIcon{font-size:28px}
   #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none}
-  /* Nome utente inline */
   #topUsername{font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:#cfe0ff}
 
   /* HERO */
   .hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 16px; overflow:hidden}
   .logo-container{position:relative; width:var(--logo-size); height:var(--logo-size); margin-bottom:40px; display:flex; align-items:center; justify-content:center}
   .logo-bg{position:absolute; inset:0; background:url('https://i.postimg.cc/d19KnZQv/LOGO-SERVER-2.png') no-repeat center/contain; opacity:0.24; z-index:2}
-  .logo-glow{
-    position:absolute; inset:0;
-    background:
-      radial-gradient(40% 55% at 50% 50%, rgba(88,166,255,.10), rgba(0,0,0,0) 60%),
-      radial-gradient(100% 100% at 50% 50%, rgba(0,0,0,.45), transparent 55%);
-    filter:blur(10px); animation:float 5.5s ease-in-out infinite alternate; z-index:1
-  }
+  .logo-glow{position:absolute; inset:0; background:
+    radial-gradient(40% 55% at 50% 50%, rgba(88,166,255,.10), rgba(0,0,0,0) 60%),
+    radial-gradient(100% 100% at 50% 50%, rgba(0,0,0,.45), transparent 55%);
+    filter:blur(10px); animation:float 5.5s ease-in-out infinite alternate; z-index:1 }
   @keyframes float{from{transform:translateY(-6px)} to{transform:translateY(6px)}}
 
-  /* MESSAGGIO SITO IN COSTRUZIONE */
-  .under-construction{
-    position:relative; z-index:3;
-    display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center;
-    width:100%; max-width:900px;
-  }
-  .uc-title{
-    font-size:clamp(36px,8vw,90px);
-    font-weight:900;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    text-shadow:0 2px 10px rgba(0,0,0,.5);
-    line-height:1.05;
-  }
+  .under-construction{position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center; width:100%; max-width:900px;}
+  .uc-title{font-size:clamp(36px,8vw,90px); font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-shadow:0 2px 10px rgba(0,0,0,.5); line-height:1.05;}
 
   /* Video */
   .home-video{display:grid; place-items:center; margin-top:40px; width:100%}
@@ -106,48 +80,28 @@
   .home-video-frame{width:min(95vw,var(--home-video-max)); max-width:var(--home-video-max); min-width:var(--home-video-min); background:#0f1528; border:2px solid #2a3a61; border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
   .home-video-frame video{display:block; width:100%; height:auto}
 
+  /* CARD Discord: SOLO DUE NUMERI */
+  .discord-counts{max-width:980px; margin:26px auto 0; background:#111a2c; border:1px solid #2a3a61; border-radius:16px; padding:18px; box-shadow:var(--shadow)}
+  .discord-head{display:flex; align-items:center; gap:10px; margin-bottom:14px}
+  .discord-grid2{display:grid; grid-template-columns:repeat(2,minmax(140px,1fr)); gap:12px}
+  .count-box{background:#0f1625; border:1px solid #2a3a61; border-radius:14px; padding:16px; text-align:center}
+  .count-label{color:#9daccc; font-weight:800; letter-spacing:.06em; text-transform:uppercase}
+  .count-value{font-size:clamp(34px,6vw,64px); font-weight:900; line-height:1; margin-top:6px}
+  .count-online{color:#7ee787}
+  .count-total{color:#eaf0ff}
+  .count-footer{margin-top:10px; color:#9daccc; font-size:.95rem; text-align:center}
+  .pill{display:inline-flex; align-items:center; gap:8px; border:1px solid #2a3a61; border-radius:999px; padding:4px 10px; background:#0f1625; color:#cfe0ff; font-weight:800}
+  .small{font-size:.9rem}
+  .dot{width:10px; height:10px; border-radius:50%}
+  .dot-online{background:#3ba55d}
+  .dot-total{background:#7d8590}
+
   /* Titles / Cards */
-  .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.5rem}
+  .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem}
   .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:24px; box-shadow:var(--shadow)}
-  .card-head{display:flex; align-items:center; gap:12px; margin-bottom:20px}
   .chip{width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:#1b2747; border:1px solid #2a3a61}
-  .sub{color:#9daccc; font-size:.9rem}
 
-  /* Discord widget card (nuovo) */
-  .discord-card{max-width:980px; margin:26px auto 0; background:#111a2c; border:1px solid #2a3a61; border-radius:16px; padding:18px; box-shadow:var(--shadow)}
-  .discord-head{display:flex; align-items:center; gap:10px; margin-bottom:12px}
-  .discord-stats{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-  .pill{border:1px solid #2a3a61; border-radius:999px; padding:4px 10px; background:#0f1625; color:#cfe0ff; font-weight:800}
-  .discord-tools{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-  .discord-tools input{
-    background:#0f1625; border:1px solid #2a3a61; color:#eaf0ff; border-radius:10px; padding:8px 10px; min-width:220px;
-    font-weight:700; letter-spacing:.02em;
-  }
-  .discord-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(48px,1fr)); gap:10px; margin-top:14px}
-  .discord-user{display:grid; justify-items:center; gap:6px}
-  .discord-user img{width:48px; height:48px; border-radius:50%; object-fit:cover; border:1px solid #2a3a61; background:#0f1528}
-  .discord-user span{font-size:.85rem; text-align:center; color:#9daccc; word-break:break-word}
-  .status-dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px}
-  .s-online{background:#3ba55d}.s-idle{background:#faa81a}.s-dnd{background:#ed4245}.s-offline{background:#6b7c99}
-
-  /* Donations */
-  #page-donations{position:relative; padding:40px 20px}
-  .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; max-width:920px; margin:0 auto}
-  .donation-card{text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:12px; transition:transform .3s ease}
-  .donation-card:hover{transform:translateY(-5px)}
-  .donation-thumb{width:100%; aspect-ratio:1/1; border-radius:14px; overflow:hidden; border:2px solid #2a3a61; background:#0f1528; display:grid; place-items:center}
-  .donation-thumb img{width:90%; height:90%; object-fit:contain}
-  .donation-caption{font-weight:800; font-size:1.05rem; padding:6px 8px; border-radius:10px; background:rgba(23,33,55,.85); border:1px solid #2a3a61; text-align:center; text-transform:uppercase}
-
-  /* Donation detail */
-  #page-donation{padding:40px 16px}
-  .donation-detail{max-width:960px;margin:0 auto;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
-  .donation-media{background:#0f1528;border:2px solid #2a3a61;border-radius:14px;overflow:hidden;display:grid;place-items:center;padding:16px}
-  .donation-media img{max-width:100%;height:auto;display:block}
-  .donation-info .price{font-size:2rem;font-weight:900;margin:6px 0 10px}
-  .donation-info pre{white-space:pre-wrap; background:#0f1528; border:1px solid #2a3a61; border-radius:10px; padding:12px; font-family:inherit; color:#cfe0ff}
-
-  /* Staff */
+  /* Staff / Donazioni (stili dal tuo file, in basso la struttura) */
   .staff-section{max-width:1000px; margin:40px auto}
   .role{display:flex; align-items:center; gap:10px; margin:0 0 20px; font-weight:800; font-size:1.5rem}
   .role .role-icon{width:28px; height:28px; object-fit:contain; display:inline-block; filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
@@ -164,30 +118,24 @@
   .role-eup{color:#4a90e2}
   .role-grafico{color:#ff4dd2}
 
-  /* Buttons / Toast / Loader */
-  .actions{display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap}
-  .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; border:0; cursor:pointer; font-weight:800; text-transform:uppercase; letter-spacing:.06em; transition:transform .12s ease,box-shadow .12s ease; font-family:inherit}
-  .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2)); color:#fff; box-shadow:0 10px 22px rgba(11,109,214,.25)}
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(11,109,214,.35)}
-  .btn-ghost{background:transparent; border:1px solid #2a3a61; color:#fff}
-  .btn-ghost:hover{background:rgba(42,58,97,.2)}
-  .btn-discord{background:#5865F2;color:#fff}
+  /* Donazioni */
+  #page-donations{position:relative; padding:40px 20px}
+  .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; max-width:920px; margin:0 auto}
+  .donation-card{text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:12px; transition:transform .3s ease}
+  .donation-card:hover{transform:translateY(-5px)}
+  .donation-thumb{width:100%; aspect-ratio:1/1; border-radius:14px; overflow:hidden; border:2px solid #2a3a61; background:#0f1528; display:grid; place-items:center}
+  .donation-thumb img{width:90%; height:90%; object-fit:contain}
+  .donation-caption{font-weight:800; font-size:1.05rem; padding:6px 8px; border-radius:10px; background:rgba(23,33,55,.85); border:1px solid #2a3a61; text-align:center; text-transform:uppercase}
 
-  .toast{
-    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
-    background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow);
-    padding:12px 16px; border-radius:12px; font-weight:800; z-index:1000; opacity:0;
-    transition:opacity .25s ease, transform .25s ease;
-  }
-  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
-  .loader{
-    position:fixed; inset:auto 12px 12px auto;
-    background:#0f1625; border:1px solid #2a3a61; padding:8px 12px; border-radius:10px;
-    font-weight:800; z-index:1100; display:none;
-  }
-  .loader.show{display:block}
+  /* Donation detail */
+  #page-donation{padding:40px 16px}
+  .donation-detail{max-width:960px;margin:0 auto;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
+  .donation-media{background:#0f1528;border:2px solid #2a3a61;border-radius:14px;overflow:hidden;display:grid;place-items:center;padding:16px}
+  .donation-media img{max-width:100%;height:auto;display:block}
+  .donation-info .price{font-size:2rem;font-weight:900;margin:6px 0 10px}
+  .donation-info pre{white-space:pre-wrap; background:#0f1528; border:1px solid #2a3a61; border-radius:10px; padding:12px; font-family:inherit; color:#cfe0ff}
 
-  /* Footer */
+  /* Footer / Toast / Loader */
   .site-footer{text-align:center; padding:30px 12px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
   .stripe{height:8px; width:220px; margin:0 auto 12px; border-radius:6px; background:linear-gradient(90deg,#009246 0 33%, #fff 33% 66%, #ce2b37 66% 100%); border:1px solid #2a3a61}
   .footer-icons{margin-top:10px; display:flex; justify-content:center; align-items:center; gap:18px;}
@@ -198,37 +146,19 @@
   .footer-icons a.tt:hover{color:#25f4ee}
   .footer-icons a.dc:hover{color:#5865F2}
 
+  .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow); padding:12px 16px; border-radius:12px; font-weight:800; z-index:1000; opacity:0; transition:opacity .25s ease, transform .25s ease;}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+  .loader{position:fixed; inset:auto 12px 12px auto; background:#0f1625; border:1px solid #2a3a61; padding:8px 12px; border-radius:10px; font-weight:800; z-index:1100; display:none;}
+  .loader.show{display:block}
+
   /* Pages */
   .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
   .page.active{display:block}
 
   /* Responsive */
   @media (max-width:600px){
-    .site-header{padding:6px 10px}
-    .nav{gap:8px; overflow-x:auto; scrollbar-width:thin}
-    .nav-link{padding:7px 8px; font-size:.95rem}
-    .logo-container{margin-bottom:24px}
-    .home-video{margin-top:22px}
-    .home-video-frame{max-width:100%; min-width:220px}
+    .discord-grid2{grid-template-columns:1fr}
     .title-roman{font-size:2rem; margin-bottom:22px}
-    .card{margin:22px auto; padding:18px}
-    .page{padding:28px 12px}
-    .donations-grid{grid-template-columns:repeat(2,1fr); gap:14px}
-    .donation-detail{grid-template-columns:1fr}
-    .staff-section{margin:28px auto}
-    .staff-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  }
-  @media (min-width:601px) and (max-width:1024px){
-    .home-video-frame{max-width:620px}
-    .donations-grid{grid-template-columns:repeat(3,1fr)}
-    .donation-detail{grid-template-columns:1fr 1fr}
-    .staff-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .page{padding:34px 16px}
-  }
-  @media (min-width:1025px){
-    .home-video-frame{max-width:840px}
-    .donations-grid{grid-template-columns:repeat(4,1fr)}
-    .staff-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
   }
   </style>
 </head>
@@ -277,45 +207,37 @@
           </div>
         </div>
 
-        <!-- ======= DISCORD COMMUNITY (HOME) ======= -->
-        <div class="discord-card" id="discordCard">
+        <!-- ======= DISCORD: SOLO NUMERI ======= -->
+        <div class="discord-counts" id="discordCountsCard">
           <div class="discord-head">
             <i class="fa-brands fa-discord"></i>
-            <h3 class="title-roman" style="margin:0">Community Discord</h3>
+            <h3 class="title-roman" style="margin:0" id="guildName">Community Discord</h3>
           </div>
-
-          <div class="discord-stats" id="discordStats">
-            <span class="pill">Caricamento…</span>
+          <div class="discord-grid2">
+            <div class="count-box">
+              <div class="count-label"><span class="dot dot-total"></span> Membri totali</div>
+              <div class="count-value count-total" id="countTotal">—</div>
+            </div>
+            <div class="count-box">
+              <div class="count-label"><span class="dot dot-online"></span> Online</div>
+              <div class="count-value count-online" id="countOnline">—</div>
+            </div>
           </div>
-
-          <div class="discord-tools">
-            <input id="memberSearch" type="search" placeholder="Cerca utente…" aria-label="Cerca utente" />
-            <a class="pill" id="toggleMore" href="#">Mostra tutti</a>
-            <a class="pill" id="openDiscord" href="https://discord.gg/EubyJqDGwU" target="_blank" rel="noopener">Apri su Discord</a>
-          </div>
-
-          <div id="discordMembers" class="discord-grid" aria-live="polite"></div>
-
-          <div id="discordWidgetWrap" style="margin-top:14px; display:none">
-            <iframe id="discordWidget"
-              title="Discord"
-              width="100%" height="380"
-              allowtransparency="true" frameborder="0"
-              sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
-            </iframe>
+          <div class="count-footer">
+            <span class="pill small" id="lastUpdate">Aggiornamento…</span>
           </div>
         </div>
-        <!-- ======================================== -->
+        <!-- ===================================== -->
       </div>
     </section>
 
-    <!-- STAFF (sempre visibile) -->
+    <!-- STAFF (come nel tuo file) -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman center">Il nostro staff</h2>
 
       <!-- Owner -->
       <div class="staff-section">
-        <h3 class="title-roman role">
+        <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Owner
         </h3>
         <div class="staff-grid">
@@ -330,7 +252,7 @@
 
       <!-- Founder -->
       <div class="staff-section">
-        <h3 class="title-roman role">
+        <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Founder
         </h3>
         <div class="staff-grid">
@@ -351,7 +273,7 @@
 
       <!-- Co-Founder -->
       <div class="staff-section">
-        <h3 class="title-roman role">
+        <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Co-Founder
         </h3>
         <div class="staff-grid">
@@ -380,7 +302,7 @@
 
       <!-- Admin -->
       <div class="staff-section">
-        <h3 class="title-roman role">
+        <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Admin
         </h3>
         <div class="staff-grid">
@@ -410,7 +332,7 @@
 
       <!-- Moderatore -->
       <div class="staff-section">
-        <h3 class="title-roman role">
+        <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Moderatore
         </h3>
         <div class="staff-grid">
@@ -464,7 +386,7 @@
 
       <!-- Helper -->
       <div class="staff-section">
-        <h3 class="title-roman role">
+        <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Helper
         </h3>
         <div class="staff-grid">
@@ -526,11 +448,11 @@
     <!-- DONAZIONE DETTAGLIO (protetta) -->
     <section id="page-donation" class="page" data-page>
       <div class="card">
-        <header class="card-head">
+        <header style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
           <div class="chip"><i class="fa-solid fa-gift"></i></div>
           <div>
             <h3 class="title-roman" id="detailTitle">Pacchetto</h3>
-            <p class="sub">Riepilogo offerta</p>
+            <p style="color:#9daccc;font-size:.9rem">Riepilogo offerta</p>
           </div>
         </header>
         <div class="donation-detail">
@@ -551,7 +473,6 @@
   <footer class="site-footer">
     <div class="stripe"></div>
     <p>© 2025 Nova Roma Roleplay</p>
-
     <div class="footer-icons" aria-label="Social">
       <a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener" aria-label="Instagram">
         <i class="fa-brands fa-instagram" aria-hidden="true"></i>
@@ -574,7 +495,7 @@
   /* ===== CONFIG ===== */
   const DISCORD_CLIENT_ID = '1419444744563720404';
   const DISCORD_SCOPE = 'identify';
-  const REDIRECT_URI = 'https://alestv05.github.io/sito/'; // invariato
+  const REDIRECT_URI = 'https://alestv05.github.io/sito/';
   const DISCORD_INVITE_URL = 'https://discord.gg/EubyJqDGwU';
   const INVITE_CODE = DISCORD_INVITE_URL.split('/').filter(Boolean).pop();
 
@@ -594,17 +515,20 @@
 
   const protectedRoutes = new Set(['donations','donation']);
 
-  /* Ripple nav */
-  document.addEventListener('click',e=>{
-    const btn=e.target.closest('.nav-link'); if(!btn) return;
-    const rect=btn.getBoundingClientRect();
-    const r=document.createElement('span'); r.className='ripple';
-    r.style.left=`${(e.clientX??rect.left+rect.width/2)-rect.left}px`;
-    r.style.top =`${(e.clientY??rect.top +rect.height/2)-rect.top }px`;
-    btn.appendChild(r); setTimeout(()=>r.remove(),600);
-  },{passive:true});
+  /* Video */
+  function tryAutoplay(){
+    const v=$('#nvVideo'); if(!v) return;
+    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
+    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
+    let tries=0, MAX=6;
+    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
+    v.addEventListener('loadeddata', go, { once:true }); go();
+    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
+    window.addEventListener('click',kick,{once:true,passive:true});
+    window.addEventListener('touchstart',kick,{once:true,passive:true});
+  }
 
-  /* ======= LOGIN DISCORD (popup + fallback) ======= */
+  /* ===== LOGIN (identico, solo header inline) ===== */
   const getToken = ()=>{
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
@@ -619,21 +543,6 @@
     localStorage.removeItem(OAUTH_EXP_KEY);
     sessionStorage.removeItem('oauth_state');
   }
-
-  /* Video */
-  function tryAutoplay(){
-    const v=$('#nvVideo'); if(!v) return;
-    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
-    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
-    let tries=0, MAX=6;
-    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
-    v.addEventListener('loadeddata', go, { once:true }); go();
-    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
-    window.addEventListener('click',kick,{once:true,passive:true});
-    window.addEventListener('touchstart',kick,{once:true,passive:true});
-  }
-
-  /* Username + avatar (inline) */
   function formatDiscordName(user){
     if(!user) return '';
     const disc = user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '';
@@ -667,7 +576,6 @@
       if(['donations','donation'].includes(active)) showPage('home');
     }
   }
-
   function buildAuthURL(state){
     const u = new URL('https://discord.com/oauth2/authorize');
     u.searchParams.set('client_id', DISCORD_CLIENT_ID);
@@ -768,7 +676,7 @@
     e.preventDefault(); showPage(r.dataset.route);
   });
 
-  /* Donazioni */
+  /* Donazioni (testi) */
   const OFFER_TEXT={
     5:"Acquistando questo pacchetto otterai 50.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
     10:"Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
@@ -794,162 +702,86 @@
     if(e.target.id==='btnBuy'){toast('Pagamento non configurato — apri un ticket Discord.')}
   });
 
-  /* ====== DISCORD (HOME) ACCURATE ======
-     - Risolvo invito -> prendo guildId
-     - widget.json -> unica fonte per utenti online + conteggi
-     - UI: filtro, show more, refresh 30s
-  ====================================== */
-  const DISCORD = {
-    guildId: null,
-    members: [],
-    presenceCount: 0,
-    name: 'Server Discord',
-    MAX_PREVIEW: 24,
-    expanded: false,
-  };
+  /* ===== DISCORD: SOLO NUMERI =====
+     - Totali: /api/invites/{code}?with_counts=true
+     - Online: preferisci /guilds/{id}/widget.json (presence_count)
+               fallback: approximate_presence_count dell'invito
+  ================================== */
+  const DISCORD = { guildId:null, name:'Community Discord' };
 
-  function statusClass(s){
-    switch(s){
-      case 'online': return 's-online';
-      case 'idle': return 's-idle';
-      case 'dnd': return 's-dnd';
-      default: return 's-offline';
-    }
-  }
-  function sanitize(t){ return String(t||'').replace(/[<>&]/g,''); }
-
-  function renderDiscordUI(){
-    const stats = $('#discordStats');
-    const grid  = $('#discordMembers');
-    const search = ($('#memberSearch').value||'').toLowerCase().trim();
-
-    // filtro + sort per stato
-    const order = { online:0, idle:1, dnd:2, offline:3 };
-    let list = DISCORD.members
-      .filter(m => !search || (m.nickname||m.username||'').toLowerCase().includes(search))
-      .sort((a,b)=> (order[a.status]??9) - (order[b.status]??9) || (a.nickname||a.username||'').localeCompare(b.nickname||b.username||''));
-
-    const totalShown = list.length;
-    const limit = DISCORD.expanded ? list.length : Math.min(list.length, DISCORD.MAX_PREVIEW);
-
-    const shown = list.slice(0, limit);
-
-    // stats: solo dati del widget, niente stime
-    stats.innerHTML = `
-      <span class="pill">${sanitize(DISCORD.name)}</span>
-      <span class="pill"><span class="status-dot s-online"></span>Online: ${DISCORD.presenceCount}</span>
-      <span class="pill">Visualizzati: ${shown.length}${totalShown>shown.length ? ' / '+totalShown : ''}</span>
-    `;
-
-    // griglia
-    grid.innerHTML = shown.map(m=>{
-      const name = sanitize(m.nickname || m.username || '');
-      const img  = m.avatar_url || cdnDefaultAvatar(0);
-      const sc   = statusClass(m.status);
-      return `
-        <div class="discord-user" title="${name}">
-          <img src="${img}" alt="">
-          <span><span class="status-dot ${sc}"></span>${name}</span>
-        </div>
-      `;
-    }).join('');
-
-    // toggle bottone
-    const toggle = $('#toggleMore');
-    toggle.textContent = DISCORD.expanded ? 'Mostra meno' : 'Mostra tutti';
-    toggle.style.display = (totalShown > DISCORD.MAX_PREVIEW) ? 'inline-flex' : 'none';
-  }
-
-  async function resolveInviteForGuildId(){
-    const inv = await fetchWithTimeoutRetry(
-      `https://discord.com/api/invites/${encodeURIComponent(INVITE_CODE)}?with_counts=false`,
+  async function resolveInvite(){
+    const data = await fetchWithTimeoutRetry(
+      `https://discord.com/api/invites/${encodeURIComponent(INVITE_CODE)}?with_counts=true&with_expiration=false`,
       {}, 6000, 1
     );
-    DISCORD.guildId = inv?.guild?.id || null;
-    DISCORD.name = inv?.guild?.name || DISCORD.name;
-    return DISCORD.guildId;
+    DISCORD.guildId = data?.guild?.id || null;
+    DISCORD.name = data?.guild?.name || DISCORD.name;
+    return {
+      name: DISCORD.name,
+      guildId: DISCORD.guildId,
+      approxTotal: data?.approximate_member_count ?? null,
+      approxOnline: data?.approximate_presence_count ?? null
+    };
   }
 
-  async function fetchWidget(){
-    if(!DISCORD.guildId) return null;
-    const data = await fetchWithTimeoutRetry(
-      `https://discord.com/api/guilds/${DISCORD.guildId}/widget.json`,
+  async function getWidgetPresence(guildId){
+    if(!guildId) return null;
+    const w = await fetchWithTimeoutRetry(
+      `https://discord.com/api/guilds/${guildId}/widget.json`,
       {}, 6000, 0
     );
-    // aggiorna stato interno
-    DISCORD.name = data.name || DISCORD.name;
-    DISCORD.presenceCount = Number(data.presence_count || 0);
-    DISCORD.members = Array.isArray(data.members) ? data.members.map(m=>({
-      id: m.id,
-      username: m.username,
-      nickname: m.nick || m.nickname || m.username,
-      avatar_url: m.avatar_url,
-      status: m.status || 'online'
-    })) : [];
-    return data;
+    return {
+      name: w?.name || DISCORD.name,
+      presence: Number(w?.presence_count || 0)
+    };
   }
 
-  async function loadDiscordAccurate(){
-    const stats = $('#discordStats');
-    const wWrap = $('#discordWidgetWrap');
-    const wIfr  = $('#discordWidget');
+  function setCounts({ total, online, name }){
+    $('#guildName').textContent = name || 'Community Discord';
+    $('#countTotal').textContent = (total ?? '—');
+    $('#countOnline').textContent = (online ?? '—');
+    const d = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    $('#lastUpdate').textContent = `Aggiornato alle ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
 
+  async function loadCountsOnce(){
     try{
-      if(!DISCORD.guildId) await resolveInviteForGuildId();
-      if(!DISCORD.guildId){
-        stats.innerHTML = `<span class="pill">Impossibile ottenere l'ID del server</span>
-                           <a class="pill" href="${DISCORD_INVITE_URL}" target="_blank" rel="noopener">Apri su Discord</a>`;
-        return;
-      }
-
-      // Carica widget.json e render
-      await fetchWidget();
-      renderDiscordUI();
-
-      // mostra iframe ufficiale (comodo per i canali / online live)
-      wIfr.src = `https://discord.com/widget?id=${DISCORD.guildId}&theme=dark`;
-      wWrap.style.display = 'block';
-    }catch(err){
-      // Fallback chiaro: nessuna cifra fasulla
-      stats.innerHTML = `<span class="pill">Widget non disponibile</span>
-                         <a class="pill" href="${DISCORD_INVITE_URL}" target="_blank" rel="noopener">Apri su Discord</a>`;
-      wWrap.style.display = 'none';
+      const inv = await resolveInvite();
+      let online = inv.approxOnline;
+      let total  = inv.approxTotal;
+      // prova presenza dal widget (più precisa per "online")
+      try{
+        const w = await getWidgetPresence(inv.guildId);
+        if(w && typeof w.presence === 'number') online = w.presence;
+        if(w && w.name) DISCORD.name = w.name;
+      }catch(_){}
+      setCounts({ total, online, name: DISCORD.name });
+    }catch(_){
+      setCounts({ total: null, online: null, name: DISCORD.name });
     }
   }
 
-  // refresh periodico
-  let widgetTimer=null;
-  function startWidgetAutoRefresh(){
-    if(widgetTimer) clearInterval(widgetTimer);
-    widgetTimer = setInterval(async ()=>{
-      try{
-        if(!DISCORD.guildId) return;
-        await fetchWidget();
-        renderDiscordUI();
-      }catch(_){}
-    }, 30000); // 30s
+  let countsTimer=null;
+  function startCountsAutoRefresh(){
+    if(countsTimer) clearInterval(countsTimer);
+    countsTimer = setInterval(loadCountsOnce, 30000); // 30s
   }
 
-  /* Bind */
-  $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
-  $('#btnLogout')?.addEventListener('click', logout, {capture:true});
-
-  // UI Discord: filtro + toggle
-  $('#memberSearch')?.addEventListener('input', ()=>renderDiscordUI());
-  $('#toggleMore')?.addEventListener('click', (e)=>{ e.preventDefault(); DISCORD.expanded=!DISCORD.expanded; renderDiscordUI(); });
-
-  /* Init */
+  /* INIT */
   window.addEventListener('load', async ()=>{
     await handleOAuthRedirectFragment();
-    updateAuthUI(); scheduleAutoLogout(); showPage('home'); tryAutoplay();
-
-    // Discord (accurato)
-    await loadDiscordAccurate();
-    startWidgetAutoRefresh();
+    updateAuthUI(); scheduleAutoLogout(); tryAutoplay();
+    await loadCountsOnce();
+    startCountsAutoRefresh();
   });
   window.addEventListener('focus', scheduleAutoLogout);
 
-  // Sicurezza postMessage (popup OAuth)
+  // Bind login/logout
+  $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
+  $('#btnLogout')?.addEventListener('click', logout, {capture:true});
+
+  // Sicurezza postMessage
   window.addEventListener('message',(ev)=>{ if(ev.origin !== originOf(REDIRECT_URI)) return; });
   </script>
 </body>

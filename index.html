@@ -1,5 +1,7 @@
-Ti ho solo cambiato la parte dei contatori Discord rendendola più semplice e senza il pannello grosso, mantenendo tutto il resto identico (JS compreso).
-Puoi copiare e incollare questo file intero:
+Ok, ti rifaccio solo la parte del server Discord: niente pannellone, stile più pulito e compatto, e nessuna scritta visibile di aggiornamento.
+Il resto del file (login, staff, donazioni, JS, ecc.) rimane uguale.
+
+Copia e incolla tutto questo al posto del tuo index:
 
 <!DOCTYPE html>
 <html lang="it">
@@ -83,79 +85,77 @@ Puoi copiare e incollare questo file intero:
   .home-video-frame{width:min(95vw,var(--home-video-max)); max-width:var(--home-video-max); min-width:var(--home-video-min); background:#0f1528; border:2px solid #2a3a61; border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
   .home-video-frame video{display:block; width:100%; height:auto}
 
-  /* ==== DISCORD: COUNTS SEMPLIFICATI ==== */
+  /* ===== DISCORD: COUNTS SEMPLICI ===== */
   .discord-counts{
     width:100%;
-    display:flex;
-    justify-content:center;
-    margin:30px 0 0;
-    padding:0 10px;
-  }
-  .discord-badge{
-    display:flex;
-    align-items:center;
-    gap:18px;
-    padding:10px 18px;
-    border-radius:999px;
-    background:rgba(15,22,37,.9);
-    border:1px solid #2a3a61;
-    backdrop-filter:blur(10px);
-    box-shadow:var(--shadow);
-    max-width:640px;
-    width:100%;
-  }
-  .discord-main{
-    flex:1;
+    margin-top:26px;
     display:flex;
     flex-direction:column;
-    gap:4px;
+    align-items:center;
+    gap:10px;
   }
-  .discord-main-title{
-    display:flex;
+  .discord-chip{
+    display:inline-flex;
     align-items:center;
     gap:8px;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    font-size:0.95rem;
+    padding:6px 14px;
+    border-radius:999px;
+    background:#0f1625;
+    border:1px solid #2a3a61;
   }
-  .discord-main-title i{
+  .discord-chip i{
     font-size:1.2rem;
   }
-  .discord-main-sub{
-    font-size:0.8rem;
-    color:var(--muted);
+  .discord-chip span{
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-size:.9rem;
   }
-  .discord-stats{
-    display:flex;
-    align-items:baseline;
+  .discord-numbers{
+    display:inline-flex;
+    align-items:center;
     gap:18px;
+    padding:8px 18px;
+    border-radius:999px;
+    background:#0f1625;
+    border:1px solid #2a3a61;
+    box-shadow:var(--shadow);
   }
-  .discord-stat{
+  .discord-num{
     display:flex;
     flex-direction:column;
-    align-items:flex-end;
-    min-width:70px;
+    align-items:center;
+    min-width:80px;
   }
-  .ds-label{
-    font-size:0.7rem;
+  .dc-label{
+    font-size:.7rem;
     text-transform:uppercase;
     letter-spacing:.12em;
     color:var(--muted);
   }
-  .ds-value{
-    font-size:1.4rem;
+  .dc-value{
+    font-size:1.6rem;
     font-weight:900;
     line-height:1.1;
   }
-  .ds-value.total{color:#eaf0ff;}
-  .ds-value.online{color:#7ee787;}
+  .dc-value.online{color:#7ee787;}
+  .dc-divider{
+    width:1px;
+    height:26px;
+    background:#2a3a61;
+    opacity:.8;
+  }
+  /* nascondo il testo di aggiornamento, ma lo lascio per lo script */
+  #lastUpdate{
+    display:none !important;
+  }
 
   /* Titles / Cards */
   .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem}
   .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:24px; box-shadow:var(--shadow)}
   .chip{width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:#1b2747; border:1px solid #2a3a61}
 
-  /* Staff / Donazioni (stili dal tuo file, in basso la struttura) */
+  /* Staff / Donazioni */
   .staff-section{max-width:1000px; margin:40px auto}
   .role{display:flex; align-items:center; gap:10px; margin:0 0 20px; font-weight:800; font-size:1.5rem}
   .role .role-icon{width:28px; height:28px; object-fit:contain; display:inline-block; filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
@@ -212,19 +212,9 @@ Puoi copiare e incollare questo file intero:
   /* Responsive */
   @media (max-width:600px){
     .title-roman{font-size:2rem; margin-bottom:22px}
-
-    .discord-badge{
-      flex-direction:column;
-      align-items:flex-start;
-      border-radius:18px;
-      gap:10px;
-    }
-    .discord-stats{
+    .discord-numbers{
       width:100%;
-      justify-content:space-between;
-    }
-    .discord-stat{
-      align-items:flex-start;
+      justify-content:space-around;
     }
   }
   </style>
@@ -274,29 +264,25 @@ Puoi copiare e incollare questo file intero:
           </div>
         </div>
 
-        <!-- ======= DISCORD: SOLO NUMERI (SEMPLIFICATO) ======= -->
+        <!-- ======= DISCORD: SOLO NUMERI (SEMPLICE) ======= -->
         <div class="discord-counts" id="discordCountsCard">
-          <div class="discord-badge">
-            <div class="discord-main">
-              <div class="discord-main-title">
-                <i class="fa-brands fa-discord"></i>
-                <span id="guildName">Community Discord</span>
-              </div>
-              <div class="discord-main-sub">
-                <span id="lastUpdate">Aggiornamento…</span>
-              </div>
+          <div class="discord-chip">
+            <i class="fa-brands fa-discord"></i>
+            <span id="guildName">Community Discord</span>
+          </div>
+          <div class="discord-numbers">
+            <div class="discord-num">
+              <span class="dc-label">Totali</span>
+              <span class="dc-value" id="countTotal">—</span>
             </div>
-            <div class="discord-stats">
-              <div class="discord-stat">
-                <span class="ds-label">Totali</span>
-                <span class="ds-value total" id="countTotal">—</span>
-              </div>
-              <div class="discord-stat">
-                <span class="ds-label">Online</span>
-                <span class="ds-value online" id="countOnline">—</span>
-              </div>
+            <div class="dc-divider"></div>
+            <div class="discord-num">
+              <span class="dc-label">Online</span>
+              <span class="dc-value online" id="countOnline">—</span>
             </div>
           </div>
+          <!-- tenuto solo per lo script, ma nascosto via CSS -->
+          <span id="lastUpdate">Aggiornato</span>
         </div>
         <!-- ===================================== -->
       </div>
@@ -599,7 +585,7 @@ Puoi copiare e incollare questo file intero:
     window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
-  /* ===== LOGIN (identico, solo header inline) ===== */
+  /* ===== LOGIN ===== */
   const getToken = ()=>{
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
@@ -813,7 +799,10 @@ Puoi copiare e incollare questo file intero:
     $('#countOnline').textContent = (online ?? '—');
     const d = new Date();
     const pad = n => String(n).padStart(2,'0');
-    $('#lastUpdate').textContent = `Aggiornato alle ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    const last = $('#lastUpdate');
+    if(last){
+      last.textContent = `Aggiornato alle ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
   }
 
   async function loadCountsOnce(){
@@ -857,3 +846,5 @@ Puoi copiare e incollare questo file intero:
   </script>
 </body>
 </html>
+
+Se vuoi, al prossimo giro possiamo solo cambiare colori/font dei due numeri senza toccare più nulla del layout.

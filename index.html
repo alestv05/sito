@@ -1,3 +1,6 @@
+Ti ho solo cambiato la parte dei contatori Discord rendendola più semplice e senza il pannello grosso, mantenendo tutto il resto identico (JS compreso).
+Puoi copiare e incollare questo file intero:
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -80,21 +83,72 @@
   .home-video-frame{width:min(95vw,var(--home-video-max)); max-width:var(--home-video-max); min-width:var(--home-video-min); background:#0f1528; border:2px solid #2a3a61; border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
   .home-video-frame video{display:block; width:100%; height:auto}
 
-  /* CARD Discord: SOLO DUE NUMERI */
-  .discord-counts{max-width:980px; margin:26px auto 0; background:#111a2c; border:1px solid #2a3a61; border-radius:16px; padding:18px; box-shadow:var(--shadow)}
-  .discord-head{display:flex; align-items:center; gap:10px; margin-bottom:14px}
-  .discord-grid2{display:grid; grid-template-columns:repeat(2,minmax(140px,1fr)); gap:12px}
-  .count-box{background:#0f1625; border:1px solid #2a3a61; border-radius:14px; padding:16px; text-align:center}
-  .count-label{color:#9daccc; font-weight:800; letter-spacing:.06em; text-transform:uppercase}
-  .count-value{font-size:clamp(34px,6vw,64px); font-weight:900; line-height:1; margin-top:6px}
-  .count-online{color:#7ee787}
-  .count-total{color:#eaf0ff}
-  .count-footer{margin-top:10px; color:#9daccc; font-size:.95rem; text-align:center}
-  .pill{display:inline-flex; align-items:center; gap:8px; border:1px solid #2a3a61; border-radius:999px; padding:4px 10px; background:#0f1625; color:#cfe0ff; font-weight:800}
-  .small{font-size:.9rem}
-  .dot{width:10px; height:10px; border-radius:50%}
-  .dot-online{background:#3ba55d}
-  .dot-total{background:#7d8590}
+  /* ==== DISCORD: COUNTS SEMPLIFICATI ==== */
+  .discord-counts{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    margin:30px 0 0;
+    padding:0 10px;
+  }
+  .discord-badge{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(15,22,37,.9);
+    border:1px solid #2a3a61;
+    backdrop-filter:blur(10px);
+    box-shadow:var(--shadow);
+    max-width:640px;
+    width:100%;
+  }
+  .discord-main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .discord-main-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-size:0.95rem;
+  }
+  .discord-main-title i{
+    font-size:1.2rem;
+  }
+  .discord-main-sub{
+    font-size:0.8rem;
+    color:var(--muted);
+  }
+  .discord-stats{
+    display:flex;
+    align-items:baseline;
+    gap:18px;
+  }
+  .discord-stat{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    min-width:70px;
+  }
+  .ds-label{
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    color:var(--muted);
+  }
+  .ds-value{
+    font-size:1.4rem;
+    font-weight:900;
+    line-height:1.1;
+  }
+  .ds-value.total{color:#eaf0ff;}
+  .ds-value.online{color:#7ee787;}
 
   /* Titles / Cards */
   .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem}
@@ -157,8 +211,21 @@
 
   /* Responsive */
   @media (max-width:600px){
-    .discord-grid2{grid-template-columns:1fr}
     .title-roman{font-size:2rem; margin-bottom:22px}
+
+    .discord-badge{
+      flex-direction:column;
+      align-items:flex-start;
+      border-radius:18px;
+      gap:10px;
+    }
+    .discord-stats{
+      width:100%;
+      justify-content:space-between;
+    }
+    .discord-stat{
+      align-items:flex-start;
+    }
   }
   </style>
 </head>
@@ -207,24 +274,28 @@
           </div>
         </div>
 
-        <!-- ======= DISCORD: SOLO NUMERI ======= -->
+        <!-- ======= DISCORD: SOLO NUMERI (SEMPLIFICATO) ======= -->
         <div class="discord-counts" id="discordCountsCard">
-          <div class="discord-head">
-            <i class="fa-brands fa-discord"></i>
-            <h3 class="title-roman" style="margin:0" id="guildName">Community Discord</h3>
-          </div>
-          <div class="discord-grid2">
-            <div class="count-box">
-              <div class="count-label"><span class="dot dot-total"></span> Membri totali</div>
-              <div class="count-value count-total" id="countTotal">—</div>
+          <div class="discord-badge">
+            <div class="discord-main">
+              <div class="discord-main-title">
+                <i class="fa-brands fa-discord"></i>
+                <span id="guildName">Community Discord</span>
+              </div>
+              <div class="discord-main-sub">
+                <span id="lastUpdate">Aggiornamento…</span>
+              </div>
             </div>
-            <div class="count-box">
-              <div class="count-label"><span class="dot dot-online"></span> Online</div>
-              <div class="count-value count-online" id="countOnline">—</div>
+            <div class="discord-stats">
+              <div class="discord-stat">
+                <span class="ds-label">Totali</span>
+                <span class="ds-value total" id="countTotal">—</span>
+              </div>
+              <div class="discord-stat">
+                <span class="ds-label">Online</span>
+                <span class="ds-value online" id="countOnline">—</span>
+              </div>
             </div>
-          </div>
-          <div class="count-footer">
-            <span class="pill small" id="lastUpdate">Aggiornamento…</span>
           </div>
         </div>
         <!-- ===================================== -->

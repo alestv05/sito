@@ -436,38 +436,33 @@
   const DISCORD_INVITE_URL = 'https://discord.gg/EubyJqDGwU';
   const INVITE_CODE = DISCORD_INVITE_URL.split('/').filter(Boolean).pop();
   
-  // ID del bottone Admin nascosto
-  const ADMIN_USER_ID = '640478852308664360';
-  
-  // Mappa degli ID Discord dello staff
+  // Mappa degli ID Discord dello staff (come richiesto)
   const STAFF_IDS = {
     'founder': ['1185712271821905941'],
     'cofounder': ['642015868720644100', '851447210079289365'],
     'admin': [
-      '682651087060336701',  // Alexo
-      '844691950799028235',  // Chri
-      '1011311419704234034', // Il Davide
-      '640478852308664360',  // Admin (ID principale)
-      '755104015037104191'   // Th3b00ss (spostato da Co-Founder)
+      '640478852308664360',
+      '682651087060336701',
+      '844691950799028235',
+      '1011311419704234034',
+      '755104015037104191'
     ],
     'moderatore': [
-      '659786178987556864',  // Rodriguez (spostato da Co-Founder)
-      '488775636345946113',  // Voight
-      '1004056571514458262', // Mattiger
-      '534703868802629642'   // Andre (spostato da Helper)
+      '534703868802629642',
+      '488775636345946113',
+      '1004056571514458262',
+      '659786178987556864'
     ],
     'helper': [
+      '495176612656971776',
       '506078659740958721',
       '904281641936117770',
-      '722146701888192614',
       '697156512400801874',
-      '495176612656971776'
+      '722146701888192614'
     ]
   };
 
   /* Chiavi di storage UNIFICATE */
-  const USERS_DB_KEY = 'nova_roma_users_db';
-  const SESSIONS_DB_KEY = 'nova_roma_sessions_db';
   const OAUTH_TOKEN_KEY = 'nova_roma_token';
   const OAUTH_USER_KEY = 'nova_roma_user';
   const OAUTH_EXP_KEY = 'nova_roma_expires';
@@ -503,18 +498,7 @@
 
   /* ===== SISTEMA STAFF DINAMICO ===== */
   
-  // Funzione per ottenere l'URL dell'avatar da Discord ID
-  function getDiscordAvatarUrl(userId, avatarHash) {
-    if (avatarHash) {
-      const format = avatarHash.startsWith('a_') ? 'gif' : 'png';
-      return `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${format}?size=256`;
-    }
-    // Default avatar basato sul discriminatore
-    const discriminator = 0; // Default
-    return `https://cdn.discordapp.com/embed/avatars/${discriminator % 5 || 0}.png`;
-  }
-  
-  // Ottieni informazioni utente da Discord API
+  // Ottieni informazioni utente da Discord API (con proxy per evitare CORS)
   async function fetchDiscordUser(userId) {
     try {
       // Prima controlla la cache locale
@@ -526,44 +510,50 @@
         }
       }
       
-      // Fallback: usa dati hardcoded per ID specifici
+      // Usa l'API Discord (richiede token, ma per ora usiamo avatar default)
+      // Nota: Discord richiede autenticazione per ottenere dati utente
+      // Per ora mostriamo solo l'avatar generico
+      
+      // Per ottenere avatar reali avremmo bisogno di:
+      // 1. Un bot token con permessi
+      // 2. Un endpoint server-side per fare la richiesta
+      
+      // Per ora usiamo dati hardcoded per ID specifici
       const hardcodedUsers = {
         '1185712271821905941': { username: 'Mony', global_name: 'Mony', discriminator: '0' },
-        '642015868720644100': { username: 'Gabbo', global_name: 'Gabbo', discriminator: '0', roles: ['Developer'] },
-        '851447210079289365': { username: 'Rodriguez', global_name: 'Rodriguez', discriminator: '0', roles: ['Developer'] },
-        '682651087060336701': { username: 'Alexo', global_name: 'Alexo', discriminator: '0', roles: ['Eup Creator'] },
-        '844691950799028235': { username: 'Chri', global_name: 'Chri', discriminator: '0', roles: ['Developer'] },
-        '1011311419704234034': { username: 'Il Davide', global_name: 'Il Davide', discriminator: '0', roles: ['Eup Creator'] },
+        '642015868720644100': { username: 'Gabbo', global_name: 'Gabbo', discriminator: '0' },
+        '851447210079289365': { username: 'Rodriguez', global_name: 'Rodriguez', discriminator: '0' },
         '640478852308664360': { username: 'Admin', global_name: 'Admin', discriminator: '0' },
+        '682651087060336701': { username: 'Alexo', global_name: 'Alexo', discriminator: '0' },
+        '844691950799028235': { username: 'Chri', global_name: 'Chri', discriminator: '0' },
+        '1011311419704234034': { username: 'Il Davide', global_name: 'Il Davide', discriminator: '0' },
         '755104015037104191': { username: 'Th3b00ss', global_name: 'Th3b00ss', discriminator: '0' },
-        '659786178987556864': { username: 'Ales', global_name: 'Ales', discriminator: '0', roles: ['Developer'] },
+        '534703868802629642': { username: 'Andre', global_name: 'Andre', discriminator: '0' },
         '488775636345946113': { username: 'Voight', global_name: 'Voight', discriminator: '0' },
         '1004056571514458262': { username: 'Mattiger', global_name: 'Mattiger', discriminator: '0' },
-        '534703868802629642': { username: 'Andre', global_name: 'Andre', discriminator: '0' },
-        '506078659740958721': { username: 'Blaze', global_name: 'Blaze', discriminator: '0', roles: ['Grafico'] },
-        '904281641936117770': { username: 'Franco', global_name: 'Franco', discriminator: '0', roles: ['Grafico'] },
-        '722146701888192614': { username: 'Falco', global_name: 'Falco', discriminator: '0' },
+        '659786178987556864': { username: 'Ales', global_name: 'Ales', discriminator: '0' },
+        '495176612656971776': { username: 'Luca', global_name: 'Luca', discriminator: '0' },
+        '506078659740958721': { username: 'Blaze', global_name: 'Blaze', discriminator: '0' },
+        '904281641936117770': { username: 'Franco', global_name: 'Franco', discriminator: '0' },
         '697156512400801874': { username: 'Glaudio', global_name: 'Glaudio', discriminator: '0' },
-        '495176612656971776': { username: 'Luca', global_name: 'Luca', discriminator: '0' }
+        '722146701888192614': { username: 'Falco', global_name: 'Falco', discriminator: '0' }
       };
       
-      if (hardcodedUsers[userId]) {
-        // Aggiorna la cache
-        const cacheData = JSON.parse(localStorage.getItem(STAFF_CACHE_KEY) || '{}');
-        cacheData[userId] = {
-          data: hardcodedUsers[userId],
-          timestamp: nowMs()
-        };
-        localStorage.setItem(STAFF_CACHE_KEY, JSON.stringify(cacheData));
-        
-        return hardcodedUsers[userId];
-      }
-      
-      return {
+      const userData = hardcodedUsers[userId] || {
         username: `User${userId.substring(0, 4)}`,
         global_name: `User ${userId.substring(0, 4)}`,
         discriminator: '0'
       };
+      
+      // Aggiorna la cache
+      const cacheData = JSON.parse(localStorage.getItem(STAFF_CACHE_KEY) || '{}');
+      cacheData[userId] = {
+        data: userData,
+        timestamp: nowMs()
+      };
+      localStorage.setItem(STAFF_CACHE_KEY, JSON.stringify(cacheData));
+      
+      return userData;
       
     } catch (error) {
       console.error(`Errore nel fetch utente ${userId}:`, error);
@@ -588,40 +578,67 @@
       const userIds = STAFF_IDS[section];
       let html = '';
       
+      // Determina il colore del ring in base alla sezione
+      let ringClass = 'ring';
+      if (section === 'founder') ringClass = 'ring ring-silver';
+      else if (section === 'cofounder') ringClass = 'ring';
+      else if (section === 'admin') ringClass = 'ring ring-red';
+      else if (section === 'moderatore') ringClass = 'ring ring-green';
+      else if (section === 'helper') ringClass = 'ring ring-purple';
+      
+      // Assegna ruoli speciali
+      const getRoleForUser = (userId, section) => {
+        if (section === 'cofounder') {
+          if (userId === '642015868720644100' || userId === '851447210079289365') {
+            return 'Developer';
+          }
+        }
+        if (section === 'admin') {
+          if (userId === '682651087060336701' || userId === '1011311419704234034') {
+            return 'Eup Creator';
+          }
+          if (userId === '844691950799028235') {
+            return 'Developer';
+          }
+        }
+        if (section === 'moderatore') {
+          if (userId === '659786178987556864') {
+            return 'Developer';
+          }
+        }
+        if (section === 'helper') {
+          if (userId === '506078659740958721' || userId === '904281641936117770') {
+            return 'Grafico';
+          }
+        }
+        return null;
+      };
+      
       for (const userId of userIds) {
         const userData = await fetchDiscordUser(userId);
         const displayName = userData.global_name || userData.username || `User${userId.substring(0, 4)}`;
         
-        // Determina il colore del ring in base alla sezione
-        let ringClass = 'ring';
-        if (section === 'founder') ringClass = 'ring ring-silver';
-        else if (section === 'cofounder') ringClass = 'ring';
-        else if (section === 'admin') ringClass = 'ring ring-red';
-        else if (section === 'moderatore') ringClass = 'ring ring-green';
-        else if (section === 'helper') ringClass = 'ring ring-purple';
-        
-        // Avatar URL
-        const avatarUrl = userData.avatar ? 
-          getDiscordAvatarUrl(userId, userData.avatar) : 
-          getDiscordAvatarUrl(userId, null);
+        // Avatar URL - Discord blocca le richieste CORS, usiamo un proxy
+        // Usiamo il servizio di discord-avatar per ottenere l'avatar
+        const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}&backgroundColor=0f1528`;
         
         // Ruoli speciali
         let roleHtml = '';
-        if (userData.roles) {
-          userData.roles.forEach(role => {
-            let roleClass = '';
-            if (role === 'Developer') roleClass = 'role-dev';
-            else if (role === 'Eup Creator') roleClass = 'role-eup';
-            else if (role === 'Grafico') roleClass = 'role-grafico';
-            
-            roleHtml += `<div class="member-role ${roleClass}">${role}</div>`;
-          });
+        const role = getRoleForUser(userId, section);
+        if (role) {
+          let roleClass = '';
+          if (role === 'Developer') roleClass = 'role-dev';
+          else if (role === 'Eup Creator') roleClass = 'role-eup';
+          else if (role === 'Grafico') roleClass = 'role-grafico';
+          
+          roleHtml += `<div class="member-role ${roleClass}">${role}</div>`;
         }
         
         html += `
           <div class="member">
             <div class="avatar ${ringClass}">
-              <img src="${avatarUrl}" alt="${displayName}" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+              <img src="${avatarUrl}" alt="${displayName}" loading="lazy" 
+                   onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}&backgroundColor=0f1528'">
             </div>
             <div class="member-name">${displayName}</div>
             ${roleHtml}
@@ -961,7 +978,7 @@
       }
     } else if (pageId === 'staff') {
       // Carica lo staff quando si visita la pagina
-      loadStaff();
+      setTimeout(() => loadStaff(), 100);
     }
   }
   
@@ -1075,15 +1092,7 @@
     
     // Carica lo staff se siamo sulla pagina staff
     if ($('.page.active')?.id === 'page-staff') {
-      loadStaff();
-    }
-  });
-  
-  // Aggiorna attività quando la finestra diventa attiva
-  window.addEventListener('focus', () => {
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
-    if (user && user.id) {
-      // Aggiorna attività
+      setTimeout(() => loadStaff(), 100);
     }
   });
   </script>

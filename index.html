@@ -440,18 +440,6 @@
     border:1px solid #2a3a61;
   }
   
-  /* Pulsante Admin speciale */
-  .nav-link.admin-link{
-    background:linear-gradient(45deg, #ff6b6b, #ffa500);
-    color:#fff;
-    border:1px solid #ffa500;
-  }
-  
-  .nav-link.admin-link:hover{
-    background:linear-gradient(45deg, #ff5252, #ff8c00);
-    color:#fff;
-  }
-
   /* Responsive */
   @media (max-width:600px){
     .title-roman{font-size:2rem; margin-bottom:22px}
@@ -481,7 +469,7 @@
       <a href="#" class="nav-link active" data-route="home">Home</a>
       <a href="#" class="nav-link" data-route="staff">Staff</a>
       <a href="#" class="nav-link" id="navDonations" data-route="donations" hidden>Donazioni</a>
-      <a href="#" class="nav-link admin-link" id="navAdmin" data-route="admin" hidden>
+      <a href="#" class="nav-link" id="navAdmin" data-route="admin" hidden>
         <i class="fa-solid fa-shield-halved"></i> Admin
       </a>
       <a href="#" class="nav-link" id="btnDiscordLogin" title="Login con Discord">
@@ -874,7 +862,7 @@
             </div>
             <div>
               <div style="color:#9daccc;font-size:.9rem;">Sistema Tracciamento</div>
-              <div style="color:#eaf0ff;font-size:1.1rem;" id="adminSystemStatus">WebSocket Attivo</div>
+              <div style="color:#eaf0ff;font-size:1.1rem;" id="adminSystemStatus">SIMULAZIONE WebSocket</div>
             </div>
           </div>
         </div>
@@ -904,529 +892,431 @@
   <div class="loader" id="loginLoader">Login in corso…</div>
 
   <script>
-  /* ===== CONFIG ===== */
+  /* ===== CONFIGURAZIONE ===== */
   const DISCORD_CLIENT_ID = '1419444744563720404';
   const DISCORD_SCOPE = 'identify';
   const REDIRECT_URI = 'https://alestv05.github.io/sito/';
   const DISCORD_INVITE_URL = 'https://discord.gg/EubyJqDGwU';
   const INVITE_CODE = DISCORD_INVITE_URL.split('/').filter(Boolean).pop();
   
-  // ID dell'admin autorizzato (TUO ID DISCORD)
+  // ID dell'admin autorizzato
   const ADMIN_USER_ID = '640478852308664360';
   
-  // Configurazione aggiornamenti LIVE
-  const ADMIN_UPDATE_INTERVAL = 3000; // 3 secondi per aggiornamenti rapidi
-  const USER_HEARTBEAT_INTERVAL = 10000; // 10 secondi per heartbeat
-  const USER_ONLINE_THRESHOLD = 300000; // 5 minuti considerati online
-  const USER_ACTIVE_THRESHOLD = 60000; // 1 minuto considerati attivi
+  // Configurazione aggiornamenti
+  const ADMIN_UPDATE_INTERVAL = 3000; // 3 secondi
+  const USER_ONLINE_THRESHOLD = 300000; // 5 minuti
+  const USER_ACTIVE_THRESHOLD = 120000; // 2 minuti
 
-  /* Storage keys - VERSIONI UNICHE PER OGNI BROWSER/TAB */
-  const TAB_ID = 'tab_' + Math.random().toString(36).substr(2, 9);
-  const SESSION_ID = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  /* Chiavi di storage UNIFICATE */
+  const USERS_DB_KEY = 'nova_roma_users_db';
+  const SESSIONS_DB_KEY = 'nova_roma_sessions_db';
+  const OAUTH_TOKEN_KEY = 'nova_roma_token';
+  const OAUTH_USER_KEY = 'nova_roma_user';
+  const OAUTH_EXP_KEY = 'nova_roma_expires';
+
+  /* Utility */
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+  const nowMs = () => Date.now();
+  const toast = (message) => {
+    const existing = $('.toast');
+    if (existing) existing.remove();
+    
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = message;
+    document.body.appendChild(el);
+    
+    setTimeout(() => el.classList.add('show'), 10);
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 300);
+    }, 3000);
+  };
   
-  const OAUTH_TOKEN_KEY = 'nr_discord_token_v2';
-  const OAUTH_USER_KEY  = 'nr_discord_user_v2';
-  const OAUTH_EXP_KEY   = 'nr_discord_expires_at_v2';
+  const showLoader = (show) => {
+    const loader = $('#loginLoader');
+    if (loader) loader.classList.toggle('show', show);
+  };
+
+  /* ===== SISTEMA DATABASE UTENTI ===== */
   
-  /* Storage condiviso tra tutte le schede */
-  const SHARED_USERS_KEY = 'nr_shared_users_v2';
-  const SHARED_ACTIVITY_KEY = 'nr_shared_activity_v2';
-  const SHARED_SESSIONS_KEY = 'nr_shared_sessions_v2';
-
-  /* Utils */
-  const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-  const delay=ms=>new Promise(r=>setTimeout(r,ms));
-  const toast=t=>{const x=$('.toast');if(x)x.remove();const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),10);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);};
-  const showLoader=(on)=>{$('#loginLoader')?.classList.toggle('show',!!on);};
-  const originOf = url => new URL(url, location.href).origin;
-  const cdnDefaultAvatar = (i=0)=>`https://cdn.discordapp.com/embed/avatars/${(Number(i)%5)||0}.png`;
-  const nowMs = ()=>Date.now();
-  const generateId = ()=>Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-
-  const protectedRoutes = new Set(['donations','donation']);
-  const adminRoutes = new Set(['admin']);
-
-  /* Variabili globali per gestione LIVE */
-  let adminUpdateInterval = null;
-  let userHeartbeatInterval = null;
-  let isUpdatingAdminPanel = false;
-  let lastFullUpdateTime = nowMs();
-  let currentUserData = null;
-
-  /* ===== SISTEMA DI TRACCIAMENTO CONDIVISO ===== */
-  
-  // Inizializza storage condiviso
-  function initSharedStorage(){
-    try{
-      // Inizializza solo se non esiste
-      if(!localStorage.getItem(SHARED_USERS_KEY)){
-        localStorage.setItem(SHARED_USERS_KEY, JSON.stringify([]));
+  // Inizializza database
+  function initDatabase() {
+    try {
+      if (!localStorage.getItem(USERS_DB_KEY)) {
+        localStorage.setItem(USERS_DB_KEY, JSON.stringify([]));
       }
-      if(!localStorage.getItem(SHARED_ACTIVITY_KEY)){
-        localStorage.setItem(SHARED_ACTIVITY_KEY, JSON.stringify({}));
+      if (!localStorage.getItem(SESSIONS_DB_KEY)) {
+        localStorage.setItem(SESSIONS_DB_KEY, JSON.stringify([]));
       }
-      if(!localStorage.getItem(SHARED_SESSIONS_KEY)){
-        localStorage.setItem(SHARED_SESSIONS_KEY, JSON.stringify({}));
-      }
-    }catch(e){
-      console.error('Errore inizializzazione storage:', e);
+      return true;
+    } catch (e) {
+      console.error('Errore inizializzazione database:', e);
+      return false;
     }
   }
   
-  // Ottieni tutti gli utenti registrati
-  function getSharedUsers(){
-    try{
-      const data = localStorage.getItem(SHARED_USERS_KEY);
+  // Ottieni tutti gli utenti
+  function getAllUsers() {
+    try {
+      const data = localStorage.getItem(USERS_DB_KEY);
       return data ? JSON.parse(data) : [];
-    }catch(e){
+    } catch (e) {
       return [];
     }
   }
   
-  // Salva tutti gli utenti
-  function saveSharedUsers(users){
-    try{
-      localStorage.setItem(SHARED_USERS_KEY, JSON.stringify(users));
-    }catch(e){
-      console.error('Errore salvataggio utenti condivisi:', e);
+  // Ottieni tutte le sessioni
+  function getAllSessions() {
+    try {
+      const data = localStorage.getItem(SESSIONS_DB_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
     }
   }
   
-  // Ottieni attività corrente
-  function getSharedActivity(){
-    try{
-      const data = localStorage.getItem(SHARED_ACTIVITY_KEY);
-      return data ? JSON.parse(data) : {};
-    }catch(e){
-      return {};
-    }
-  }
-  
-  // Salva attività corrente
-  function saveSharedActivity(activity){
-    try{
-      localStorage.setItem(SHARED_ACTIVITY_KEY, JSON.stringify(activity));
-    }catch(e){
-      console.error('Errore salvataggio attività condivisa:', e);
-    }
-  }
-  
-  // Ottieni sessioni
-  function getSharedSessions(){
-    try{
-      const data = localStorage.getItem(SHARED_SESSIONS_KEY);
-      return data ? JSON.parse(data) : {};
-    }catch(e){
-      return {};
+  // Salva utenti
+  function saveUsers(users) {
+    try {
+      localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
+      return true;
+    } catch (e) {
+      console.error('Errore salvataggio utenti:', e);
+      return false;
     }
   }
   
   // Salva sessioni
-  function saveSharedSessions(sessions){
-    try{
-      localStorage.setItem(SHARED_SESSIONS_KEY, JSON.stringify(sessions));
-    }catch(e){
-      console.error('Errore salvataggio sessioni condivise:', e);
+  function saveSessions(sessions) {
+    try {
+      localStorage.setItem(SESSIONS_DB_KEY, JSON.stringify(sessions));
+      return true;
+    } catch (e) {
+      console.error('Errore salvataggio sessioni:', e);
+      return false;
     }
   }
   
-  // Registra un nuovo utente o aggiorna uno esistente
-  function registerSharedUser(user){
-    if(!user || !user.id) return null;
+  // Trova utente per ID
+  function findUserById(userId) {
+    const users = getAllUsers();
+    return users.find(user => user.id === userId);
+  }
+  
+  // Registra o aggiorna utente
+  function registerUser(discordUser) {
+    if (!discordUser || !discordUser.id) return null;
     
-    const users = getSharedUsers();
+    const users = getAllUsers();
     const now = nowMs();
     
     // Cerca utente esistente
-    const existingUserIndex = users.findIndex(u => u.id === user.id);
+    const existingIndex = users.findIndex(u => u.id === discordUser.id);
     
     const userData = {
-      id: user.id,
-      username: user.username || '',
-      global_name: user.global_name || user.username || '',
-      avatar: user.avatar || null,
-      discriminator: user.discriminator || '0',
-      firstSeen: existingUserIndex >= 0 ? users[existingUserIndex].firstSeen : now,
-      lastSeen: now,
-      loginCount: existingUserIndex >= 0 ? users[existingUserIndex].loginCount + 1 : 1,
-      tabId: TAB_ID,
-      sessionId: SESSION_ID
+      id: discordUser.id,
+      username: discordUser.username || '',
+      global_name: discordUser.global_name || discordUser.username || '',
+      avatar: discordUser.avatar || null,
+      discriminator: discordUser.discriminator || '0',
+      first_seen: existingIndex >= 0 ? users[existingIndex].first_seen : now,
+      last_seen: now,
+      login_count: existingIndex >= 0 ? users[existingIndex].login_count + 1 : 1,
+      total_sessions: existingIndex >= 0 ? users[existingIndex].total_sessions + 1 : 1
     };
     
-    if(existingUserIndex >= 0){
-      users[existingUserIndex] = userData;
-    }else{
+    if (existingIndex >= 0) {
+      users[existingIndex] = userData;
+    } else {
       users.push(userData);
     }
     
-    saveSharedUsers(users);
+    saveUsers(users);
+    
+    // Registra sessione
+    registerSession(userData.id, userData);
+    
     return userData;
   }
   
-  // Aggiorna attività utente
-  function updateSharedActivity(userId){
-    if(!userId) return;
-    
+  // Registra una nuova sessione
+  function registerSession(userId, userData) {
+    const sessions = getAllSessions();
     const now = nowMs();
-    const activity = getSharedActivity();
     
-    if(!activity[userId]){
-      activity[userId] = {};
-    }
-    
-    activity[userId][TAB_ID] = {
-      lastActive: now,
-      sessionId: SESSION_ID,
-      tabId: TAB_ID,
-      userAgent: navigator.userAgent,
-      timestamp: now
+    const sessionData = {
+      id: `sess_${now}_${Math.random().toString(36).substr(2, 9)}`,
+      user_id: userId,
+      username: userData.username,
+      global_name: userData.global_name,
+      avatar: userData.avatar,
+      discriminator: userData.discriminator,
+      start_time: now,
+      end_time: null,
+      is_active: true,
+      user_agent: navigator.userAgent.substring(0, 100)
     };
     
-    saveSharedActivity(activity);
+    sessions.push(sessionData);
+    saveSessions(sessions);
     
-    // Aggiorna anche lastSeen nella lista utenti
-    const users = getSharedUsers();
+    return sessionData;
+  }
+  
+  // Aggiorna ultima attività utente
+  function updateUserActivity(userId) {
+    if (!userId) return;
+    
+    const users = getAllUsers();
     const userIndex = users.findIndex(u => u.id === userId);
-    if(userIndex >= 0){
-      users[userIndex].lastSeen = now;
-      users[userIndex].tabId = TAB_ID;
-      saveSharedUsers(users);
+    
+    if (userIndex >= 0) {
+      users[userIndex].last_seen = nowMs();
+      saveUsers(users);
+      
+      // Aggiorna anche la sessione attiva
+      updateActiveSession(userId);
     }
   }
   
-  // Registra una nuova sessione
-  function registerSharedSession(userId, userData){
-    if(!userId || !userData) return;
+  // Aggiorna sessione attiva
+  function updateActiveSession(userId) {
+    const sessions = getAllSessions();
+    let updated = false;
     
-    const sessions = getSharedSessions();
+    for (let i = sessions.length - 1; i >= 0; i--) {
+      if (sessions[i].user_id === userId && sessions[i].is_active) {
+        sessions[i].last_activity = nowMs();
+        updated = true;
+        break;
+      }
+    }
+    
+    if (updated) {
+      saveSessions(sessions);
+    }
+  }
+  
+  // Termina sessione attiva
+  function endActiveSession(userId) {
+    const sessions = getAllSessions();
+    let ended = false;
+    
+    for (let i = sessions.length - 1; i >= 0; i--) {
+      if (sessions[i].user_id === userId && sessions[i].is_active) {
+        sessions[i].is_active = false;
+        sessions[i].end_time = nowMs();
+        sessions[i].duration = sessions[i].end_time - sessions[i].start_time;
+        ended = true;
+        break;
+      }
+    }
+    
+    if (ended) {
+      saveSessions(sessions);
+    }
+  }
+  
+  // Pulisci sessioni vecchie
+  function cleanupOldSessions() {
+    const sessions = getAllSessions();
+    const now = nowMs();
+    const oneWeekAgo = now - (7 * 24 * 60 * 60 * 1000);
+    
+    // Mantieni solo sessioni degli ultimi 7 giorni
+    const filteredSessions = sessions.filter(session => 
+      session.start_time > oneWeekAgo
+    );
+    
+    if (filteredSessions.length !== sessions.length) {
+      saveSessions(filteredSessions);
+    }
+  }
+  
+  // Ottieni statistiche
+  function getAdminStatistics() {
+    const users = getAllUsers();
+    const sessions = getAllSessions();
     const now = nowMs();
     
-    if(!sessions[userId]){
-      sessions[userId] = [];
-    }
+    // Sessioni attive (ultimi 5 minuti)
+    const activeSessions = sessions.filter(session => 
+      session.is_active && 
+      (now - session.start_time) < USER_ONLINE_THRESHOLD
+    );
     
-    // Aggiungi nuova sessione
-    sessions[userId].push({
-      sessionId: SESSION_ID,
-      tabId: TAB_ID,
-      start: now,
-      end: null,
-      userData: {
-        username: userData.username,
-        global_name: userData.global_name,
-        avatar: userData.avatar
-      }
-    });
-    
-    // Mantieni solo le ultime 50 sessioni per utente
-    if(sessions[userId].length > 50){
-      sessions[userId] = sessions[userId].slice(-50);
-    }
-    
-    saveSharedSessions(sessions);
-  }
-  
-  // Termina sessione
-  function endSharedSession(userId){
-    if(!userId) return;
-    
-    const sessions = getSharedSessions();
-    if(sessions[userId]){
-      const userSessions = sessions[userId];
-      const activeSession = userSessions.find(s => s.sessionId === SESSION_ID && !s.end);
-      
-      if(activeSession){
-        activeSession.end = nowMs();
-        saveSharedSessions(sessions);
-      }
-    }
-    
-    // Rimuovi attività per questa tab
-    const activity = getSharedActivity();
-    if(activity[userId] && activity[userId][TAB_ID]){
-      delete activity[userId][TAB_ID];
-      
-      // Se non ci sono più tab attive per questo utente, rimuovi completamente
-      if(Object.keys(activity[userId]).length === 0){
-        delete activity[userId];
-      }
-      
-      saveSharedActivity(activity);
-    }
-  }
-  
-  // Pulisci attività vecchie
-  function cleanupOldActivity(){
-    const now = nowMs();
-    const activity = getSharedActivity();
-    let changed = false;
-    
-    // Pulisci attività più vecchie di 1 minuto
-    for(const userId in activity){
-      for(const tabId in activity[userId]){
-        if(now - activity[userId][tabId].lastActive > 60000){ // 1 minuto
-          delete activity[userId][tabId];
-          changed = true;
-        }
-      }
-      
-      // Se l'utente non ha più attività, rimuovilo
-      if(Object.keys(activity[userId]).length === 0){
-        delete activity[userId];
-        changed = true;
-      }
-    }
-    
-    if(changed){
-      saveSharedActivity(activity);
-    }
-    
-    // Pulisci sessioni vecchie (più di 24 ore)
-    const sessions = getSharedSessions();
-    for(const userId in sessions){
-      sessions[userId] = sessions[userId].filter(session => 
-        !session.end || (now - session.end) < (24 * 60 * 60 * 1000)
-      );
-      
-      if(sessions[userId].length === 0){
-        delete sessions[userId];
-      }
-    }
-    
-    saveSharedSessions(sessions);
-  }
-  
-  // Ottieni statistiche aggiornate
-  function getAdminStats(){
-    const users = getSharedUsers();
-    const activity = getSharedActivity();
-    const now = nowMs();
-    
-    // Utenti totali unici
-    const totalUsers = users.length;
+    // Utenti online (sessioni attive negli ultimi 5 minuti)
+    const onlineUserIds = [...new Set(activeSessions.map(s => s.user_id))];
     
     // Utenti attivi nelle ultime 24 ore
-    const active24h = users.filter(user => 
-      (now - user.lastSeen) < (24 * 60 * 60 * 1000)
-    ).length;
-    
-    // Utenti online ora (attività negli ultimi 5 minuti)
-    let onlineNow = 0;
-    const onlineUsers = [];
-    
-    for(const userId in activity){
-      const userActivities = Object.values(activity[userId]);
-      const mostRecent = Math.max(...userActivities.map(a => a.lastActive));
-      
-      if(now - mostRecent < USER_ONLINE_THRESHOLD){
-        onlineNow++;
-        onlineUsers.push(userId);
-      }
-    }
+    const oneDayAgo = now - (24 * 60 * 60 * 1000);
+    const active24hUsers = users.filter(user => 
+      user.last_seen > oneDayAgo
+    );
     
     // Calcola tempo medio sessione
-    const sessions = getSharedSessions();
-    let totalSessionTime = 0;
-    let totalSessions = 0;
-    
-    for(const userId in sessions){
-      sessions[userId].forEach(session => {
-        if(session.start && session.end){
-          totalSessionTime += (session.end - session.start);
-          totalSessions++;
-        }else if(session.start && !session.end){
-          // Sessione ancora attiva
-          totalSessionTime += (now - session.start);
-          totalSessions++;
-        }
-      });
-    }
-    
-    const avgSessionTime = totalSessions > 0 ? 
-      Math.round(totalSessionTime / totalSessions / 60000) : 0;
+    const completedSessions = sessions.filter(s => s.end_time && s.duration);
+    const totalDuration = completedSessions.reduce((sum, s) => sum + s.duration, 0);
+    const avgSessionTime = completedSessions.length > 0 ? 
+      Math.round(totalDuration / completedSessions.length / 60000) : 0;
     
     return {
-      totalUsers,
-      active24h,
-      onlineNow,
-      onlineUsers,
-      avgSessionTime,
-      totalSessions
+      totalUsers: users.length,
+      active24h: active24hUsers.length,
+      onlineNow: onlineUserIds.length,
+      onlineUsers: onlineUserIds,
+      avgSessionTime: avgSessionTime,
+      totalSessions: sessions.length,
+      activeSessions: activeSessions.length
     };
   }
 
-  /* ===== LOGIN CON AVATAR ===== */
-  const getToken = ()=>{
+  /* ===== SISTEMA AUTH DISCORD ===== */
+  
+  // Ottieni token
+  function getAuthToken() {
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
-    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
-    if(!token || !exp) return null;
-    if(nowMs() >= exp){ clearSession(); return null; }
+    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY) || 0);
+    
+    if (!token || !exp) return null;
+    if (nowMs() >= exp) {
+      clearAuth();
+      return null;
+    }
+    
     return token;
-  };
+  }
   
-  const isLoggedIn = ()=>!!(getToken() && localStorage.getItem(OAUTH_USER_KEY));
+  // Verifica se loggato
+  function isLoggedIn() {
+    return !!(getAuthToken() && localStorage.getItem(OAUTH_USER_KEY));
+  }
   
-  function clearSession(){
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    if(user && user.id){
-      endSharedSession(user.id);
+  // Cancella auth
+  function clearAuth() {
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      endActiveSession(user.id);
     }
     
     localStorage.removeItem(OAUTH_TOKEN_KEY);
     localStorage.removeItem(OAUTH_USER_KEY);
     localStorage.removeItem(OAUTH_EXP_KEY);
     sessionStorage.removeItem('oauth_state');
-    currentUserData = null;
   }
   
-  function formatDiscordName(user){
-    if(!user) return '';
+  // Formatta nome Discord
+  function formatDiscordName(user) {
+    if (!user) return '';
     const disc = user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '';
     return (user.global_name || user.username || 'Utente') + disc;
   }
   
-  function getAvatarUrl(user){
-    if(!user) return null;
+  // Ottieni URL avatar
+  function getAvatarUrl(user) {
+    if (!user) return null;
     
-    if(user.avatar && user.id){
+    if (user.avatar && user.id) {
       const format = user.avatar.startsWith('a_') ? 'gif' : 'png';
       return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${format}?size=128`;
     }
     
     const discriminator = parseInt(user.discriminator || '0', 10);
-    return cdnDefaultAvatar(discriminator);
+    return `https://cdn.discordapp.com/embed/avatars/${discriminator % 5 || 0}.png`;
   }
   
-  function setAvatar(url){
-    const topImg=$('#topAvatarImg');
-    const topIcon=$('#topAvatarIcon');
-    
-    if(url){
-      const img = new Image();
-      img.src = url;
-      img.onload = () => {
-        topImg.src = url;
-        topImg.style.display = 'block';
-        topIcon.style.display = 'none';
-      };
-      img.onerror = () => {
-        topImg.src = cdnDefaultAvatar();
-        topImg.style.display = 'block';
-        topIcon.style.display = 'none';
-      };
-    } else {
-      topImg.removeAttribute('src');
-      topImg.style.display = 'none';
-      topIcon.style.display = 'block';
-    }
-  }
-  
-  function setUserHeader(user){
-    if(!user){
-      setAvatar(null);
-      $('#topUsername').textContent = '';
-      $('#topUsername').hidden = true;
-      $('#topAvatar').title = 'Utente';
-      return;
-    }
-    
-    const avatarUrl = getAvatarUrl(user);
-    setAvatar(avatarUrl);
-    
-    const name = formatDiscordName(user);
-    const el = $('#topUsername');
-    if(name){
-      el.textContent = name;
-      el.hidden = false;
-      $('#topAvatar').title = name;
-    } else {
-      el.textContent = '';
-      el.hidden = true;
-      $('#topAvatar').title = 'Utente';
-    }
-  }
-  
-  function isAdminUser(){
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    return user && user.id === ADMIN_USER_ID;
-  }
-  
-  function updateAuthUI(){
-    const token = getToken();
-    const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+  // Aggiorna UI auth
+  function updateAuthUI() {
+    const token = getAuthToken();
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
     const isIn = !!(token && user);
-    const isAdmin = isAdminUser();
+    const isAdmin = user && user.id === ADMIN_USER_ID;
     
+    // Aggiorna navbar
     $('#navDonations').hidden = !isIn;
     $('#navAdmin').hidden = !isAdmin;
     $('#btnDiscordLogin').hidden = isIn;
     $('#btnLogout').hidden = !isIn;
     
-    if(isIn){
-      setUserHeader(user);
-      currentUserData = user;
+    if (isIn) {
+      // Imposta avatar e nome
+      const avatarUrl = getAvatarUrl(user);
+      if (avatarUrl) {
+        $('#topAvatarImg').src = avatarUrl;
+        $('#topAvatarImg').style.display = 'block';
+        $('#topAvatarIcon').style.display = 'none';
+      }
+      
+      const name = formatDiscordName(user);
+      if (name) {
+        $('#topUsername').textContent = name;
+        $('#topUsername').hidden = false;
+        $('#topAvatar').title = name;
+      }
       
       // Aggiorna attività utente
-      updateSharedActivity(user.id);
+      updateUserActivity(user.id);
       
-      if(isAdmin){
-        startAdminUpdates();
-        if($('.page.active')?.id === 'page-admin'){
-          updateAdminPanel();
-        }
+      // Se admin, aggiorna pannello
+      if (isAdmin && $('.page.active')?.id === 'page-admin') {
+        updateAdminPanel();
       }
     } else {
-      setAvatar(null);
-      const n = $('#topUsername');
-      n.textContent = '';
-      n.hidden = true;
+      // Reset UI
+      $('#topAvatarImg').src = '';
+      $('#topAvatarImg').style.display = 'none';
+      $('#topAvatarIcon').style.display = 'block';
+      $('#topUsername').textContent = '';
+      $('#topUsername').hidden = true;
       $('#topAvatar').title = 'Utente';
-      currentUserData = null;
       
-      if(isAdmin){
-        stopAdminUpdates();
-      }
-      
-      const active = document.querySelector('.page.active')?.id?.replace('page-','');
-      if(protectedRoutes.has(active) || (adminRoutes.has(active) && !isAdmin)){
+      // Reindirizza se su pagina protetta
+      const activePage = $('.page.active')?.id?.replace('page-', '');
+      if (activePage === 'donations' || activePage === 'donation') {
         showPage('home');
-        if(adminRoutes.has(active)){
-          toast('Accesso riservato all\'amministratore.');
-        }else{
-          toast('Effettua il login per accedere a questa sezione.');
-        }
+        toast('Effettua il login per accedere.');
+      } else if (activePage === 'admin') {
+        showPage('home');
+        toast('Accesso riservato all\'amministratore.');
       }
     }
   }
   
-  function buildAuthURL(state){
-    const u = new URL('https://discord.com/oauth2/authorize');
-    u.searchParams.set('client_id', DISCORD_CLIENT_ID);
-    u.searchParams.set('redirect_uri', REDIRECT_URI);
-    u.searchParams.set('response_type', 'token');
-    u.searchParams.set('scope', DISCORD_SCOPE);
-    u.searchParams.set('state', state);
-    return u.toString();
+  // Build auth URL
+  function buildAuthURL(state) {
+    const url = new URL('https://discord.com/oauth2/authorize');
+    url.searchParams.set('client_id', DISCORD_CLIENT_ID);
+    url.searchParams.set('redirect_uri', REDIRECT_URI);
+    url.searchParams.set('response_type', 'token');
+    url.searchParams.set('scope', DISCORD_SCOPE);
+    url.searchParams.set('state', state);
+    return url.toString();
   }
   
-  function beginDiscordLogin(e){
-    if(e){ e.preventDefault(); e.stopPropagation(); }
+  // Inizia login Discord
+  function beginDiscordLogin(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     
-    if(isLoggedIn()){
+    if (isLoggedIn()) {
       toast('Sei già loggato!');
       return;
     }
     
-    const state = Math.random().toString(36).slice(2);
+    const state = Math.random().toString(36).substr(2, 16);
     sessionStorage.setItem('oauth_state', state);
-    const url = buildAuthURL(state);
     
+    const authUrl = buildAuthURL(state);
     const w = 520, h = 700;
-    const y = window.top.outerHeight/2 + window.top.screenY - (h/2);
-    const x = window.top.outerWidth/2 + window.top.screenX - (w/2);
+    const y = window.top.outerHeight / 2 + window.top.screenY - (h / 2);
+    const x = window.top.outerWidth / 2 + window.top.screenX - (w / 2);
     
     const popup = window.open(
-      url,
+      authUrl,
       'discord_oauth',
       `width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes`
     );
@@ -1434,171 +1324,153 @@
     showLoader(true);
     $('#btnDiscordLogin').classList.add('disabled');
     
-    if(!popup || popup.closed || typeof popup.closed === 'undefined'){
-      window.location.assign(url);
+    if (!popup || popup.closed) {
+      window.location.assign(authUrl);
       return;
     }
     
-    const onMsg = async (ev) => {
-      if(ev.origin !== originOf(REDIRECT_URI)) return;
-      const data = ev.data || {};
-      if(data.type !== 'discord_oauth') return;
+    const messageHandler = async (event) => {
+      if (event.origin !== new URL(REDIRECT_URI).origin) return;
       
-      window.removeEventListener('message', onMsg);
-      try{
+      const data = event.data || {};
+      if (data.type !== 'discord_oauth') return;
+      
+      window.removeEventListener('message', messageHandler);
+      
+      try {
         await finalizeOAuth({
           access_token: data.access_token,
           token_type: data.token_type || 'Bearer',
           expires_in: data.expires_in || 3600
         });
-        popup && popup.close();
+        
+        if (popup && !popup.closed) popup.close();
       } finally {
         showLoader(false);
         $('#btnDiscordLogin').classList.remove('disabled');
       }
     };
     
-    window.addEventListener('message', onMsg);
+    window.addEventListener('message', messageHandler);
     
-    const timer = setInterval(() => {
-      if(popup.closed){
-        clearInterval(timer);
-        window.removeEventListener('message', onMsg);
+    // Controlla se la finestra viene chiusa
+    const checkInterval = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkInterval);
+        window.removeEventListener('message', messageHandler);
         showLoader(false);
         $('#btnDiscordLogin').classList.remove('disabled');
       }
     }, 500);
   }
   
-  async function handleOAuthRedirectFragment(){
-    if(!location.hash.startsWith('#')) return false;
+  // Gestisci redirect OAuth
+  async function handleOAuthRedirect() {
+    if (!window.location.hash.startsWith('#')) return false;
     
-    const params = new URLSearchParams(location.hash.slice(1));
-    if(!(params.get('access_token') || params.get('error'))) return false;
+    const params = new URLSearchParams(window.location.hash.substr(1));
+    const accessToken = params.get('access_token');
+    const error = params.get('error');
     
-    history.replaceState(null, '', location.pathname + location.search);
+    if (!accessToken && !error) return false;
     
-    if(window.opener && typeof window.opener.postMessage === 'function'){
+    // Rimuovi hash dalla URL
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    
+    // Se siamo in un popup, invia dati alla finestra principale
+    if (window.opener && typeof window.opener.postMessage === 'function') {
       const payload = {
         type: 'discord_oauth',
-        access_token: params.get('access_token'),
+        access_token: accessToken,
         token_type: params.get('token_type') || 'Bearer',
         expires_in: Number(params.get('expires_in') || 3600),
         state: params.get('state')
       };
       
-      const targetOrigin = window.opener.location ? window.opener.location.origin : '*';
-      window.opener.postMessage(payload, targetOrigin);
+      window.opener.postMessage(payload, window.opener.location.origin);
       
-      document.body.innerHTML = '<div style="padding:20px;font:600 16px sans-serif;color:#eaf0ff;background:#0f1625;height:100vh;display:grid;place-items:center">Autenticazione completata, puoi chiudere questa finestra…</div>';
-      setTimeout(() => window.close(), 250);
+      // Mostra messaggio di completamento
+      document.body.innerHTML = `
+        <div style="
+          padding: 40px;
+          font: 600 18px sans-serif;
+          color: #eaf0ff;
+          background: #0f1625;
+          height: 100vh;
+          display:grid;
+          place-items:center;
+          text-align:center;
+        ">
+          Autenticazione completata!<br>
+          Puoi chiudere questa finestra.
+        </div>
+      `;
+      
+      setTimeout(() => window.close(), 1500);
       return true;
     }
     
-    if(params.get('error')){
+    // Se aperto direttamente
+    if (error) {
       toast('Accesso Discord annullato.');
       return true;
     }
     
-    const at = params.get('access_token');
-    const tokenType = params.get('token_type') || 'Bearer';
-    const expiresIn = Number(params.get('expires_in') || 3600);
-    const state = params.get('state');
-    const expected = sessionStorage.getItem('oauth_state');
-    
-    sessionStorage.removeItem('oauth_state');
-    
-    if(!at || (expected && expected !== state)){
-      toast('Verifica OAuth fallita.');
-      return true;
-    }
-    
     showLoader(true);
-    try{
+    
+    try {
       await finalizeOAuth({
-        access_token: at,
-        token_type: tokenType,
-        expires_in: expiresIn
+        access_token: accessToken,
+        token_type: params.get('token_type') || 'Bearer',
+        expires_in: Number(params.get('expires_in') || 3600)
       });
-    } catch(_){
-      toast('Errore nel recupero del profilo Discord.');
-    } finally{
+    } catch (err) {
+      toast('Errore durante il login.');
+      console.error('Login error:', err);
+    } finally {
       showLoader(false);
     }
     
     return true;
   }
   
-  async function finalizeOAuth({access_token, token_type = 'Bearer', expires_in = 3600}){
-    if(!access_token) throw new Error('Token mancante');
+  // Finalizza OAuth
+  async function finalizeOAuth({ access_token, token_type = 'Bearer', expires_in = 3600 }) {
+    if (!access_token) throw new Error('Token mancante');
     
-    const expiresAt = nowMs() + (Number(expires_in) || 3600) * 1000 - 30000;
+    const expiresAt = nowMs() + (expires_in * 1000) - 30000;
     
+    // Salva token
     localStorage.setItem(OAUTH_TOKEN_KEY, access_token);
-    localStorage.setItem(OAUTH_EXP_KEY, String(expiresAt));
+    localStorage.setItem(OAUTH_EXP_KEY, expiresAt.toString());
     
-    const user = await fetchWithTimeoutRetry(
-      'https://discord.com/api/users/@me',
-      {
-        headers: {
-          'Authorization': `${token_type} ${access_token}`
-        }
-      },
-      6000,
-      1
-    );
-    
-    localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
-    
-    // Registra utente nel sistema condiviso
-    const registeredUser = registerSharedUser(user);
-    if(registeredUser){
-      registerSharedSession(user.id, registeredUser);
-      updateSharedActivity(user.id);
-    }
-    
-    updateAuthUI();
-    toast(`Benvenuto ${formatDiscordName(user)}!`);
-    
-    // Avvia heartbeat per questo utente
-    startUserHeartbeat();
-  }
-  
-  async function fetchWithTimeoutRetry(url, options={}, timeoutMs=6000, retries=1){
-    for(let attempt=0; attempt <= retries; attempt++){
-      const ctrl = new AbortController();
-      const timeout = setTimeout(() => ctrl.abort(), timeoutMs);
-      
-      try{
-        const res = await fetch(url, {...options, signal: ctrl.signal});
-        clearTimeout(timeout);
-        
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        return await res.json();
-      } catch(err){
-        clearTimeout(timeout);
-        if(attempt === retries) throw err;
-        await delay(300);
+    // Ottieni dati utente
+    const response = await fetch('https://discord.com/api/users/@me', {
+      headers: {
+        'Authorization': `${token_type} ${access_token}`
       }
-    }
+    });
+    
+    if (!response.ok) throw new Error('Failed to fetch user data');
+    
+    const userData = await response.json();
+    localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(userData));
+    
+    // Registra utente nel sistema
+    const registeredUser = registerUser(userData);
+    
+    // Aggiorna UI
+    updateAuthUI();
+    
+    // Benvenuto
+    toast(`Benvenuto ${formatDiscordName(userData)}!`);
+    
+    return userData;
   }
   
-  let expTimer = null;
-  function scheduleAutoLogout(){
-    if(expTimer) clearTimeout(expTimer);
-    
-    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY) || 0);
-    if(!exp) return;
-    
-    const wait = Math.max(0, exp - nowMs());
-    expTimer = setTimeout(() => {
-      logout();
-      toast('Sessione scaduta, effettua di nuovo il login.');
-    }, wait);
-  }
-  
-  function logout(e){
-    if(e){
+  // Logout
+  function logout(e) {
+    if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -1606,39 +1478,39 @@
     const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
     const name = user ? formatDiscordName(user) : '';
     
-    clearSession();
-    if(location.hash){
-      history.replaceState(null, '', location.pathname + location.search);
-    }
-    
+    clearAuth();
     updateAuthUI();
     showPage('home');
+    
     toast(name ? `Arrivederci ${name}!` : 'Logout effettuato');
   }
 
-  /* ===== PANNELO ADMIN LIVE ===== */
-  function formatTimeAgo(timestamp){
+  /* ===== PANNELO ADMIN ===== */
+  
+  let adminUpdateInterval = null;
+  let isUpdatingAdmin = false;
+  
+  // Formatta tempo trascorso
+  function formatTimeAgo(timestamp) {
     const now = nowMs();
     const diff = now - timestamp;
     
-    if(diff < 1000){
+    if (diff < 60000) {
       return 'Adesso';
-    }else if(diff < 60000){
-      const secs = Math.floor(diff / 1000);
-      return `${secs} sec fa`;
-    }else if(diff < 3600000){
+    } else if (diff < 3600000) {
       const mins = Math.floor(diff / 60000);
       return `${mins} min fa`;
-    }else if(diff < 86400000){
+    } else if (diff < 86400000) {
       const hours = Math.floor(diff / 3600000);
       return `${hours} ore fa`;
-    }else{
+    } else {
       const days = Math.floor(diff / 86400000);
       return `${days} giorni fa`;
     }
   }
   
-  function formatDate(timestamp){
+  // Formatta data/ora
+  function formatDateTime(timestamp) {
     const date = new Date(timestamp);
     return date.toLocaleTimeString('it-IT', {
       hour: '2-digit',
@@ -1647,32 +1519,20 @@
     });
   }
   
-  function formatTimeUntil(timestamp){
-    const now = nowMs();
-    const diff = timestamp - now;
+  // Aggiorna pannello admin
+  async function updateAdminPanel() {
+    if (isUpdatingAdmin) return;
     
-    if(diff <= 0) return 'Adesso';
-    
-    const seconds = Math.floor(diff / 1000);
-    return `${seconds}s`;
-  }
-  
-  async function updateAdminPanel(){
-    if(!isAdminUser()) return;
-    if(isUpdatingAdminPanel) return;
-    
-    isUpdatingAdminPanel = true;
+    isUpdatingAdmin = true;
     const btn = $('#adminRefreshBtn');
-    if(btn) btn.classList.add('refreshing');
+    if (btn) btn.classList.add('refreshing');
     
-    try{
-      cleanupOldActivity();
-      const stats = getAdminStats();
-      const users = getSharedUsers();
-      const activity = getSharedActivity();
+    try {
+      cleanupOldSessions();
+      const stats = getAdminStatistics();
+      const users = getAllUsers();
+      const sessions = getAllSessions();
       const now = nowMs();
-      
-      lastFullUpdateTime = now;
       
       // Aggiorna statistiche
       $('#adminTotalUsers').textContent = stats.totalUsers;
@@ -1681,380 +1541,320 @@
       $('#adminAvgTime').textContent = `${stats.avgSessionTime}m`;
       
       // Aggiorna timestamp
-      $('#adminTotalTime').textContent = formatDate(now);
-      $('#adminActiveTime').textContent = formatDate(now);
-      $('#adminOnlineTime').textContent = formatDate(now);
-      $('#adminAvgTimeTime').textContent = formatDate(now);
+      const timeStr = formatDateTime(now);
+      $('#adminTotalTime').textContent = timeStr;
+      $('#adminActiveTime').textContent = timeStr;
+      $('#adminOnlineTime').textContent = timeStr;
+      $('#adminAvgTimeTime').textContent = timeStr;
       
       // Aggiorna lista utenti
       const usersList = $('#adminUsersList');
       const noUsers = $('#adminNoUsers');
       
-      if(users.length === 0){
+      if (users.length === 0) {
         usersList.innerHTML = '';
         noUsers.style.display = 'block';
         usersList.style.display = 'none';
         $('#adminUsersCount').textContent = '(0 utenti)';
-      }else{
+      } else {
         noUsers.style.display = 'none';
         usersList.style.display = 'grid';
         $('#adminUsersCount').textContent = `(${users.length} utenti)`;
         
-        // Ordina utenti per ultimo accesso
-        const sortedUsers = [...users].sort((a, b) => b.lastSeen - a.lastSeen);
+        // Ordina per ultimo accesso
+        const sortedUsers = [...users].sort((a, b) => b.last_seen - a.last_seen);
         
-        usersList.innerHTML = sortedUsers.map(user => {
-          const userActivity = activity[user.id] ? Object.values(activity[user.id]) : [];
-          const mostRecentActivity = userActivity.length > 0 ? 
-            Math.max(...userActivity.map(a => a.lastActive)) : 0;
+        // Prepara HTML
+        let html = '';
+        
+        sortedUsers.forEach(user => {
+          const isOnline = stats.onlineUsers.includes(user.id);
+          const isActive = isOnline && (now - user.last_seen) < USER_ACTIVE_THRESHOLD;
           
-          const isOnline = mostRecentActivity && 
-            (now - mostRecentActivity) < USER_ONLINE_THRESHOLD;
+          // Sessioni attive dell'utente
+          const userSessions = sessions.filter(s => 
+            s.user_id === user.id && s.is_active && (now - s.start_time) < USER_ONLINE_THRESHOLD
+          );
           
-          const isActiveNow = mostRecentActivity && 
-            (now - mostRecentActivity) < USER_ACTIVE_THRESHOLD;
+          const sessionCount = userSessions.length;
           
-          const activeTabs = userActivity.length;
-          
+          // Avatar
           const avatarUrl = user.avatar ? 
             `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_')?'gif':'png'}?size=80` :
-            cdnDefaultAvatar(user.discriminator);
+            `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator || '0') % 5 || 0}.png`;
           
-          const username = user.global_name || user.username || 'Sconosciuto';
-          const discriminator = user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '';
-          const fullName = username + discriminator;
+          // Nome
+          const fullName = (user.global_name || user.username || 'Sconosciuto') + 
+            (user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '');
           
-          const lastSeenText = isOnline ? 
-            (isActiveNow ? 
-              `ATTIVO ORA (${activeTabs} tab)` : 
-              `Online ${formatTimeAgo(mostRecentActivity)} (${activeTabs} tab)`) : 
-            `Offline ${formatTimeAgo(user.lastSeen)}`;
-          
-          return `
+          html += `
             <div class="admin-user-card">
-              ${isActiveNow ? '<div class="admin-user-pulse"></div>' : ''}
-              <img src="${avatarUrl}" alt="${username}" class="admin-user-avatar" crossorigin="anonymous">
+              ${isActive ? '<div class="admin-user-pulse"></div>' : ''}
+              <img src="${avatarUrl}" alt="${fullName}" class="admin-user-avatar" crossorigin="anonymous">
               <div class="admin-user-info">
                 <div class="admin-user-name">${fullName}</div>
                 <div class="admin-user-id">ID: ${user.id}</div>
                 <div class="admin-user-status ${isOnline ? 'status-online' : 'status-offline'}">
-                  ${isOnline ? 'ONLINE' : 'OFFLINE'} ${activeTabs > 1 ? `(${activeTabs})` : ''}
+                  ${isOnline ? 'ONLINE' : 'OFFLINE'} ${sessionCount > 1 ? `(${sessionCount})` : ''}
                 </div>
                 <div class="admin-user-last-seen">
-                  ${lastSeenText}<br>
-                  Login: ${user.loginCount || 1} • Prima volta: ${formatTimeAgo(user.firstSeen)}
+                  ${isOnline ? 
+                    `Online ${formatTimeAgo(user.last_seen)}` : 
+                    `Offline ${formatTimeAgo(user.last_seen)}`
+                  }<br>
+                  Login: ${user.login_count} • Sessioni: ${user.total_sessions}
                 </div>
               </div>
             </div>
           `;
-        }).join('');
+        });
+        
+        usersList.innerHTML = html;
       }
       
-      // Aggiorna informazioni sistema
-      $('#adminFullUpdateTime').textContent = `${formatDate(now)} (${formatTimeAgo(now)})`;
-      $('#adminNextUpdate').textContent = formatTimeUntil(now + ADMIN_UPDATE_INTERVAL);
-      $('#adminUpdateStatus').textContent = `Aggiornato`;
+      // Aggiorna info sistema
+      $('#adminFullUpdateTime').textContent = `${formatDateTime(now)}`;
+      $('#adminUpdateStatus').textContent = 'Attivo';
+      $('#adminSystemStatus').textContent = `DB: ${stats.totalUsers} utenti, ${stats.totalSessions} sessioni`;
       
-      // Aggiorna stato sistema
-      $('#adminSystemStatus').textContent = `Attivo (${stats.onlineNow} online)`;
-      
-    }catch(error){
-      console.error('Errore aggiornamento pannello admin:', error);
+    } catch (error) {
+      console.error('Errore aggiornamento admin:', error);
       $('#adminUpdateStatus').textContent = 'Errore';
-      $('#adminSystemStatus').textContent = 'Errore connessione';
-    }finally{
-      isUpdatingAdminPanel = false;
-      if(btn) btn.classList.remove('refreshing');
+    } finally {
+      isUpdatingAdmin = false;
+      if (btn) btn.classList.remove('refreshing');
     }
   }
   
-  // Heartbeat per utente corrente
-  function userHeartbeat(){
-    if(currentUserData && currentUserData.id){
-      updateSharedActivity(currentUserData.id);
-    }
-  }
-  
-  // Avvia heartbeat utente
-  function startUserHeartbeat(){
-    if(userHeartbeatInterval){
-      clearInterval(userHeartbeatInterval);
-    }
-    
-    userHeartbeatInterval = setInterval(() => {
-      userHeartbeat();
-    }, USER_HEARTBEAT_INTERVAL);
-    
-    // Esegui immediatamente
-    userHeartbeat();
-  }
-  
-  // Avvia aggiornamenti admin
-  function startAdminUpdates(){
-    if(adminUpdateInterval){
-      clearInterval(adminUpdateInterval);
-    }
+  // Avvia aggiornamenti automatici admin
+  function startAdminUpdates() {
+    if (adminUpdateInterval) clearInterval(adminUpdateInterval);
     
     adminUpdateInterval = setInterval(() => {
-      if($('.page.active')?.id === 'page-admin' && isAdminUser()){
+      if ($('.page.active')?.id === 'page-admin') {
         updateAdminPanel();
       }
     }, ADMIN_UPDATE_INTERVAL);
     
-    // Esegui immediatamente
-    if($('.page.active')?.id === 'page-admin'){
+    // Aggiorna immediatamente
+    if ($('.page.active')?.id === 'page-admin') {
       updateAdminPanel();
     }
   }
   
   // Ferma aggiornamenti admin
-  function stopAdminUpdates(){
-    if(adminUpdateInterval){
+  function stopAdminUpdates() {
+    if (adminUpdateInterval) {
       clearInterval(adminUpdateInterval);
       adminUpdateInterval = null;
     }
   }
-  
-  // Gestione pulsante aggiornamento manuale
-  $('#adminRefreshBtn')?.addEventListener('click', async () => {
-    if(isUpdatingAdminPanel) return;
-    
-    await updateAdminPanel();
-    toast('Pannello admin aggiornato!');
-  });
 
-  /* Router */
-  function showPage(id){
-    if(protectedRoutes.has(id) && !isLoggedIn()){
-      toast('Devi effettuare il login per accedere a questa sezione.');
-      id = 'home';
+  /* ===== ROUTER E NAVIGAZIONE ===== */
+  
+  function showPage(pageId) {
+    // Verifica accesso
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    const isAdmin = user && user.id === ADMIN_USER_ID;
+    
+    if ((pageId === 'donations' || pageId === 'donation') && !isLoggedIn()) {
+      toast('Effettua il login per accedere.');
+      pageId = 'home';
     }
     
-    if(adminRoutes.has(id) && !isAdminUser()){
+    if (pageId === 'admin' && !isAdmin) {
       toast('Accesso riservato all\'amministratore.');
-      id = 'home';
+      pageId = 'home';
     }
     
-    $$('.page').forEach(p => p.classList.remove('active'));
-    $$('.nav-link').forEach(l => l.classList.remove('active'));
+    // Nascondi tutte le pagine
+    $$('.page').forEach(page => page.classList.remove('active'));
+    $$('.nav-link').forEach(link => link.classList.remove('active'));
     
-    $(`#page-${id}`)?.classList.add('active');
-    $(`.nav-link[data-route="${id}"]`)?.classList.add('active');
+    // Mostra pagina selezionata
+    $(`#page-${pageId}`)?.classList.add('active');
+    $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
     
-    if(id === 'home') tryAutoplay();
-    if(id === 'admin' && isAdminUser()){
-      updateAdminPanel();
+    // Azioni specifiche per pagina
+    if (pageId === 'home') {
+      // Auto-play video
+      const video = $('#nvVideo');
+      if (video) {
+        video.muted = true;
+        video.play().catch(() => {});
+      }
+    } else if (pageId === 'admin' && isAdmin) {
       startAdminUpdates();
-    }else if(isAdminUser()){
+    } else {
       stopAdminUpdates();
     }
   }
   
-  document.addEventListener('click', e => {
-    const r = e.target.closest('[data-route]');
-    if(!r) return;
+  // Gestione click su navigazione
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('[data-route]');
+    if (!link) return;
     
     e.preventDefault();
-    showPage(r.dataset.route);
+    const pageId = link.getAttribute('data-route');
+    showPage(pageId);
   });
 
-  /* Donazioni (testi) */
-  const OFFER_TEXT={
-    5:"Acquistando questo pacchetto otterai 50.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
-    10:"Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
-    15:"Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
-    20:"Acquistando questo pacchetto otterai 150.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
-    30:"Acquistando questo pacchetto otterrai 200.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
-    40:"Acquistando questo pacchetto otterrai 250.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
-    50:"Acquistando questo pacchetto otterai 300.000€ in gioco + un'auto a tua scelta (vedere discord)\n(Aprite un ticket su discord per ricevere le ricompense, le auto donatori in caso di wipe rimarranno al giocatore)",
-    70:"Acquistando questo pacchetto otterai 400.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)"
+  /* ===== DONAZIONI ===== */
+  
+  const OFFER_TEXT = {
+    5: "Acquistando questo pacchetto otterai 50.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    10: "Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    15: "Acquistando questo pacchetto otterai 100.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    20: "Acquistando questo pacchetto otterai 150.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    30: "Acquistando questo pacchetto otterrai 200.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    40: "Acquistando questo pacchetto otterrai 250.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)",
+    50: "Acquistando questo pacchetto otterai 300.000€ in gioco + un'auto a tua scelta (vedere discord)\n(Aprite un ticket su discord per ricevere le ricompense, le auto donatori in caso di wipe rimarranno al giocatore)",
+    70: "Acquistando questo pacchetto otterai 400.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)"
   };
   
-  $('#donationsGrid')?.addEventListener('click', e => {
+  // Gestione click su card donazioni
+  $('#donationsGrid')?.addEventListener('click', (e) => {
     const card = e.target.closest('.donation-card');
-    if(!card) return;
+    if (!card) return;
+    
     e.preventDefault();
     
-    if(!isLoggedIn()){
-      toast('Effettua il login per vedere i dettagli delle donazioni.');
+    if (!isLoggedIn()) {
+      toast('Effettua il login per vedere i dettagli.');
       return;
     }
     
     const price = card.dataset.price || '0';
     const img = card.dataset.img || '';
     
-    $('#detailTitle').textContent = 'Pacchetto ' + price + '€';
+    $('#detailTitle').textContent = `Pacchetto ${price}€`;
     $('#detailPrice').textContent = price;
     $('#detailImg').src = img;
     $('#detailDesc').textContent = OFFER_TEXT[price] || '';
+    
     showPage('donation');
   });
   
-  document.addEventListener('click', e => {
-    if(e.target.id === 'btnBackDon'){
+  // Gestione pulsanti
+  document.addEventListener('click', (e) => {
+    if (e.target.id === 'btnBackDon') {
       showPage('donations');
     }
-    if(e.target.id === 'btnBuy'){
-      toast('Pagamento non configurato — apri un ticket su Discord per completare la donazione.');
+    if (e.target.id === 'btnBuy') {
+      toast('Sistema di pagamento in sviluppo — apri un ticket su Discord.');
+    }
+    if (e.target.id === 'adminRefreshBtn') {
+      if (!isUpdatingAdmin) {
+        updateAdminPanel();
+        toast('Pannello aggiornato!');
+      }
     }
   });
 
-  /* ===== DISCORD: SOLO NUMERI ===== */
-  const DISCORD = { guildId: null, name: 'Community Discord' };
-
-  async function resolveInvite(){
-    const data = await fetchWithTimeoutRetry(
-      `https://discord.com/api/invites/${encodeURIComponent(INVITE_CODE)}?with_counts=true&with_expiration=false`,
-      {}, 6000, 1
-    );
-    
-    DISCORD.guildId = data?.guild?.id || null;
-    DISCORD.name = data?.guild?.name || DISCORD.name;
-    
-    return {
-      name: DISCORD.name,
-      guildId: DISCORD.guildId,
-      approxTotal: data?.approximate_member_count ?? null,
-      approxOnline: data?.approximate_presence_count ?? null
-    };
-  }
-
-  async function getWidgetPresence(guildId){
-    if(!guildId) return null;
-    
-    const w = await fetchWithTimeoutRetry(
-      `https://discord.com/api/guilds/${guildId}/widget.json`,
-      {}, 6000, 0
-    );
-    
-    return {
-      name: w?.name || DISCORD.name,
-      presence: Number(w?.presence_count || 0)
-    };
-  }
-
-  function setCounts({ total, online, name }){
-    $('#guildName').textContent = name || 'Community Discord';
-    $('#countTotal').textContent = (total ?? '—');
-    $('#countOnline').textContent = (online ?? '—');
-    
-    const d = new Date();
-    const pad = n => String(n).padStart(2, '0');
-    const last = $('#lastUpdate');
-    if(last){
-      last.textContent = `Aggiornato alle ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  /* ===== DISCORD COUNTS ===== */
+  
+  const DISCORD = {
+    guildId: null,
+    name: 'Community Discord'
+  };
+  
+  async function loadDiscordCounts() {
+    try {
+      const response = await fetch(
+        `https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`,
+        { cache: 'no-cache' }
+      );
+      
+      if (!response.ok) throw new Error('Failed to fetch Discord data');
+      
+      const data = await response.json();
+      
+      DISCORD.guildId = data.guild?.id;
+      DISCORD.name = data.guild?.name || DISCORD.name;
+      
+      $('#guildName').textContent = DISCORD.name;
+      $('#countTotal').textContent = data.approximate_member_count || '—';
+      $('#countOnline').textContent = data.approximate_presence_count || '—';
+      
+    } catch (error) {
+      console.error('Error loading Discord counts:', error);
+      $('#guildName').textContent = 'Community Discord';
+      $('#countTotal').textContent = '—';
+      $('#countOnline').textContent = '—';
     }
   }
-
-  async function loadCountsOnce(){
-    try{
-      const inv = await resolveInvite();
-      let online = inv.approxOnline;
-      let total = inv.approxTotal;
-      
-      try{
-        const w = await getWidgetPresence(inv.guildId);
-        if(w && typeof w.presence === 'number'){
-          online = w.presence;
-        }
-        if(w && w.name){
-          DISCORD.name = w.name;
-        }
-      } catch(_){}
-      
-      setCounts({ total, online, name: DISCORD.name });
-    } catch(_){
-      setCounts({ total: null, online: null, name: DISCORD.name });
-    }
-  }
-
-  let countsTimer = null;
-  function startCountsAutoRefresh(){
-    if(countsTimer) clearInterval(countsTimer);
-    countsTimer = setInterval(loadCountsOnce, 30000);
-  }
+  
+  // Auto-refresh Discord counts
+  setInterval(loadDiscordCounts, 30000);
 
   /* ===== INIZIALIZZAZIONE ===== */
+  
   window.addEventListener('load', async () => {
-    // Inizializza storage condiviso
-    initSharedStorage();
+    // Inizializza database
+    initDatabase();
     
-    // Gestisci redirect OAuth
-    await handleOAuthRedirectFragment();
+    // Gestisci OAuth redirect
+    await handleOAuthRedirect();
     
-    // Aggiorna UI
+    // Aggiorna UI auth
     updateAuthUI();
-    scheduleAutoLogout();
-    tryAutoplay();
     
     // Carica contatori Discord
-    await loadCountsOnce();
-    startCountsAutoRefresh();
+    loadDiscordCounts();
     
-    // Avvia heartbeat se utente loggato
-    if(isLoggedIn()){
-      const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-      if(user && user.id){
-        currentUserData = user;
-        startUserHeartbeat();
+    // Setup event listeners
+    $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
+    $('#btnLogout')?.addEventListener('click', logout);
+    
+    // Aggiorna attività utente periodicamente
+    setInterval(() => {
+      const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+      if (user && user.id) {
+        updateUserActivity(user.id);
       }
-    }
+    }, 30000);
     
-    // Se admin, avvia aggiornamenti
-    if(isAdminUser()){
+    // Cleanup sessioni vecchie ogni ora
+    setInterval(cleanupOldSessions, 3600000);
+    
+    // Aggiorna pannello admin se visibile
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id === ADMIN_USER_ID && $('.page.active')?.id === 'page-admin') {
       startAdminUpdates();
     }
   });
   
-  window.addEventListener('focus', () => {
-    scheduleAutoLogout();
-    
-    // Aggiorna attività quando la finestra diventa attiva
-    if(currentUserData && currentUserData.id){
-      updateSharedActivity(currentUserData.id);
-    }
-  });
-  
-  // Traccia quando l'utente chiude la pagina
+  // Gestione chiusura finestra
   window.addEventListener('beforeunload', () => {
-    if(currentUserData && currentUserData.id){
-      endSharedSession(currentUserData.id);
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      endActiveSession(user.id);
     }
     stopAdminUpdates();
-    
-    if(userHeartbeatInterval){
-      clearInterval(userHeartbeatInterval);
-      userHeartbeatInterval = null;
-    }
   });
   
-  // Aggiorna attività quando l'utente interagisce
+  // Aggiorna attività su interazione
   document.addEventListener('click', () => {
-    if(currentUserData && currentUserData.id){
-      updateSharedActivity(currentUserData.id);
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      updateUserActivity(user.id);
     }
   });
   
   document.addEventListener('keydown', () => {
-    if(currentUserData && currentUserData.id){
-      updateSharedActivity(currentUserData.id);
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      updateUserActivity(user.id);
     }
   });
   
-  // Aggiorna attività periodicamente anche se nessuna interazione
-  setInterval(() => {
-    if(currentUserData && currentUserData.id){
-      updateSharedActivity(currentUserData.id);
+  // Aggiorna attività quando la finestra diventa attiva
+  window.addEventListener('focus', () => {
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      updateUserActivity(user.id);
     }
-  }, 30000);
-
-  // Bind login/logout
-  $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
-  $('#btnLogout')?.addEventListener('click', logout, {capture: true});
-
-  // Sicurezza postMessage
-  window.addEventListener('message', (ev) => {
-    if(ev.origin !== originOf(REDIRECT_URI)) return;
   });
   </script>
 </body>

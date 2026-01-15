@@ -158,7 +158,7 @@
   .member{background:#162137; border:1px solid #2a3a61; border-radius:14px; padding:20px; display:grid; justify-items:center; gap:12px; box-shadow:var(--shadow); transition:transform .3s ease}
   .member:hover{transform:translateY(-5px)}
   .avatar{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:#0f1528; color:#eaf0ff; font-size:36px; overflow:hidden}
-  .avatar img{width:100%; height:100%; object-fit:cover}
+  .avatar img{width:100%; height:100%; object-fit:cover; border-radius:50%}
   .ring{border:2px solid #2a3a61}.ring-gold{border-color:#ffd76a}.ring-silver{border-color:#cfd7ff}
   .ring-red{border-color:#ff4d4f}.ring-green{border-color:#7ee787}.ring-purple{border-color:#a78bfa}
   .member-name{font-weight:800; text-align:center; font-size:1.2rem}
@@ -210,6 +210,9 @@
     .discord-numbers{
       width:100%;
       justify-content:space-around;
+    }
+    .staff-grid{
+      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     }
   }
   </style>
@@ -403,8 +406,6 @@
         </div>
       </div>
     </section>
-
-    <!-- PAGINA ADMIN (rimossa) -->
   </main>
 
   <footer class="site-footer">
@@ -462,14 +463,59 @@
     ]
   };
 
+  // Mappa dei nomi Discord per ogni ID
+  const DISCORD_NAMES = {
+    // Founder
+    '1185712271821905941': 'Mony',
+    
+    // Co-Founder
+    '642015868720644100': 'Gabbo',
+    '851447210079289365': 'Rodriguez',
+    
+    // Admin
+    '640478852308664360': 'Admin',
+    '682651087060336701': 'Alexo',
+    '844691950799028235': 'Chri',
+    '1011311419704234034': 'Il Davide',
+    '755104015037104191': 'Th3b00ss',
+    
+    // Moderatore
+    '534703868802629642': 'Andre',
+    '488775636345946113': 'Voight',
+    '1004056571514458262': 'Mattiger',
+    '659786178987556864': 'Ales',
+    
+    // Helper
+    '495176612656971776': 'Luca',
+    '506078659740958721': 'Blaze',
+    '904281641936117770': 'Franco',
+    '697156512400801874': 'Glaudio',
+    '722146701888192614': 'Falco'
+  };
+
+  // Mappa dei ruoli speciali per ogni ID
+  const SPECIAL_ROLES = {
+    // Co-Founder
+    '642015868720644100': 'Developer',
+    '851447210079289365': 'Developer',
+    
+    // Admin
+    '682651087060336701': 'Eup Creator',
+    '844691950799028235': 'Developer',
+    '1011311419704234034': 'Eup Creator',
+    
+    // Moderatore
+    '659786178987556864': 'Developer',
+    
+    // Helper
+    '506078659740958721': 'Grafico',
+    '904281641936117770': 'Grafico'
+  };
+
   /* Chiavi di storage UNIFICATE */
   const OAUTH_TOKEN_KEY = 'nova_roma_token';
   const OAUTH_USER_KEY = 'nova_roma_user';
   const OAUTH_EXP_KEY = 'nova_roma_expires';
-  
-  // Cache per i dati dello staff
-  const STAFF_CACHE_KEY = 'nova_roma_staff_cache';
-  const STAFF_CACHE_EXPIRY = 3600000; // 1 ora
 
   /* Utility */
   const $ = s => document.querySelector(s);
@@ -498,82 +544,20 @@
 
   /* ===== SISTEMA STAFF DINAMICO ===== */
   
-  // Ottieni informazioni utente da Discord API (con proxy per evitare CORS)
-  async function fetchDiscordUser(userId) {
-    try {
-      // Prima controlla la cache locale
-      const cache = localStorage.getItem(STAFF_CACHE_KEY);
-      if (cache) {
-        const cachedData = JSON.parse(cache);
-        if (cachedData[userId] && (nowMs() - cachedData[userId].timestamp < STAFF_CACHE_EXPIRY)) {
-          return cachedData[userId].data;
-        }
-      }
-      
-      // Usa l'API Discord (richiede token, ma per ora usiamo avatar default)
-      // Nota: Discord richiede autenticazione per ottenere dati utente
-      // Per ora mostriamo solo l'avatar generico
-      
-      // Per ottenere avatar reali avremmo bisogno di:
-      // 1. Un bot token con permessi
-      // 2. Un endpoint server-side per fare la richiesta
-      
-      // Per ora usiamo dati hardcoded per ID specifici
-      const hardcodedUsers = {
-        '1185712271821905941': { username: 'Mony', global_name: 'Mony', discriminator: '0' },
-        '642015868720644100': { username: 'Gabbo', global_name: 'Gabbo', discriminator: '0' },
-        '851447210079289365': { username: 'Rodriguez', global_name: 'Rodriguez', discriminator: '0' },
-        '640478852308664360': { username: 'Admin', global_name: 'Admin', discriminator: '0' },
-        '682651087060336701': { username: 'Alexo', global_name: 'Alexo', discriminator: '0' },
-        '844691950799028235': { username: 'Chri', global_name: 'Chri', discriminator: '0' },
-        '1011311419704234034': { username: 'Il Davide', global_name: 'Il Davide', discriminator: '0' },
-        '755104015037104191': { username: 'Th3b00ss', global_name: 'Th3b00ss', discriminator: '0' },
-        '534703868802629642': { username: 'Andre', global_name: 'Andre', discriminator: '0' },
-        '488775636345946113': { username: 'Voight', global_name: 'Voight', discriminator: '0' },
-        '1004056571514458262': { username: 'Mattiger', global_name: 'Mattiger', discriminator: '0' },
-        '659786178987556864': { username: 'Ales', global_name: 'Ales', discriminator: '0' },
-        '495176612656971776': { username: 'Luca', global_name: 'Luca', discriminator: '0' },
-        '506078659740958721': { username: 'Blaze', global_name: 'Blaze', discriminator: '0' },
-        '904281641936117770': { username: 'Franco', global_name: 'Franco', discriminator: '0' },
-        '697156512400801874': { username: 'Glaudio', global_name: 'Glaudio', discriminator: '0' },
-        '722146701888192614': { username: 'Falco', global_name: 'Falco', discriminator: '0' }
-      };
-      
-      const userData = hardcodedUsers[userId] || {
-        username: `User${userId.substring(0, 4)}`,
-        global_name: `User ${userId.substring(0, 4)}`,
-        discriminator: '0'
-      };
-      
-      // Aggiorna la cache
-      const cacheData = JSON.parse(localStorage.getItem(STAFF_CACHE_KEY) || '{}');
-      cacheData[userId] = {
-        data: userData,
-        timestamp: nowMs()
-      };
-      localStorage.setItem(STAFF_CACHE_KEY, JSON.stringify(cacheData));
-      
-      return userData;
-      
-    } catch (error) {
-      console.error(`Errore nel fetch utente ${userId}:`, error);
-      return {
-        username: `User${userId.substring(0, 4)}`,
-        global_name: `User ${userId.substring(0, 4)}`,
-        discriminator: '0'
-      };
-    }
+  // Funzione per ottenere l'URL dell'avatar Discord da ID
+  function getDiscordAvatarUrl(userId) {
+    // API Discord non consente richieste CORS dirette per avatar
+    // Usiamo un servizio proxy o generiamo avatar basati su ID
+    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}&backgroundColor=0f1528`;
   }
   
   // Carica e visualizza lo staff
-  async function loadStaff() {
+  function loadStaff() {
     const sections = ['founder', 'cofounder', 'admin', 'moderatore', 'helper'];
     
     for (const section of sections) {
       const container = $(`#${section}-grid`);
       if (!container) continue;
-      
-      container.innerHTML = '<div class="member"><div class="avatar"><i class="fa-solid fa-spinner fa-spin"></i></div><div class="member-name">Caricamento...</div></div>';
       
       const userIds = STAFF_IDS[section];
       let html = '';
@@ -586,52 +570,20 @@
       else if (section === 'moderatore') ringClass = 'ring ring-green';
       else if (section === 'helper') ringClass = 'ring ring-purple';
       
-      // Assegna ruoli speciali
-      const getRoleForUser = (userId, section) => {
-        if (section === 'cofounder') {
-          if (userId === '642015868720644100' || userId === '851447210079289365') {
-            return 'Developer';
-          }
-        }
-        if (section === 'admin') {
-          if (userId === '682651087060336701' || userId === '1011311419704234034') {
-            return 'Eup Creator';
-          }
-          if (userId === '844691950799028235') {
-            return 'Developer';
-          }
-        }
-        if (section === 'moderatore') {
-          if (userId === '659786178987556864') {
-            return 'Developer';
-          }
-        }
-        if (section === 'helper') {
-          if (userId === '506078659740958721' || userId === '904281641936117770') {
-            return 'Grafico';
-          }
-        }
-        return null;
-      };
-      
       for (const userId of userIds) {
-        const userData = await fetchDiscordUser(userId);
-        const displayName = userData.global_name || userData.username || `User${userId.substring(0, 4)}`;
-        
-        // Avatar URL - Discord blocca le richieste CORS, usiamo un proxy
-        // Usiamo il servizio di discord-avatar per ottenere l'avatar
-        const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}&backgroundColor=0f1528`;
+        const displayName = DISCORD_NAMES[userId] || `User${userId.substring(0, 4)}`;
+        const avatarUrl = getDiscordAvatarUrl(userId);
+        const specialRole = SPECIAL_ROLES[userId];
         
         // Ruoli speciali
         let roleHtml = '';
-        const role = getRoleForUser(userId, section);
-        if (role) {
+        if (specialRole) {
           let roleClass = '';
-          if (role === 'Developer') roleClass = 'role-dev';
-          else if (role === 'Eup Creator') roleClass = 'role-eup';
-          else if (role === 'Grafico') roleClass = 'role-grafico';
+          if (specialRole === 'Developer') roleClass = 'role-dev';
+          else if (specialRole === 'Eup Creator') roleClass = 'role-eup';
+          else if (specialRole === 'Grafico') roleClass = 'role-grafico';
           
-          roleHtml += `<div class="member-role ${roleClass}">${role}</div>`;
+          roleHtml += `<div class="member-role ${roleClass}">${specialRole}</div>`;
         }
         
         html += `
@@ -646,7 +598,7 @@
         `;
       }
       
-      container.innerHTML = html;
+      container.innerHTML = html || '<div class="member"><div class="avatar"><i class="fa-solid fa-user"></i></div><div class="member-name">Nessun membro</div></div>';
     }
   }
 
@@ -727,11 +679,6 @@
         $('#topUsername').textContent = name;
         $('#topUsername').hidden = false;
         $('#topAvatar').title = name;
-      }
-      
-      // Reindirizza se su pagina admin (che non esiste più)
-      if ($('.page.active')?.id === 'page-admin') {
-        showPage('home');
       }
     } else {
       // Reset UI

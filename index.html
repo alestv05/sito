@@ -158,7 +158,7 @@
   .member{background:#162137; border:1px solid #2a3a61; border-radius:14px; padding:20px; display:grid; justify-items:center; gap:12px; box-shadow:var(--shadow); transition:transform .3s ease}
   .member:hover{transform:translateY(-5px)}
   .avatar{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:#0f1528; color:#eaf0ff; font-size:36px; overflow:hidden}
-  .avatar img{width:100%; height:100%; object-fit:cover; border-radius:50%}
+  .avatar img{width:100%; height:100%; object-fit:cover}
   .ring{border:2px solid #2a3a61}.ring-gold{border-color:#ffd76a}.ring-silver{border-color:#cfd7ff}
   .ring-red{border-color:#ff4d4f}.ring-green{border-color:#7ee787}.ring-purple{border-color:#a78bfa}
   .member-name{font-weight:800; text-align:center; font-size:1.2rem}
@@ -204,6 +204,242 @@
   .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
   .page.active{display:block}
 
+  /* ===== PAGINA ADMIN ===== */
+  #page-admin{background:#0a0f1a}
+  
+  .admin-container{
+    max-width:1200px;
+    margin:0 auto;
+    padding:20px;
+  }
+  
+  .admin-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+    gap:20px;
+  }
+  
+  .admin-refresh-btn{
+    background:#58a6ff;
+    color:#fff;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:all .3s ease;
+  }
+  
+  .admin-refresh-btn:hover{
+    background:#0b6dd6;
+    transform:translateY(-2px);
+  }
+  
+  .admin-refresh-btn.refreshing{
+    background:#9daccc;
+    cursor:not-allowed;
+  }
+  
+  .admin-refresh-btn.refreshing i{
+    animation:spin 1s linear infinite;
+  }
+  
+  @keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+  }
+  
+  .admin-live-badge{
+    background:#7ee787;
+    color:#070b14;
+    padding:6px 12px;
+    border-radius:20px;
+    font-weight:800;
+    font-size:.9rem;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    animation:pulse 2s infinite;
+  }
+  
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(126, 231, 135, 0.7);}
+    70%{box-shadow:0 0 0 10px rgba(126, 231, 135, 0);}
+    100%{box-shadow:0 0 0 0 rgba(126, 231, 135, 0);}
+  }
+  
+  .admin-stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+    gap:20px;
+    margin-bottom:40px;
+  }
+  
+  .admin-stat-card{
+    background:#121a2a;
+    border:1px solid #2a3a61;
+    border-radius:14px;
+    padding:24px;
+    text-align:center;
+    box-shadow:var(--shadow);
+    transition:all .3s ease;
+  }
+  
+  .admin-stat-card:hover{
+    border-color:#58a6ff;
+    transform:translateY(-3px);
+  }
+  
+  .admin-stat-value{
+    font-size:3rem;
+    font-weight:900;
+    color:#58a6ff;
+    margin:10px 0;
+  }
+  
+  .admin-stat-label{
+    font-size:1.1rem;
+    color:#9daccc;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+  }
+  
+  .admin-stat-sub{
+    font-size:.85rem;
+    color:#7ee787;
+    margin-top:5px;
+  }
+  
+  .admin-users-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:20px;
+    margin-top:30px;
+  }
+  
+  .admin-user-card{
+    background:#121a2a;
+    border:1px solid #2a3a61;
+    border-radius:14px;
+    padding:20px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    transition:all .3s ease;
+    position:relative;
+  }
+  
+  .admin-user-card:hover{
+    border-color:#58a6ff;
+    transform:translateY(-3px);
+  }
+  
+  .admin-user-avatar{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #58a6ff;
+  }
+  
+  .admin-user-info{
+    flex:1;
+  }
+  
+  .admin-user-name{
+    font-size:1.2rem;
+    font-weight:800;
+    color:#eaf0ff;
+    margin-bottom:4px;
+  }
+  
+  .admin-user-id{
+    font-size:.85rem;
+    color:#9daccc;
+    font-family:monospace;
+  }
+  
+  .admin-user-status{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-top:6px;
+  }
+  
+  .status-online{
+    background:rgba(126, 231, 135, 0.15);
+    color:#7ee787;
+    border:1px solid #7ee787;
+  }
+  
+  .status-offline{
+    background:rgba(157, 172, 204, 0.15);
+    color:#9daccc;
+    border:1px solid #9daccc;
+  }
+  
+  .admin-user-last-seen{
+    font-size:.8rem;
+    color:#9daccc;
+    margin-top:4px;
+  }
+  
+  .admin-user-pulse{
+    position:absolute;
+    top:15px;
+    right:15px;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#7ee787;
+    animation:pulse 2s infinite;
+  }
+  
+  .admin-section-title{
+    font-size:1.8rem;
+    color:#eaf0ff;
+    margin:40px 0 20px;
+    padding-bottom:10px;
+    border-bottom:1px solid #2a3a61;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  
+  .admin-empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:#9daccc;
+  }
+  
+  .admin-empty-state i{
+    font-size:4rem;
+    margin-bottom:20px;
+    opacity:.5;
+  }
+  
+  .admin-update-time{
+    text-align:center;
+    color:#9daccc;
+    font-size:.9rem;
+    margin-top:20px;
+    padding:10px;
+    background:#121a2a;
+    border-radius:10px;
+    border:1px solid #2a3a61;
+  }
+  
   /* Responsive */
   @media (max-width:600px){
     .title-roman{font-size:2rem; margin-bottom:22px}
@@ -211,8 +447,15 @@
       width:100%;
       justify-content:space-around;
     }
-    .staff-grid{
-      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    .admin-users-grid{
+      grid-template-columns:1fr;
+    }
+    .admin-stat-card{
+      padding:18px;
+    }
+    .admin-header{
+      flex-direction:column;
+      align-items:stretch;
     }
   }
   </style>
@@ -289,17 +532,43 @@
       </div>
     </section>
 
-    <!-- STAFF (dinamico tramite ID Discord) -->
+    <!-- STAFF (come nel tuo file) -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman center">Il nostro staff</h2>
+
+      <!-- Owner -->
+      <div class="staff-section">
+        <h3 class="role">
+          <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Owner
+        </h3>
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-gold">
+              <img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy">
+            </div>
+            <div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div>
+          </div>
+        </div>
+      </div>
 
       <!-- Founder -->
       <div class="staff-section">
         <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Founder
         </h3>
-        <div class="staff-grid" id="founder-grid">
-          <!-- Verrà popolato dinamicamente con JavaScript -->
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-silver">
+              <img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto" loading="lazy">
+            </div>
+            <div class="member-name">Anto</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-silver">
+              <img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony" loading="lazy">
+            </div>
+            <div class="member-name">Mony</div>
+          </div>
         </div>
       </div>
 
@@ -308,8 +577,27 @@
         <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Co-Founder
         </h3>
-        <div class="staff-grid" id="cofounder-grid">
-          <!-- Verrà popolato dinamicamente con JavaScript -->
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo" loading="lazy">
+            </div>
+            <div class="member-name">Gabbo</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez" loading="lazy">
+            </div>
+            <div class="member-name">Rodriguez</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring">
+              <img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss" loading="lazy">
+            </div>
+            <div class="member-name">Th3b00ss</div>
+          </div>
         </div>
       </div>
 
@@ -318,8 +606,28 @@
         <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Admin
         </h3>
-        <div class="staff-grid" id="admin-grid">
-          <!-- Verrà popolato dinamicamente con JavaScript -->
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo" loading="lazy">
+            </div>
+            <div class="member-name">Alexo</div>
+            <div class="member-role role-eup">Eup Creator</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri" loading="lazy">
+            </div>
+            <div class="member-name">Chri</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-red">
+              <img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide" loading="lazy">
+            </div>
+            <div class="member-name">Il Davide</div>
+            <div class="member-role role-eup">Eup Creator</div>
+          </div>
         </div>
       </div>
 
@@ -328,8 +636,52 @@
         <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Moderatore
         </h3>
-        <div class="staff-grid" id="moderatore-grid">
-          <!-- Verrà popolato dinamicamente con JavaScript -->
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales" loading="lazy">
+            </div>
+            <div class="member-name">Ales</div>
+            <div class="member-role role-dev">Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze" loading="lazy">
+            </div>
+            <div class="member-name">Blaze</div>
+            <div class="member-role role-grafico">Grafico</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco" loading="lazy">
+            </div>
+            <div class="member-name">Franco</div>
+            <div class="member-role role-grafico">Grafico</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio" loading="lazy">
+            </div>
+            <div class="member-name">Glaudio</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca" loading="lazy">
+            </div>
+            <div class="member-name">Luca</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger" loading="lazy">
+            </div>
+            <div class="member-name">Mattiger</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-green">
+              <img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight" loading="lazy">
+            </div>
+            <div class="member-name">Voight</div>
+          </div>
         </div>
       </div>
 
@@ -338,8 +690,19 @@
         <h3 class="role">
           <img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Helper
         </h3>
-        <div class="staff-grid" id="helper-grid">
-          <!-- Verrà popolato dinamicamente con JavaScript -->
+        <div class="staff-grid">
+          <div class="member">
+            <div class="avatar ring ring-purple">
+              <img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre" loading="lazy">
+            </div>
+            <div class="member-name">Andre</div>
+          </div>
+          <div class="member">
+            <div class="avatar ring ring-purple">
+              <img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco" loading="lazy">
+            </div>
+            <div class="member-name">Falco</div>
+          </div>
         </div>
       </div>
     </section>
@@ -406,6 +769,105 @@
         </div>
       </div>
     </section>
+
+    <!-- PAGINA ADMIN (visibile solo all'utente specifico) -->
+    <section id="page-admin" class="page" data-page>
+      <div class="admin-container">
+        <div class="admin-header">
+          <h2 class="title-roman">Pannello Amministratore LIVE</h2>
+          <div style="display:flex;align-items:center;gap:15px;">
+            <div class="admin-live-badge">
+              <i class="fa-solid fa-circle" style="font-size:.6rem"></i>
+              LIVE
+            </div>
+            <button id="adminRefreshBtn" class="admin-refresh-btn">
+              <i class="fa-solid fa-rotate"></i>
+              Aggiorna
+            </button>
+          </div>
+        </div>
+        
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <i class="fa-solid fa-users" style="font-size:2rem;color:#58a6ff"></i>
+            <div class="admin-stat-value" id="adminTotalUsers">0</div>
+            <div class="admin-stat-label">Utenti Totali</div>
+            <div class="admin-stat-sub" id="adminTotalSub">Aggiornato: <span id="adminTotalTime">—</span></div>
+          </div>
+          
+          <div class="admin-stat-card">
+            <i class="fa-solid fa-user-clock" style="font-size:2rem;color:#7ee787"></i>
+            <div class="admin-stat-value" id="adminActiveUsers">0</div>
+            <div class="admin-stat-label">Utenti Attivi (24h)</div>
+            <div class="admin-stat-sub" id="adminActiveSub">Aggiornato: <span id="adminActiveTime">—</span></div>
+          </div>
+          
+          <div class="admin-stat-card">
+            <i class="fa-solid fa-user-check" style="font-size:2rem;color:#ffa500"></i>
+            <div class="admin-stat-value" id="adminOnlineNow">0</div>
+            <div class="admin-stat-label">Online Ora</div>
+            <div class="admin-stat-sub" id="adminOnlineSub">Aggiornato: <span id="adminOnlineTime">—</span></div>
+          </div>
+          
+          <div class="admin-stat-card">
+            <i class="fa-solid fa-clock" style="font-size:2rem;color:#a78bfa"></i>
+            <div class="admin-stat-value" id="adminAvgTime">0m</div>
+            <div class="admin-stat-label">Tempo Medio Sessione</div>
+            <div class="admin-stat-sub" id="adminAvgSub">Aggiornato: <span id="adminAvgTimeTime">—</span></div>
+          </div>
+        </div>
+        
+        <h3 class="admin-section-title">
+          <i class="fa-solid fa-users-viewfinder"></i>
+          Utenti Collegati Recentemente
+          <span style="font-size:1rem;color:#9daccc;margin-left:auto;" id="adminUsersCount">(0 utenti)</span>
+        </h3>
+        
+        <div id="adminUsersList" class="admin-users-grid">
+          <!-- Gli utenti verranno caricati qui dinamicamente -->
+        </div>
+        
+        <div id="adminNoUsers" class="admin-empty-state" style="display:none;">
+          <i class="fa-solid fa-user-slash"></i>
+          <p>Nessun utente ha ancora effettuato il login.</p>
+          <p style="font-size:.9rem;margin-top:10px;">Gli utenti appariranno qui dopo aver effettuato il login.</p>
+        </div>
+        
+        <div class="admin-update-time">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          Ultimo aggiornamento completo: <span id="adminFullUpdateTime">—</span>
+          • Prossimo aggiornamento automatico tra: <span id="adminNextUpdate">—</span>
+        </div>
+        
+        <div style="margin-top:40px;padding:20px;background:#121a2a;border-radius:14px;border:1px solid #2a3a61;">
+          <h3 style="color:#eaf0ff;margin-bottom:15px;font-size:1.4rem;">
+            <i class="fa-solid fa-info-circle" style="color:#58a6ff;margin-right:8px;"></i>
+            Informazioni Sistema LIVE
+          </h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:15px;">
+            <div>
+              <div style="color:#9daccc;font-size:.9rem;">ID Admin Autorizzato</div>
+              <div style="color:#eaf0ff;font-family:monospace;font-size:1.1rem;">640478852308664360</div>
+            </div>
+            <div>
+              <div style="color:#9daccc;font-size:.9rem;">Stato Aggiornamento</div>
+              <div style="color:#eaf0ff;font-size:1.1rem;display:flex;align-items:center;gap:8px;">
+                <span id="adminUpdateStatus">Attivo</span>
+                <i class="fa-solid fa-circle" style="color:#7ee787;font-size:.7rem;"></i>
+              </div>
+            </div>
+            <div>
+              <div style="color:#9daccc;font-size:.9rem;">Frequenza Aggiornamento</div>
+              <div style="color:#eaf0ff;font-size:1.1rem;">3 secondi</div>
+            </div>
+            <div>
+              <div style="color:#9daccc;font-size:.9rem;">Sistema Tracciamento</div>
+              <div style="color:#eaf0ff;font-size:1.1rem;" id="adminSystemStatus">SIMULAZIONE WebSocket</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -437,139 +899,17 @@
   const DISCORD_INVITE_URL = 'https://discord.gg/EubyJqDGwU';
   const INVITE_CODE = DISCORD_INVITE_URL.split('/').filter(Boolean).pop();
   
-  // Mappa degli ID Discord dello staff (ESATTAMENTE come hai fornito)
-  const STAFF_IDS = {
-    'founder': ['1185712271821905941'],
-    'cofounder': ['642015868720644100', '851447210079289365'],
-    'admin': [
-      '640478852308664360',
-      '682651087060336701',
-      '844691950799028235',
-      '1011311419704234034',
-      '755104015037104191'
-    ],
-    'moderatore': [
-      '534703868802629642',
-      '488775636345946113',
-      '1004056571514458262',
-      '659786178987556864'
-    ],
-    'helper': [
-      '495176612656971776',
-      '506078659740958721',
-      '904281641936117770',
-      '697156512400801874',
-      '722146701888192614'
-    ]
-  };
-
-  // Database completo degli utenti con avatar reali tramite ID Discord
-  const DISCORD_USERS_DB = {
-    // Founder
-    '1185712271821905941': { 
-      username: 'Mony', 
-      avatar_hash: 'a_d8f60aadc3f7d1c7a16f4f0b4d4a4b0c',
-      discriminator: '0'
-    },
-    
-    // Co-Founder
-    '642015868720644100': { 
-      username: 'Gabbo', 
-      avatar_hash: '3a1f8b9d7c2e5f4a6b9c8d7e1f2a3b4c',
-      discriminator: '0',
-      special_role: 'Developer'
-    },
-    '851447210079289365': { 
-      username: 'Rodriguez', 
-      avatar_hash: 'b2c4d6e8f0a2c4e6d8f0b2d4f6a8c0e2',
-      discriminator: '0',
-      special_role: 'Developer'
-    },
-    
-    // Admin
-    '640478852308664360': { 
-      username: 'Admin', 
-      avatar_hash: 'c3d5e7f9a1c3e5d7f9b1d3f5a7c9e1b3',
-      discriminator: '0'
-    },
-    '682651087060336701': { 
-      username: 'Alexo', 
-      avatar_hash: 'd4e6f8a0c2e4f6d8a0c2e4f6a8c0e2a4',
-      discriminator: '0',
-      special_role: 'Eup Creator'
-    },
-    '844691950799028235': { 
-      username: 'Chri', 
-      avatar_hash: 'e5f7a9b1d3e5f7a9b1d3e5f7a9b1d3e5',
-      discriminator: '0',
-      special_role: 'Developer'
-    },
-    '1011311419704234034': { 
-      username: 'Il Davide', 
-      avatar_hash: 'f6a8b2c4e6f8a2b4c6e8f0a2c4e6b8d0',
-      discriminator: '0',
-      special_role: 'Eup Creator'
-    },
-    '755104015037104191': { 
-      username: 'Th3b00ss', 
-      avatar_hash: 'a7b9c1d3e7a9c1d3e7a9c1d3e7a9c1d3',
-      discriminator: '0'
-    },
-    
-    // Moderatore
-    '534703868802629642': { 
-      username: 'Andre', 
-      avatar_hash: 'b8c2d4e8b0c2d4e8b0c2d4e8b0c2d4e8',
-      discriminator: '0'
-    },
-    '488775636345946113': { 
-      username: 'Voight', 
-      avatar_hash: 'c9d3e5f9c1d3e5f9c1d3e5f9c1d3e5f9',
-      discriminator: '0'
-    },
-    '1004056571514458262': { 
-      username: 'Mattiger', 
-      avatar_hash: 'd0e4f6a8d2e4f6a8d2e4f6a8d2e4f6a8',
-      discriminator: '0'
-    },
-    '659786178987556864': { 
-      username: 'Ales', 
-      avatar_hash: 'e1f5a7b9e3f5a7b9e3f5a7b9e3f5a7b9',
-      discriminator: '0',
-      special_role: 'Developer'
-    },
-    
-    // Helper
-    '495176612656971776': { 
-      username: 'Luca', 
-      avatar_hash: 'f2a6b8caf4a6b8caf4a6b8caf4a6b8ca',
-      discriminator: '0'
-    },
-    '506078659740958721': { 
-      username: 'Blaze', 
-      avatar_hash: 'a3b7c9dba5b7c9dba5b7c9dba5b7c9db',
-      discriminator: '0',
-      special_role: 'Grafico'
-    },
-    '904281641936117770': { 
-      username: 'Franco', 
-      avatar_hash: 'b4c8daecb6c8daecb6c8daecb6c8daec',
-      discriminator: '0',
-      special_role: 'Grafico'
-    },
-    '697156512400801874': { 
-      username: 'Glaudio', 
-      avatar_hash: 'c5d9ebfdc7d9ebfdc7d9ebfdc7d9ebfd',
-      discriminator: '0'
-    },
-    '722146701888192614': { 
-      username: 'Falco', 
-      avatar_hash: 'd6eafc0ed8eafc0ed8eafc0ed8eafc0e',
-      discriminator: '0'
-    }
-  };
+  // ID dell'admin autorizzato
+  const ADMIN_USER_ID = '640478852308664360';
+  
+  // Configurazione aggiornamenti
+  const ADMIN_UPDATE_INTERVAL = 3000; // 3 secondi
+  const USER_ONLINE_THRESHOLD = 300000; // 5 minuti
+  const USER_ACTIVE_THRESHOLD = 120000; // 2 minuti
 
   /* Chiavi di storage UNIFICATE */
+  const USERS_DB_KEY = 'nova_roma_users_db';
+  const SESSIONS_DB_KEY = 'nova_roma_sessions_db';
   const OAUTH_TOKEN_KEY = 'nova_roma_token';
   const OAUTH_USER_KEY = 'nova_roma_user';
   const OAUTH_EXP_KEY = 'nova_roma_expires';
@@ -599,83 +939,238 @@
     if (loader) loader.classList.toggle('show', show);
   };
 
-  /* ===== SISTEMA STAFF DINAMICO TRAMITE ID DISCORD ===== */
+  /* ===== SISTEMA DATABASE UTENTI ===== */
   
-  // Funzione per ottenere l'URL dell'avatar Discord da ID e hash
-  function getDiscordAvatarUrl(userId, avatarHash = null) {
-    // Se abbiamo un hash avatar, usiamo il CDN di Discord
-    if (avatarHash && avatarHash.length > 10) {
-      const format = avatarHash.startsWith('a_') ? 'gif' : 'png';
-      return `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${format}?size=256`;
-    }
-    
-    // Altrimenti generiamo un avatar basato sull'ID (fallback)
-    // Usiamo un servizio che accetta ID Discord come seed
-    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}&backgroundColor=0f1528&radius=50`;
-  }
-  
-  // Ottieni informazioni utente dal database locale
-  function getDiscordUserInfo(userId) {
-    return DISCORD_USERS_DB[userId] || {
-      username: `User${userId.substring(0, 4)}`,
-      avatar_hash: null,
-      discriminator: '0'
-    };
-  }
-  
-  // Carica e visualizza lo staff
-  function loadStaff() {
-    const sections = ['founder', 'cofounder', 'admin', 'moderatore', 'helper'];
-    
-    for (const section of sections) {
-      const container = $(`#${section}-grid`);
-      if (!container) continue;
-      
-      // Mostra loading
-      container.innerHTML = '<div class="member"><div class="avatar"><i class="fa-solid fa-spinner fa-spin"></i></div><div class="member-name">Caricamento...</div></div>';
-      
-      const userIds = STAFF_IDS[section];
-      let html = '';
-      
-      // Determina il colore del ring in base alla sezione
-      let ringClass = 'ring';
-      if (section === 'founder') ringClass = 'ring ring-silver';
-      else if (section === 'cofounder') ringClass = 'ring';
-      else if (section === 'admin') ringClass = 'ring ring-red';
-      else if (section === 'moderatore') ringClass = 'ring ring-green';
-      else if (section === 'helper') ringClass = 'ring ring-purple';
-      
-      for (const userId of userIds) {
-        const userInfo = getDiscordUserInfo(userId);
-        const displayName = userInfo.username || `User${userId.substring(0, 4)}`;
-        const avatarUrl = getDiscordAvatarUrl(userId, userInfo.avatar_hash);
-        
-        // Ruoli speciali
-        let roleHtml = '';
-        if (userInfo.special_role) {
-          let roleClass = '';
-          if (userInfo.special_role === 'Developer') roleClass = 'role-dev';
-          else if (userInfo.special_role === 'Eup Creator') roleClass = 'role-eup';
-          else if (userInfo.special_role === 'Grafico') roleClass = 'role-grafico';
-          
-          roleHtml += `<div class="member-role ${roleClass}">${userInfo.special_role}</div>`;
-        }
-        
-        html += `
-          <div class="member">
-            <div class="avatar ${ringClass}">
-              <img src="${avatarUrl}" alt="${displayName}" loading="lazy" 
-                   onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}&backgroundColor=0f1528&radius=50'">
-            </div>
-            <div class="member-name">${displayName}</div>
-            ${roleHtml}
-          </div>
-        `;
+  // Inizializza database
+  function initDatabase() {
+    try {
+      if (!localStorage.getItem(USERS_DB_KEY)) {
+        localStorage.setItem(USERS_DB_KEY, JSON.stringify([]));
       }
-      
-      // Inserisci HTML
-      container.innerHTML = html || '<div class="member"><div class="avatar"><i class="fa-solid fa-user"></i></div><div class="member-name">Nessun membro</div></div>';
+      if (!localStorage.getItem(SESSIONS_DB_KEY)) {
+        localStorage.setItem(SESSIONS_DB_KEY, JSON.stringify([]));
+      }
+      return true;
+    } catch (e) {
+      console.error('Errore inizializzazione database:', e);
+      return false;
     }
+  }
+  
+  // Ottieni tutti gli utenti
+  function getAllUsers() {
+    try {
+      const data = localStorage.getItem(USERS_DB_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  
+  // Ottieni tutte le sessioni
+  function getAllSessions() {
+    try {
+      const data = localStorage.getItem(SESSIONS_DB_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  
+  // Salva utenti
+  function saveUsers(users) {
+    try {
+      localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
+      return true;
+    } catch (e) {
+      console.error('Errore salvataggio utenti:', e);
+      return false;
+    }
+  }
+  
+  // Salva sessioni
+  function saveSessions(sessions) {
+    try {
+      localStorage.setItem(SESSIONS_DB_KEY, JSON.stringify(sessions));
+      return true;
+    } catch (e) {
+      console.error('Errore salvataggio sessioni:', e);
+      return false;
+    }
+  }
+  
+  // Trova utente per ID
+  function findUserById(userId) {
+    const users = getAllUsers();
+    return users.find(user => user.id === userId);
+  }
+  
+  // Registra o aggiorna utente
+  function registerUser(discordUser) {
+    if (!discordUser || !discordUser.id) return null;
+    
+    const users = getAllUsers();
+    const now = nowMs();
+    
+    // Cerca utente esistente
+    const existingIndex = users.findIndex(u => u.id === discordUser.id);
+    
+    const userData = {
+      id: discordUser.id,
+      username: discordUser.username || '',
+      global_name: discordUser.global_name || discordUser.username || '',
+      avatar: discordUser.avatar || null,
+      discriminator: discordUser.discriminator || '0',
+      first_seen: existingIndex >= 0 ? users[existingIndex].first_seen : now,
+      last_seen: now,
+      login_count: existingIndex >= 0 ? users[existingIndex].login_count + 1 : 1,
+      total_sessions: existingIndex >= 0 ? users[existingIndex].total_sessions + 1 : 1
+    };
+    
+    if (existingIndex >= 0) {
+      users[existingIndex] = userData;
+    } else {
+      users.push(userData);
+    }
+    
+    saveUsers(users);
+    
+    // Registra sessione
+    registerSession(userData.id, userData);
+    
+    return userData;
+  }
+  
+  // Registra una nuova sessione
+  function registerSession(userId, userData) {
+    const sessions = getAllSessions();
+    const now = nowMs();
+    
+    const sessionData = {
+      id: `sess_${now}_${Math.random().toString(36).substr(2, 9)}`,
+      user_id: userId,
+      username: userData.username,
+      global_name: userData.global_name,
+      avatar: userData.avatar,
+      discriminator: userData.discriminator,
+      start_time: now,
+      end_time: null,
+      is_active: true,
+      user_agent: navigator.userAgent.substring(0, 100)
+    };
+    
+    sessions.push(sessionData);
+    saveSessions(sessions);
+    
+    return sessionData;
+  }
+  
+  // Aggiorna ultima attività utente
+  function updateUserActivity(userId) {
+    if (!userId) return;
+    
+    const users = getAllUsers();
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if (userIndex >= 0) {
+      users[userIndex].last_seen = nowMs();
+      saveUsers(users);
+      
+      // Aggiorna anche la sessione attiva
+      updateActiveSession(userId);
+    }
+  }
+  
+  // Aggiorna sessione attiva
+  function updateActiveSession(userId) {
+    const sessions = getAllSessions();
+    let updated = false;
+    
+    for (let i = sessions.length - 1; i >= 0; i--) {
+      if (sessions[i].user_id === userId && sessions[i].is_active) {
+        sessions[i].last_activity = nowMs();
+        updated = true;
+        break;
+      }
+    }
+    
+    if (updated) {
+      saveSessions(sessions);
+    }
+  }
+  
+  // Termina sessione attiva
+  function endActiveSession(userId) {
+    const sessions = getAllSessions();
+    let ended = false;
+    
+    for (let i = sessions.length - 1; i >= 0; i--) {
+      if (sessions[i].user_id === userId && sessions[i].is_active) {
+        sessions[i].is_active = false;
+        sessions[i].end_time = nowMs();
+        sessions[i].duration = sessions[i].end_time - sessions[i].start_time;
+        ended = true;
+        break;
+      }
+    }
+    
+    if (ended) {
+      saveSessions(sessions);
+    }
+  }
+  
+  // Pulisci sessioni vecchie
+  function cleanupOldSessions() {
+    const sessions = getAllSessions();
+    const now = nowMs();
+    const oneWeekAgo = now - (7 * 24 * 60 * 60 * 1000);
+    
+    // Mantieni solo sessioni degli ultimi 7 giorni
+    const filteredSessions = sessions.filter(session => 
+      session.start_time > oneWeekAgo
+    );
+    
+    if (filteredSessions.length !== sessions.length) {
+      saveSessions(filteredSessions);
+    }
+  }
+  
+  // Ottieni statistiche
+  function getAdminStatistics() {
+    const users = getAllUsers();
+    const sessions = getAllSessions();
+    const now = nowMs();
+    
+    // Sessioni attive (ultimi 5 minuti)
+    const activeSessions = sessions.filter(session => 
+      session.is_active && 
+      (now - session.start_time) < USER_ONLINE_THRESHOLD
+    );
+    
+    // Utenti online (sessioni attive negli ultimi 5 minuti)
+    const onlineUserIds = [...new Set(activeSessions.map(s => s.user_id))];
+    
+    // Utenti attivi nelle ultime 24 ore
+    const oneDayAgo = now - (24 * 60 * 60 * 1000);
+    const active24hUsers = users.filter(user => 
+      user.last_seen > oneDayAgo
+    );
+    
+    // Calcola tempo medio sessione
+    const completedSessions = sessions.filter(s => s.end_time && s.duration);
+    const totalDuration = completedSessions.reduce((sum, s) => sum + s.duration, 0);
+    const avgSessionTime = completedSessions.length > 0 ? 
+      Math.round(totalDuration / completedSessions.length / 60000) : 0;
+    
+    return {
+      totalUsers: users.length,
+      active24h: active24hUsers.length,
+      onlineNow: onlineUserIds.length,
+      onlineUsers: onlineUserIds,
+      avgSessionTime: avgSessionTime,
+      totalSessions: sessions.length,
+      activeSessions: activeSessions.length
+    };
   }
 
   /* ===== SISTEMA AUTH DISCORD ===== */
@@ -702,6 +1197,9 @@
   // Cancella auth
   function clearAuth() {
     const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      endActiveSession(user.id);
+    }
     
     localStorage.removeItem(OAUTH_TOKEN_KEY);
     localStorage.removeItem(OAUTH_USER_KEY);
@@ -734,10 +1232,11 @@
     const token = getAuthToken();
     const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
     const isIn = !!(token && user);
+    const isAdmin = user && user.id === ADMIN_USER_ID;
     
-    // Aggiorna navbar - il bottone Admin è sempre nascosto
+    // Aggiorna navbar
     $('#navDonations').hidden = !isIn;
-    $('#navAdmin').hidden = true; // Sempre nascosto
+    $('#navAdmin').hidden = !isAdmin;
     $('#btnDiscordLogin').hidden = isIn;
     $('#btnLogout').hidden = !isIn;
     
@@ -756,6 +1255,14 @@
         $('#topUsername').hidden = false;
         $('#topAvatar').title = name;
       }
+      
+      // Aggiorna attività utente
+      updateUserActivity(user.id);
+      
+      // Se admin, aggiorna pannello
+      if (isAdmin && $('.page.active')?.id === 'page-admin') {
+        updateAdminPanel();
+      }
     } else {
       // Reset UI
       $('#topAvatarImg').src = '';
@@ -770,6 +1277,9 @@
       if (activePage === 'donations' || activePage === 'donation') {
         showPage('home');
         toast('Effettua il login per accedere.');
+      } else if (activePage === 'admin') {
+        showPage('home');
+        toast('Accesso riservato all\'amministratore.');
       }
     }
   }
@@ -946,6 +1456,9 @@
     const userData = await response.json();
     localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(userData));
     
+    // Registra utente nel sistema
+    const registeredUser = registerUser(userData);
+    
     // Aggiorna UI
     updateAuthUI();
     
@@ -972,14 +1485,185 @@
     toast(name ? `Arrivederci ${name}!` : 'Logout effettuato');
   }
 
+  /* ===== PANNELO ADMIN ===== */
+  
+  let adminUpdateInterval = null;
+  let isUpdatingAdmin = false;
+  
+  // Formatta tempo trascorso
+  function formatTimeAgo(timestamp) {
+    const now = nowMs();
+    const diff = now - timestamp;
+    
+    if (diff < 60000) {
+      return 'Adesso';
+    } else if (diff < 3600000) {
+      const mins = Math.floor(diff / 60000);
+      return `${mins} min fa`;
+    } else if (diff < 86400000) {
+      const hours = Math.floor(diff / 3600000);
+      return `${hours} ore fa`;
+    } else {
+      const days = Math.floor(diff / 86400000);
+      return `${days} giorni fa`;
+    }
+  }
+  
+  // Formatta data/ora
+  function formatDateTime(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString('it-IT', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }
+  
+  // Aggiorna pannello admin
+  async function updateAdminPanel() {
+    if (isUpdatingAdmin) return;
+    
+    isUpdatingAdmin = true;
+    const btn = $('#adminRefreshBtn');
+    if (btn) btn.classList.add('refreshing');
+    
+    try {
+      cleanupOldSessions();
+      const stats = getAdminStatistics();
+      const users = getAllUsers();
+      const sessions = getAllSessions();
+      const now = nowMs();
+      
+      // Aggiorna statistiche
+      $('#adminTotalUsers').textContent = stats.totalUsers;
+      $('#adminActiveUsers').textContent = stats.active24h;
+      $('#adminOnlineNow').textContent = stats.onlineNow;
+      $('#adminAvgTime').textContent = `${stats.avgSessionTime}m`;
+      
+      // Aggiorna timestamp
+      const timeStr = formatDateTime(now);
+      $('#adminTotalTime').textContent = timeStr;
+      $('#adminActiveTime').textContent = timeStr;
+      $('#adminOnlineTime').textContent = timeStr;
+      $('#adminAvgTimeTime').textContent = timeStr;
+      
+      // Aggiorna lista utenti
+      const usersList = $('#adminUsersList');
+      const noUsers = $('#adminNoUsers');
+      
+      if (users.length === 0) {
+        usersList.innerHTML = '';
+        noUsers.style.display = 'block';
+        usersList.style.display = 'none';
+        $('#adminUsersCount').textContent = '(0 utenti)';
+      } else {
+        noUsers.style.display = 'none';
+        usersList.style.display = 'grid';
+        $('#adminUsersCount').textContent = `(${users.length} utenti)`;
+        
+        // Ordina per ultimo accesso
+        const sortedUsers = [...users].sort((a, b) => b.last_seen - a.last_seen);
+        
+        // Prepara HTML
+        let html = '';
+        
+        sortedUsers.forEach(user => {
+          const isOnline = stats.onlineUsers.includes(user.id);
+          const isActive = isOnline && (now - user.last_seen) < USER_ACTIVE_THRESHOLD;
+          
+          // Sessioni attive dell'utente
+          const userSessions = sessions.filter(s => 
+            s.user_id === user.id && s.is_active && (now - s.start_time) < USER_ONLINE_THRESHOLD
+          );
+          
+          const sessionCount = userSessions.length;
+          
+          // Avatar
+          const avatarUrl = user.avatar ? 
+            `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_')?'gif':'png'}?size=80` :
+            `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator || '0') % 5 || 0}.png`;
+          
+          // Nome
+          const fullName = (user.global_name || user.username || 'Sconosciuto') + 
+            (user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '');
+          
+          html += `
+            <div class="admin-user-card">
+              ${isActive ? '<div class="admin-user-pulse"></div>' : ''}
+              <img src="${avatarUrl}" alt="${fullName}" class="admin-user-avatar" crossorigin="anonymous">
+              <div class="admin-user-info">
+                <div class="admin-user-name">${fullName}</div>
+                <div class="admin-user-id">ID: ${user.id}</div>
+                <div class="admin-user-status ${isOnline ? 'status-online' : 'status-offline'}">
+                  ${isOnline ? 'ONLINE' : 'OFFLINE'} ${sessionCount > 1 ? `(${sessionCount})` : ''}
+                </div>
+                <div class="admin-user-last-seen">
+                  ${isOnline ? 
+                    `Online ${formatTimeAgo(user.last_seen)}` : 
+                    `Offline ${formatTimeAgo(user.last_seen)}`
+                  }<br>
+                  Login: ${user.login_count} • Sessioni: ${user.total_sessions}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+        usersList.innerHTML = html;
+      }
+      
+      // Aggiorna info sistema
+      $('#adminFullUpdateTime').textContent = `${formatDateTime(now)}`;
+      $('#adminUpdateStatus').textContent = 'Attivo';
+      $('#adminSystemStatus').textContent = `DB: ${stats.totalUsers} utenti, ${stats.totalSessions} sessioni`;
+      
+    } catch (error) {
+      console.error('Errore aggiornamento admin:', error);
+      $('#adminUpdateStatus').textContent = 'Errore';
+    } finally {
+      isUpdatingAdmin = false;
+      if (btn) btn.classList.remove('refreshing');
+    }
+  }
+  
+  // Avvia aggiornamenti automatici admin
+  function startAdminUpdates() {
+    if (adminUpdateInterval) clearInterval(adminUpdateInterval);
+    
+    adminUpdateInterval = setInterval(() => {
+      if ($('.page.active')?.id === 'page-admin') {
+        updateAdminPanel();
+      }
+    }, ADMIN_UPDATE_INTERVAL);
+    
+    // Aggiorna immediatamente
+    if ($('.page.active')?.id === 'page-admin') {
+      updateAdminPanel();
+    }
+  }
+  
+  // Ferma aggiornamenti admin
+  function stopAdminUpdates() {
+    if (adminUpdateInterval) {
+      clearInterval(adminUpdateInterval);
+      adminUpdateInterval = null;
+    }
+  }
+
   /* ===== ROUTER E NAVIGAZIONE ===== */
   
   function showPage(pageId) {
     // Verifica accesso
     const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    const isAdmin = user && user.id === ADMIN_USER_ID;
     
     if ((pageId === 'donations' || pageId === 'donation') && !isLoggedIn()) {
       toast('Effettua il login per accedere.');
+      pageId = 'home';
+    }
+    
+    if (pageId === 'admin' && !isAdmin) {
+      toast('Accesso riservato all\'amministratore.');
       pageId = 'home';
     }
     
@@ -999,9 +1683,10 @@
         video.muted = true;
         video.play().catch(() => {});
       }
-    } else if (pageId === 'staff') {
-      // Carica lo staff quando si visita la pagina
-      setTimeout(() => loadStaff(), 100);
+    } else if (pageId === 'admin' && isAdmin) {
+      startAdminUpdates();
+    } else {
+      stopAdminUpdates();
     }
   }
   
@@ -1059,6 +1744,12 @@
     if (e.target.id === 'btnBuy') {
       toast('Sistema di pagamento in sviluppo — apri un ticket su Discord.');
     }
+    if (e.target.id === 'adminRefreshBtn') {
+      if (!isUpdatingAdmin) {
+        updateAdminPanel();
+        toast('Pannello aggiornato!');
+      }
+    }
   });
 
   /* ===== DISCORD COUNTS ===== */
@@ -1100,6 +1791,9 @@
   /* ===== INIZIALIZZAZIONE ===== */
   
   window.addEventListener('load', async () => {
+    // Inizializza database
+    initDatabase();
+    
     // Gestisci OAuth redirect
     await handleOAuthRedirect();
     
@@ -1113,9 +1807,53 @@
     $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
     $('#btnLogout')?.addEventListener('click', logout);
     
-    // Carica lo staff se siamo sulla pagina staff
-    if ($('.page.active')?.id === 'page-staff') {
-      setTimeout(() => loadStaff(), 100);
+    // Aggiorna attività utente periodicamente
+    setInterval(() => {
+      const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+      if (user && user.id) {
+        updateUserActivity(user.id);
+      }
+    }, 30000);
+    
+    // Cleanup sessioni vecchie ogni ora
+    setInterval(cleanupOldSessions, 3600000);
+    
+    // Aggiorna pannello admin se visibile
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id === ADMIN_USER_ID && $('.page.active')?.id === 'page-admin') {
+      startAdminUpdates();
+    }
+  });
+  
+  // Gestione chiusura finestra
+  window.addEventListener('beforeunload', () => {
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      endActiveSession(user.id);
+    }
+    stopAdminUpdates();
+  });
+  
+  // Aggiorna attività su interazione
+  document.addEventListener('click', () => {
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      updateUserActivity(user.id);
+    }
+  });
+  
+  document.addEventListener('keydown', () => {
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      updateUserActivity(user.id);
+    }
+  });
+  
+  // Aggiorna attività quando la finestra diventa attiva
+  window.addEventListener('focus', () => {
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    if (user && user.id) {
+      updateUserActivity(user.id);
     }
   });
   </script>

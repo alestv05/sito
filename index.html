@@ -1,8 +1,3 @@
-Ok, ti rifaccio solo la parte del server Discord: niente pannellone, stile più pulito e compatto, e nessuna scritta visibile di aggiornamento.
-Il resto del file (login, staff, donazioni, JS, ecc.) rimane uguale.
-
-Copia e incolla tutto questo al posto del tuo index:
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -63,7 +58,7 @@ Copia e incolla tutto questo al posto del tuo index:
 
   .top-avatar{display:flex; gap:8px; align-items:center}
   #topAvatarIcon{font-size:28px}
-  #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none}
+  #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none; border:2px solid #58a6ff}
   #topUsername{font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:#cfe0ff}
 
   /* HERO */
@@ -236,7 +231,7 @@ Copia e incolla tutto questo al posto del tuo index:
 
     <div class="top-avatar" id="topAvatar" title="Utente">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
-      <img id="topAvatarImg" alt="Avatar">
+      <img id="topAvatarImg" alt="Avatar" crossorigin="anonymous">
       <span id="topUsername" hidden></span>
     </div>
   </header>
@@ -585,7 +580,7 @@ Copia e incolla tutto questo al posto del tuo index:
     window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
-  /* ===== LOGIN ===== */
+  /* ===== LOGIN CON AVATAR ===== */
   const getToken = ()=>{
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
     const exp = Number(localStorage.getItem(OAUTH_EXP_KEY)||0);
@@ -593,46 +588,119 @@ Copia e incolla tutto questo al posto del tuo index:
     if(nowMs() >= exp){ clearSession(); return null; }
     return token;
   };
+  
   const isLoggedIn = ()=>!!(getToken() && localStorage.getItem(OAUTH_USER_KEY));
+  
   function clearSession(){
     localStorage.removeItem(OAUTH_TOKEN_KEY);
     localStorage.removeItem(OAUTH_USER_KEY);
     localStorage.removeItem(OAUTH_EXP_KEY);
     sessionStorage.removeItem('oauth_state');
   }
+  
   function formatDiscordName(user){
     if(!user) return '';
     const disc = user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '';
     return (user.global_name || user.username || 'Utente') + disc;
   }
-  function setAvatar(url){
-    const topImg=$('#topAvatarImg'), topIcon=$('#topAvatarIcon');
-    if(url){ topImg.src=url; topImg.style.display='block'; topIcon.style.display='none'; }
-    else { topImg.removeAttribute('src'); topImg.src=''; topImg.style.display='none'; topIcon.style.display='block'; }
+  
+  function getAvatarUrl(user){
+    if(!user) return null;
+    
+    // Se l'utente ha un avatar, costruisci l'URL completo
+    if(user.avatar && user.id){
+      // Determina il formato ottimale (gif se è animato, png altrimenti)
+      const format = user.avatar.startsWith('a_') ? 'gif' : 'png';
+      // URL dell'avatar con dimensioni 128px per qualità ottimale
+      return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${format}?size=128`;
+    }
+    
+    // Avatar di default basato sul discriminator
+    const discriminator = parseInt(user.discriminator || '0', 10);
+    return cdnDefaultAvatar(discriminator);
   }
+  
+  function setAvatar(url){
+    const topImg=$('#topAvatarImg');
+    const topIcon=$('#topAvatarIcon');
+    
+    if(url){
+      // Precarica l'immagine per evitare flickering
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        topImg.src = url;
+        topImg.style.display = 'block';
+        topIcon.style.display = 'none';
+      };
+      img.onerror = () => {
+        // Fallback su avatar default se l'URL fallisce
+        topImg.src = cdnDefaultAvatar();
+        topImg.style.display = 'block';
+        topIcon.style.display = 'none';
+      };
+    } else {
+      topImg.removeAttribute('src');
+      topImg.style.display = 'none';
+      topIcon.style.display = 'block';
+    }
+  }
+  
   function setUserHeader(user){
-    const avatar = user?.avatar
-      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
-      : cdnDefaultAvatar(user?.discriminator||0);
-    setAvatar(avatar);
+    if(!user){
+      setAvatar(null);
+      $('#topUsername').textContent = '';
+      $('#topUsername').hidden = true;
+      $('#topAvatar').title = 'Utente';
+      return;
+    }
+    
+    const avatarUrl = getAvatarUrl(user);
+    setAvatar(avatarUrl);
+    
     const name = formatDiscordName(user);
     const el = $('#topUsername');
-    if(name){ el.textContent = name; el.hidden = false; $('#topAvatar').title = name; }
-    else { el.textContent = ''; el.hidden = true; $('#topAvatar').title='Utente'; }
+    if(name){
+      el.textContent = name;
+      el.hidden = false;
+      $('#topAvatar').title = name;
+    } else {
+      el.textContent = '';
+      el.hidden = true;
+      $('#topAvatar').title = 'Utente';
+    }
   }
+  
   function updateAuthUI(){
     const token = getToken();
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
+    
+    // Mostra/nascondi elementi navbar
     $('#navDonations').hidden = !isIn;
-    $('#btnDiscordLogin').hidden =  isIn;
-    $('#btnLogout').hidden       = !isIn;
-    if(isIn) setUserHeader(user);
-    else { setAvatar(null); const n=$('#topUsername'); n.textContent=''; n.hidden=true; $('#topAvatar').title='Utente';
+    $('#btnDiscordLogin').hidden = isIn;
+    $('#btnLogout').hidden = !isIn;
+    
+    if(isIn){
+      // Se loggato, mostra avatar e nome
+      setUserHeader(user);
+    } else {
+      // Se non loggato, reset
+      setAvatar(null);
+      const n = $('#topUsername');
+      n.textContent = '';
+      n.hidden = true;
+      $('#topAvatar').title = 'Utente';
+      
+      // Reindirizza se su pagina protetta
       const active = document.querySelector('.page.active')?.id?.replace('page-','');
-      if(['donations','donation'].includes(active)) showPage('home');
+      if(protectedRoutes.has(active)){
+        showPage('home');
+        toast('Effettua il login per accedere a questa sezione.');
+      }
     }
   }
+  
   function buildAuthURL(state){
     const u = new URL('https://discord.com/oauth2/authorize');
     u.searchParams.set('client_id', DISCORD_CLIENT_ID);
@@ -642,95 +710,229 @@ Copia e incolla tutto questo al posto del tuo index:
     u.searchParams.set('state', state);
     return u.toString();
   }
+  
   function beginDiscordLogin(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
-    if(getToken()){ toast('Sei già loggato.'); return; }
+    
+    if(isLoggedIn()){
+      toast('Sei già loggato!');
+      return;
+    }
+    
     const state = Math.random().toString(36).slice(2);
     sessionStorage.setItem('oauth_state', state);
     const url = buildAuthURL(state);
+    
     const w = 520, h = 700;
     const y = window.top.outerHeight/2 + window.top.screenY - (h/2);
-    const x = window.top.outerWidth/2  + window.top.screenX - (w/2);
-    const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes`);
-    showLoader(true); $('#btnDiscordLogin').classList.add('disabled');
-    if(!popup || popup.closed || typeof popup.closed==='undefined'){ window.location.assign(url); return; }
-    const onMsg = async (ev)=>{
+    const x = window.top.outerWidth/2 + window.top.screenX - (w/2);
+    
+    const popup = window.open(
+      url,
+      'discord_oauth',
+      `width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes`
+    );
+    
+    showLoader(true);
+    $('#btnDiscordLogin').classList.add('disabled');
+    
+    if(!popup || popup.closed || typeof popup.closed === 'undefined'){
+      window.location.assign(url);
+      return;
+    }
+    
+    const onMsg = async (ev) => {
       if(ev.origin !== originOf(REDIRECT_URI)) return;
-      const data = ev.data||{}; if(data.type!=='discord_oauth') return;
+      const data = ev.data || {};
+      if(data.type !== 'discord_oauth') return;
+      
       window.removeEventListener('message', onMsg);
       try{
-        await finalizeOAuth({ access_token:data.access_token, token_type:data.token_type||'Bearer', expires_in:data.expires_in||3600 });
+        await finalizeOAuth({
+          access_token: data.access_token,
+          token_type: data.token_type || 'Bearer',
+          expires_in: data.expires_in || 3600
+        });
         popup && popup.close();
-      }finally{ showLoader(false); $('#btnDiscordLogin').classList.remove('disabled'); }
+      } finally {
+        showLoader(false);
+        $('#btnDiscordLogin').classList.remove('disabled');
+      }
     };
+    
     window.addEventListener('message', onMsg);
-    const timer=setInterval(()=>{ if(popup.closed){ clearInterval(timer); window.removeEventListener('message', onMsg); showLoader(false); $('#btnDiscordLogin').classList.remove('disabled'); } },500);
+    
+    const timer = setInterval(() => {
+      if(popup.closed){
+        clearInterval(timer);
+        window.removeEventListener('message', onMsg);
+        showLoader(false);
+        $('#btnDiscordLogin').classList.remove('disabled');
+      }
+    }, 500);
   }
+  
   async function handleOAuthRedirectFragment(){
     if(!location.hash.startsWith('#')) return false;
-    const params=new URLSearchParams(location.hash.slice(1));
-    if(!(params.get('access_token')||params.get('error'))) return false;
-    history.replaceState(null,'',location.pathname+location.search);
-    if(window.opener && typeof window.opener.postMessage==='function'){
-      const payload = { type:'discord_oauth', access_token:params.get('access_token'),
-        token_type: params.get('token_type')||'Bearer', expires_in:Number(params.get('expires_in')||3600), state:params.get('state') };
+    
+    const params = new URLSearchParams(location.hash.slice(1));
+    if(!(params.get('access_token') || params.get('error'))) return false;
+    
+    history.replaceState(null, '', location.pathname + location.search);
+    
+    // Se aperto in popup, invia il token alla finestra principale
+    if(window.opener && typeof window.opener.postMessage === 'function'){
+      const payload = {
+        type: 'discord_oauth',
+        access_token: params.get('access_token'),
+        token_type: params.get('token_type') || 'Bearer',
+        expires_in: Number(params.get('expires_in') || 3600),
+        state: params.get('state')
+      };
+      
       const targetOrigin = window.opener.location ? window.opener.location.origin : '*';
       window.opener.postMessage(payload, targetOrigin);
-      document.body.innerHTML = '<div style="padding:20px;font:600 16px sans-serif;color:#eaf0ff;background:#0f1625">Autenticazione completata, puoi chiudere questa finestra…</div>';
-      setTimeout(()=>window.close(),250);
+      
+      document.body.innerHTML = '<div style="padding:20px;font:600 16px sans-serif;color:#eaf0ff;background:#0f1625;height:100vh;display:grid;place-items:center">Autenticazione completata, puoi chiudere questa finestra…</div>';
+      setTimeout(() => window.close(), 250);
       return true;
     }
-    if(params.get('error')){ toast('Accesso Discord annullato.'); return true; }
-    const at=params.get('access_token'); const tokenType=params.get('token_type')||'Bearer'; const expiresIn=Number(params.get('expires_in')||3600);
-    const state=params.get('state'); const expected=sessionStorage.getItem('oauth_state'); sessionStorage.removeItem('oauth_state');
-    if(!at || (expected && expected!==state)){ toast('Verifica OAuth fallita.'); return true; }
+    
+    // Se aperto direttamente
+    if(params.get('error')){
+      toast('Accesso Discord annullato.');
+      return true;
+    }
+    
+    const at = params.get('access_token');
+    const tokenType = params.get('token_type') || 'Bearer';
+    const expiresIn = Number(params.get('expires_in') || 3600);
+    const state = params.get('state');
+    const expected = sessionStorage.getItem('oauth_state');
+    
+    sessionStorage.removeItem('oauth_state');
+    
+    if(!at || (expected && expected !== state)){
+      toast('Verifica OAuth fallita.');
+      return true;
+    }
+    
     showLoader(true);
-    try{ await finalizeOAuth({access_token:at, token_type:tokenType, expires_in:expiresIn}); }catch(_){ toast('Errore nel recupero profilo Discord.'); }
-    finally{ showLoader(false); }
+    try{
+      await finalizeOAuth({
+        access_token: at,
+        token_type: tokenType,
+        expires_in: expiresIn
+      });
+    } catch(_){
+      toast('Errore nel recupero del profilo Discord.');
+    } finally{
+      showLoader(false);
+    }
+    
     return true;
   }
-  async function finalizeOAuth({access_token, token_type='Bearer', expires_in=3600}){
-    if(!access_token) throw new Error('Missing token');
-    const expiresAt = nowMs() + (Number(expires_in)||3600)*1000 - 30000;
+  
+  async function finalizeOAuth({access_token, token_type = 'Bearer', expires_in = 3600}){
+    if(!access_token) throw new Error('Token mancante');
+    
+    const expiresAt = nowMs() + (Number(expires_in) || 3600) * 1000 - 30000;
+    
     localStorage.setItem(OAUTH_TOKEN_KEY, access_token);
     localStorage.setItem(OAUTH_EXP_KEY, String(expiresAt));
-    const user = await fetchWithTimeoutRetry('https://discord.com/api/users/@me', { headers:{ 'Authorization': `${token_type} ${access_token}` } }, 6000, 1);
+    
+    // Recupera i dati utente da Discord
+    const user = await fetchWithTimeoutRetry(
+      'https://discord.com/api/users/@me',
+      {
+        headers: {
+          'Authorization': `${token_type} ${access_token}`
+        }
+      },
+      6000,
+      1
+    );
+    
     localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
-    updateAuthUI(); toast('Accesso con Discord riuscito!');
+    
+    updateAuthUI();
+    toast(`Benvenuto ${formatDiscordName(user)}!`);
   }
+  
   async function fetchWithTimeoutRetry(url, options={}, timeoutMs=6000, retries=1){
-    for(let a=0; a<=retries; a++){
-      const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(), timeoutMs);
-      try{ const res=await fetch(url,{...options, signal:ctrl.signal}); clearTimeout(t);
-        if(!res.ok) throw new Error('HTTP '+res.status); return await res.json();
-      }catch(err){ clearTimeout(t); if(a===retries) throw err; await delay(300); }
+    for(let attempt=0; attempt <= retries; attempt++){
+      const ctrl = new AbortController();
+      const timeout = setTimeout(() => ctrl.abort(), timeoutMs);
+      
+      try{
+        const res = await fetch(url, {...options, signal: ctrl.signal});
+        clearTimeout(timeout);
+        
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch(err){
+        clearTimeout(timeout);
+        if(attempt === retries) throw err;
+        await delay(300);
+      }
     }
   }
-  let expTimer=null;
+  
+  let expTimer = null;
   function scheduleAutoLogout(){
     if(expTimer) clearTimeout(expTimer);
-    const exp=Number(localStorage.getItem(OAUTH_EXP_KEY)||0); if(!exp) return;
-    const wait=Math.max(0, exp-nowMs());
-    expTimer=setTimeout(()=>{ logout(); toast('Sessione scaduta, effettua di nuovo il login.'); }, wait);
+    
+    const exp = Number(localStorage.getItem(OAUTH_EXP_KEY) || 0);
+    if(!exp) return;
+    
+    const wait = Math.max(0, exp - nowMs());
+    expTimer = setTimeout(() => {
+      logout();
+      toast('Sessione scaduta, effettua di nuovo il login.');
+    }, wait);
   }
+  
   function logout(e){
-    if(e){ e.preventDefault(); e.stopPropagation(); }
-    clearSession(); if(location.hash) history.replaceState(null,'',location.pathname+location.search);
-    updateAuthUI(); showPage('home'); toast('Logout effettuato');
+    if(e){
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY) || 'null');
+    const name = user ? formatDiscordName(user) : '';
+    
+    clearSession();
+    if(location.hash){
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+    
+    updateAuthUI();
+    showPage('home');
+    toast(name ? `Arrivederci ${name}!` : 'Logout effettuato');
   }
 
   /* Router */
   function showPage(id){
-    if(protectedRoutes.has(id) && !isLoggedIn()){ toast('Devi effettuare il login per accedere.'); id='home'; }
-    $$('.page').forEach(p=>p.classList.remove('active'));
-    $$('.nav-link').forEach(l=>l.classList.remove('active'));
+    if(protectedRoutes.has(id) && !isLoggedIn()){
+      toast('Devi effettuare il login per accedere a questa sezione.');
+      id = 'home';
+    }
+    
+    $$('.page').forEach(p => p.classList.remove('active'));
+    $$('.nav-link').forEach(l => l.classList.remove('active'));
+    
     $(`#page-${id}`)?.classList.add('active');
     $(`.nav-link[data-route="${id}"]`)?.classList.add('active');
-    if(id==='home') tryAutoplay();
+    
+    if(id === 'home') tryAutoplay();
   }
-  document.addEventListener('click',e=>{
-    const r=e.target.closest('[data-route]'); if(!r) return;
-    e.preventDefault(); showPage(r.dataset.route);
+  
+  document.addEventListener('click', e => {
+    const r = e.target.closest('[data-route]');
+    if(!r) return;
+    
+    e.preventDefault();
+    showPage(r.dataset.route);
   });
 
   /* Donazioni (testi) */
@@ -744,35 +946,48 @@ Copia e incolla tutto questo al posto del tuo index:
     50:"Acquistando questo pacchetto otterai 300.000€ in gioco + un'auto a tua scelta (vedere discord)\n(Aprite un ticket su discord per ricevere le ricompense, le auto donatori in caso di wipe rimarranno al giocatore)",
     70:"Acquistando questo pacchetto otterai 400.000€ in gioco\n(Aprite un ticket su discord per ricevere le ricompense)"
   };
-  $('#donationsGrid')?.addEventListener('click',e=>{
-    const card=e.target.closest('.donation-card'); if(!card)return; e.preventDefault();
-    if(!isLoggedIn()){ toast('Effettua il login per vedere i dettagli.'); return; }
-    const price=card.dataset.price||'0'; const img=card.dataset.img||'';
-    $('#detailTitle').textContent='Pacchetto '+price+'€';
-    $('#detailPrice').textContent=price;
-    $('#detailImg').src=img;
-    $('#detailDesc').textContent=OFFER_TEXT[price]||'';
+  
+  $('#donationsGrid')?.addEventListener('click', e => {
+    const card = e.target.closest('.donation-card');
+    if(!card) return;
+    e.preventDefault();
+    
+    if(!isLoggedIn()){
+      toast('Effettua il login per vedere i dettagli delle donazioni.');
+      return;
+    }
+    
+    const price = card.dataset.price || '0';
+    const img = card.dataset.img || '';
+    
+    $('#detailTitle').textContent = 'Pacchetto ' + price + '€';
+    $('#detailPrice').textContent = price;
+    $('#detailImg').src = img;
+    $('#detailDesc').textContent = OFFER_TEXT[price] || '';
     showPage('donation');
   });
-  document.addEventListener('click',e=>{
-    if(e.target.id==='btnBackDon'){showPage('donations')}
-    if(e.target.id==='btnBuy'){toast('Pagamento non configurato — apri un ticket Discord.')}
+  
+  document.addEventListener('click', e => {
+    if(e.target.id === 'btnBackDon'){
+      showPage('donations');
+    }
+    if(e.target.id === 'btnBuy'){
+      toast('Pagamento non configurato — apri un ticket su Discord per completare la donazione.');
+    }
   });
 
-  /* ===== DISCORD: SOLO NUMERI =====
-     - Totali: /api/invites/{code}?with_counts=true
-     - Online: preferisci /guilds/{id}/widget.json (presence_count)
-               fallback: approximate_presence_count dell'invito
-  ================================== */
-  const DISCORD = { guildId:null, name:'Community Discord' };
+  /* ===== DISCORD: SOLO NUMERI ===== */
+  const DISCORD = { guildId: null, name: 'Community Discord' };
 
   async function resolveInvite(){
     const data = await fetchWithTimeoutRetry(
       `https://discord.com/api/invites/${encodeURIComponent(INVITE_CODE)}?with_counts=true&with_expiration=false`,
       {}, 6000, 1
     );
+    
     DISCORD.guildId = data?.guild?.id || null;
     DISCORD.name = data?.guild?.name || DISCORD.name;
+    
     return {
       name: DISCORD.name,
       guildId: DISCORD.guildId,
@@ -783,10 +998,12 @@ Copia e incolla tutto questo al posto del tuo index:
 
   async function getWidgetPresence(guildId){
     if(!guildId) return null;
+    
     const w = await fetchWithTimeoutRetry(
       `https://discord.com/api/guilds/${guildId}/widget.json`,
       {}, 6000, 0
     );
+    
     return {
       name: w?.name || DISCORD.name,
       presence: Number(w?.presence_count || 0)
@@ -797,8 +1014,9 @@ Copia e incolla tutto questo al posto del tuo index:
     $('#guildName').textContent = name || 'Community Discord';
     $('#countTotal').textContent = (total ?? '—');
     $('#countOnline').textContent = (online ?? '—');
+    
     const d = new Date();
-    const pad = n => String(n).padStart(2,'0');
+    const pad = n => String(n).padStart(2, '0');
     const last = $('#lastUpdate');
     if(last){
       last.textContent = `Aggiornato alle ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
@@ -809,42 +1027,56 @@ Copia e incolla tutto questo al posto del tuo index:
     try{
       const inv = await resolveInvite();
       let online = inv.approxOnline;
-      let total  = inv.approxTotal;
-      // prova presenza dal widget (più precisa per "online")
+      let total = inv.approxTotal;
+      
+      // Prova a recuperare la presenza dal widget (più precisa)
       try{
         const w = await getWidgetPresence(inv.guildId);
-        if(w && typeof w.presence === 'number') online = w.presence;
-        if(w && w.name) DISCORD.name = w.name;
-      }catch(_){}
+        if(w && typeof w.presence === 'number'){
+          online = w.presence;
+        }
+        if(w && w.name){
+          DISCORD.name = w.name;
+        }
+      } catch(_){}
+      
       setCounts({ total, online, name: DISCORD.name });
-    }catch(_){
+    } catch(_){
       setCounts({ total: null, online: null, name: DISCORD.name });
     }
   }
 
-  let countsTimer=null;
+  let countsTimer = null;
   function startCountsAutoRefresh(){
     if(countsTimer) clearInterval(countsTimer);
-    countsTimer = setInterval(loadCountsOnce, 30000); // 30s
+    countsTimer = setInterval(loadCountsOnce, 30000); // Aggiorna ogni 30 secondi
   }
 
   /* INIT */
-  window.addEventListener('load', async ()=>{
+  window.addEventListener('load', async () => {
+    // Gestisci redirect OAuth
     await handleOAuthRedirectFragment();
-    updateAuthUI(); scheduleAutoLogout(); tryAutoplay();
+    
+    // Aggiorna UI
+    updateAuthUI();
+    scheduleAutoLogout();
+    tryAutoplay();
+    
+    // Carica contatori Discord
     await loadCountsOnce();
     startCountsAutoRefresh();
   });
+  
   window.addEventListener('focus', scheduleAutoLogout);
 
   // Bind login/logout
   $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
-  $('#btnLogout')?.addEventListener('click', logout, {capture:true});
+  $('#btnLogout')?.addEventListener('click', logout, {capture: true});
 
   // Sicurezza postMessage
-  window.addEventListener('message',(ev)=>{ if(ev.origin !== originOf(REDIRECT_URI)) return; });
+  window.addEventListener('message', (ev) => {
+    if(ev.origin !== originOf(REDIRECT_URI)) return;
+  });
   </script>
 </body>
 </html>
-
-Se vuoi, al prossimo giro possiamo solo cambiare colori/font dei due numeri senza toccare più nulla del layout.

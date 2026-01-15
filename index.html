@@ -870,11 +870,11 @@
             </div>
             <div>
               <div style="color:#9daccc;font-size:.9rem;">Frequenza Aggiornamento</div>
-              <div style="color:#eaf0ff;font-size:1.1rem;">5 secondi</div>
+              <div style="color:#eaf0ff;font-size:1.1rem;">3 secondi</div>
             </div>
             <div>
-              <div style="color:#9daccc;font-size:.9rem;">Dati Salvati</div>
-              <div style="color:#eaf0ff;font-size:1.1rem;" id="adminDataSize">0 KB</div>
+              <div style="color:#9daccc;font-size:.9rem;">Sistema Tracciamento</div>
+              <div style="color:#eaf0ff;font-size:1.1rem;" id="adminSystemStatus">WebSocket Attivo</div>
             </div>
           </div>
         </div>
@@ -915,19 +915,23 @@
   const ADMIN_USER_ID = '640478852308664360';
   
   // Configurazione aggiornamenti LIVE
-  const ADMIN_UPDATE_INTERVAL = 5000; // 5 secondi
-  const ADMIN_HEARTBEAT_INTERVAL = 10000; // 10 secondi per heartbeat utenti
-  const ADMIN_CLEANUP_INTERVAL = 30000; // 30 secondi per pulizia
+  const ADMIN_UPDATE_INTERVAL = 3000; // 3 secondi per aggiornamenti rapidi
+  const USER_HEARTBEAT_INTERVAL = 10000; // 10 secondi per heartbeat
+  const USER_ONLINE_THRESHOLD = 300000; // 5 minuti considerati online
+  const USER_ACTIVE_THRESHOLD = 60000; // 1 minuto considerati attivi
 
-  /* Storage keys */
-  const OAUTH_TOKEN_KEY = 'nr_discord_token_v1';
-  const OAUTH_USER_KEY  = 'nr_discord_user_v1';
-  const OAUTH_EXP_KEY   = 'nr_discord_expires_at_v1';
+  /* Storage keys - VERSIONI UNICHE PER OGNI BROWSER/TAB */
+  const TAB_ID = 'tab_' + Math.random().toString(36).substr(2, 9);
+  const SESSION_ID = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   
-  /* Storage per tracciare gli utenti */
-  const USERS_TRACKING_KEY = 'nr_users_tracking_v1';
-  const USER_ACTIVITY_KEY = 'nr_user_activity_v1';
-  const ADMIN_LAST_UPDATE_KEY = 'nr_admin_last_update_v1';
+  const OAUTH_TOKEN_KEY = 'nr_discord_token_v2';
+  const OAUTH_USER_KEY  = 'nr_discord_user_v2';
+  const OAUTH_EXP_KEY   = 'nr_discord_expires_at_v2';
+  
+  /* Storage condiviso tra tutte le schede */
+  const SHARED_USERS_KEY = 'nr_shared_users_v2';
+  const SHARED_ACTIVITY_KEY = 'nr_shared_activity_v2';
+  const SHARED_SESSIONS_KEY = 'nr_shared_sessions_v2';
 
   /* Utils */
   const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
@@ -937,75 +941,103 @@
   const originOf = url => new URL(url, location.href).origin;
   const cdnDefaultAvatar = (i=0)=>`https://cdn.discordapp.com/embed/avatars/${(Number(i)%5)||0}.png`;
   const nowMs = ()=>Date.now();
+  const generateId = ()=>Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
   const protectedRoutes = new Set(['donations','donation']);
   const adminRoutes = new Set(['admin']);
 
-  /* Variabili globali per intervalli LIVE */
+  /* Variabili globali per gestione LIVE */
   let adminUpdateInterval = null;
-  let adminHeartbeatInterval = null;
-  let adminCleanupInterval = null;
-  let adminUpdateCounter = 0;
+  let userHeartbeatInterval = null;
   let isUpdatingAdminPanel = false;
   let lastFullUpdateTime = nowMs();
+  let currentUserData = null;
 
-  /* Video */
-  function tryAutoplay(){
-    const v=$('#nvVideo'); if(!v) return;
-    v.muted=true; v.setAttribute('muted',''); v.autoplay=true; v.setAttribute('autoplay','');
-    v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.load();
-    let tries=0, MAX=6;
-    const go=()=>{tries++; const p=v.play(); if(p&&p.catch) p.catch(()=>{ if(tries<MAX) setTimeout(go, tries*200); });};
-    v.addEventListener('loadeddata', go, { once:true }); go();
-    const kick=()=>{go(); window.removeEventListener('click',kick); window.removeEventListener('touchstart',kick)};
-    window.addEventListener('click',kick,{once:true,passive:true});
-    window.addEventListener('touchstart',kick,{once:true,passive:true});
-  }
-
-  /* ===== TRACKING UTENTI LIVE ===== */
-  function getUsersTracking(){
+  /* ===== SISTEMA DI TRACCIAMENTO CONDIVISO ===== */
+  
+  // Inizializza storage condiviso
+  function initSharedStorage(){
     try{
-      const data = localStorage.getItem(USERS_TRACKING_KEY);
+      // Inizializza solo se non esiste
+      if(!localStorage.getItem(SHARED_USERS_KEY)){
+        localStorage.setItem(SHARED_USERS_KEY, JSON.stringify([]));
+      }
+      if(!localStorage.getItem(SHARED_ACTIVITY_KEY)){
+        localStorage.setItem(SHARED_ACTIVITY_KEY, JSON.stringify({}));
+      }
+      if(!localStorage.getItem(SHARED_SESSIONS_KEY)){
+        localStorage.setItem(SHARED_SESSIONS_KEY, JSON.stringify({}));
+      }
+    }catch(e){
+      console.error('Errore inizializzazione storage:', e);
+    }
+  }
+  
+  // Ottieni tutti gli utenti registrati
+  function getSharedUsers(){
+    try{
+      const data = localStorage.getItem(SHARED_USERS_KEY);
       return data ? JSON.parse(data) : [];
     }catch(e){
       return [];
     }
   }
   
-  function saveUsersTracking(users){
+  // Salva tutti gli utenti
+  function saveSharedUsers(users){
     try{
-      localStorage.setItem(USERS_TRACKING_KEY, JSON.stringify(users));
-      // Salva il timestamp dell'ultimo aggiornamento
-      localStorage.setItem(ADMIN_LAST_UPDATE_KEY, nowMs().toString());
+      localStorage.setItem(SHARED_USERS_KEY, JSON.stringify(users));
     }catch(e){
-      console.error('Errore salvataggio tracking utenti:', e);
+      console.error('Errore salvataggio utenti condivisi:', e);
     }
   }
   
-  function getUserActivity(){
+  // Ottieni attività corrente
+  function getSharedActivity(){
     try{
-      const data = localStorage.getItem(USER_ACTIVITY_KEY);
+      const data = localStorage.getItem(SHARED_ACTIVITY_KEY);
       return data ? JSON.parse(data) : {};
     }catch(e){
       return {};
     }
   }
   
-  function saveUserActivity(activity){
+  // Salva attività corrente
+  function saveSharedActivity(activity){
     try{
-      localStorage.setItem(USER_ACTIVITY_KEY, JSON.stringify(activity));
+      localStorage.setItem(SHARED_ACTIVITY_KEY, JSON.stringify(activity));
     }catch(e){
-      console.error('Errore salvataggio attività utente:', e);
+      console.error('Errore salvataggio attività condivisa:', e);
     }
   }
   
-  function trackUserLogin(user){
-    if(!user || !user.id) return;
+  // Ottieni sessioni
+  function getSharedSessions(){
+    try{
+      const data = localStorage.getItem(SHARED_SESSIONS_KEY);
+      return data ? JSON.parse(data) : {};
+    }catch(e){
+      return {};
+    }
+  }
+  
+  // Salva sessioni
+  function saveSharedSessions(sessions){
+    try{
+      localStorage.setItem(SHARED_SESSIONS_KEY, JSON.stringify(sessions));
+    }catch(e){
+      console.error('Errore salvataggio sessioni condivise:', e);
+    }
+  }
+  
+  // Registra un nuovo utente o aggiorna uno esistente
+  function registerSharedUser(user){
+    if(!user || !user.id) return null;
     
-    const users = getUsersTracking();
+    const users = getSharedUsers();
     const now = nowMs();
     
-    // Cerca se l'utente esiste già
+    // Cerca utente esistente
     const existingUserIndex = users.findIndex(u => u.id === user.id);
     
     const userData = {
@@ -1016,15 +1048,10 @@
       discriminator: user.discriminator || '0',
       firstSeen: existingUserIndex >= 0 ? users[existingUserIndex].firstSeen : now,
       lastSeen: now,
-      loginCount: existingUserIndex >= 0 ? (users[existingUserIndex].loginCount || 0) + 1 : 1,
-      sessions: existingUserIndex >= 0 ? (users[existingUserIndex].sessions || []) : []
+      loginCount: existingUserIndex >= 0 ? users[existingUserIndex].loginCount + 1 : 1,
+      tabId: TAB_ID,
+      sessionId: SESSION_ID
     };
-    
-    // Aggiungi la nuova sessione
-    userData.sessions.push({
-      start: now,
-      end: null // verrà aggiornato al logout/close
-    });
     
     if(existingUserIndex >= 0){
       users[existingUserIndex] = userData;
@@ -1032,161 +1059,198 @@
       users.push(userData);
     }
     
-    saveUsersTracking(users);
-    
-    // Aggiorna attività corrente
-    const activity = getUserActivity();
-    activity[user.id] = {
-      lastActive: now,
-      sessionStart: now,
-      heartbeat: now
-    };
-    saveUserActivity(activity);
-    
-    // Notifica aggiornamento LIVE se admin è connesso
-    if(isAdminUser() && $('.page.active')?.id === 'page-admin'){
-      setTimeout(() => updateAdminPanel(), 100);
-    }
+    saveSharedUsers(users);
+    return userData;
   }
   
-  function updateUserActivity(userId){
+  // Aggiorna attività utente
+  function updateSharedActivity(userId){
     if(!userId) return;
     
     const now = nowMs();
-    const activity = getUserActivity();
+    const activity = getSharedActivity();
     
     if(!activity[userId]){
-      activity[userId] = {
-        lastActive: now,
-        sessionStart: now,
-        heartbeat: now
-      };
-    }else{
-      activity[userId].lastActive = now;
-      activity[userId].heartbeat = now;
+      activity[userId] = {};
     }
     
-    saveUserActivity(activity);
+    activity[userId][TAB_ID] = {
+      lastActive: now,
+      sessionId: SESSION_ID,
+      tabId: TAB_ID,
+      userAgent: navigator.userAgent,
+      timestamp: now
+    };
+    
+    saveSharedActivity(activity);
     
     // Aggiorna anche lastSeen nella lista utenti
-    const users = getUsersTracking();
+    const users = getSharedUsers();
     const userIndex = users.findIndex(u => u.id === userId);
     if(userIndex >= 0){
       users[userIndex].lastSeen = now;
-      saveUsersTracking(users);
+      users[userIndex].tabId = TAB_ID;
+      saveSharedUsers(users);
     }
   }
   
-  function trackUserLogout(userId){
+  // Registra una nuova sessione
+  function registerSharedSession(userId, userData){
+    if(!userId || !userData) return;
+    
+    const sessions = getSharedSessions();
+    const now = nowMs();
+    
+    if(!sessions[userId]){
+      sessions[userId] = [];
+    }
+    
+    // Aggiungi nuova sessione
+    sessions[userId].push({
+      sessionId: SESSION_ID,
+      tabId: TAB_ID,
+      start: now,
+      end: null,
+      userData: {
+        username: userData.username,
+        global_name: userData.global_name,
+        avatar: userData.avatar
+      }
+    });
+    
+    // Mantieni solo le ultime 50 sessioni per utente
+    if(sessions[userId].length > 50){
+      sessions[userId] = sessions[userId].slice(-50);
+    }
+    
+    saveSharedSessions(sessions);
+  }
+  
+  // Termina sessione
+  function endSharedSession(userId){
     if(!userId) return;
     
-    const users = getUsersTracking();
-    const userIndex = users.findIndex(u => u.id === userId);
-    
-    if(userIndex >= 0 && users[userIndex].sessions && users[userIndex].sessions.length > 0){
-      const lastSession = users[userIndex].sessions[users[userIndex].sessions.length - 1];
-      if(lastSession && !lastSession.end){
-        lastSession.end = nowMs();
-        saveUsersTracking(users);
+    const sessions = getSharedSessions();
+    if(sessions[userId]){
+      const userSessions = sessions[userId];
+      const activeSession = userSessions.find(s => s.sessionId === SESSION_ID && !s.end);
+      
+      if(activeSession){
+        activeSession.end = nowMs();
+        saveSharedSessions(sessions);
       }
     }
     
-    // Rimuovi dall'attività corrente
-    const activity = getUserActivity();
-    delete activity[userId];
-    saveUserActivity(activity);
-    
-    // Notifica aggiornamento LIVE se admin è connesso
-    if(isAdminUser() && $('.page.active')?.id === 'page-admin'){
-      setTimeout(() => updateAdminPanel(), 100);
-    }
-  }
-  
-  function cleanupOldActivity(){
-    const activity = getUserActivity();
-    const users = getUsersTracking();
-    const now = nowMs();
-    const twentyFourHoursAgo = now - (24 * 60 * 60 * 1000);
-    
-    // Pulisci attività vecchie
-    Object.keys(activity).forEach(userId => {
-      if(activity[userId].heartbeat < (now - 60000)){ // 1 minuto senza heartbeat
+    // Rimuovi attività per questa tab
+    const activity = getSharedActivity();
+    if(activity[userId] && activity[userId][TAB_ID]){
+      delete activity[userId][TAB_ID];
+      
+      // Se non ci sono più tab attive per questo utente, rimuovi completamente
+      if(Object.keys(activity[userId]).length === 0){
         delete activity[userId];
       }
-    });
-    
-    saveUserActivity(activity);
-    
-    // Pulisci sessioni vecchie (mantieni solo ultimi 7 giorni)
-    users.forEach(user => {
-      if(user.sessions){
-        user.sessions = user.sessions.filter(session => 
-          session.end === null || (now - session.end) < (7 * 24 * 60 * 60 * 1000)
-        );
-      }
-    });
-    
-    saveUsersTracking(users);
-  }
-  
-  function heartbeatUserActivity(){
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    if(user && user.id){
-      updateUserActivity(user.id);
+      
+      saveSharedActivity(activity);
     }
   }
   
-  function getAdminStats(){
-    const users = getUsersTracking();
-    const activity = getUserActivity();
+  // Pulisci attività vecchie
+  function cleanupOldActivity(){
     const now = nowMs();
-    const twentyFourHoursAgo = now - (24 * 60 * 60 * 1000);
-    const fiveMinutesAgo = now - (5 * 60 * 1000);
-    const oneMinuteAgo = now - (60 * 1000);
+    const activity = getSharedActivity();
+    let changed = false;
+    
+    // Pulisci attività più vecchie di 1 minuto
+    for(const userId in activity){
+      for(const tabId in activity[userId]){
+        if(now - activity[userId][tabId].lastActive > 60000){ // 1 minuto
+          delete activity[userId][tabId];
+          changed = true;
+        }
+      }
+      
+      // Se l'utente non ha più attività, rimuovilo
+      if(Object.keys(activity[userId]).length === 0){
+        delete activity[userId];
+        changed = true;
+      }
+    }
+    
+    if(changed){
+      saveSharedActivity(activity);
+    }
+    
+    // Pulisci sessioni vecchie (più di 24 ore)
+    const sessions = getSharedSessions();
+    for(const userId in sessions){
+      sessions[userId] = sessions[userId].filter(session => 
+        !session.end || (now - session.end) < (24 * 60 * 60 * 1000)
+      );
+      
+      if(sessions[userId].length === 0){
+        delete sessions[userId];
+      }
+    }
+    
+    saveSharedSessions(sessions);
+  }
+  
+  // Ottieni statistiche aggiornate
+  function getAdminStats(){
+    const users = getSharedUsers();
+    const activity = getSharedActivity();
+    const now = nowMs();
+    
+    // Utenti totali unici
+    const totalUsers = users.length;
     
     // Utenti attivi nelle ultime 24 ore
-    const active24h = users.filter(user => user.lastSeen >= twentyFourHoursAgo).length;
-    
-    // Utenti online ora (attivi negli ultimi 5 minuti)
-    const onlineNow = Object.keys(activity).filter(userId => 
-      activity[userId] && activity[userId].lastActive >= fiveMinutesAgo
+    const active24h = users.filter(user => 
+      (now - user.lastSeen) < (24 * 60 * 60 * 1000)
     ).length;
     
-    // Utenti attivi in questo momento (ultimo minuto)
-    const activeNow = Object.keys(activity).filter(userId => 
-      activity[userId] && activity[userId].lastActive >= oneMinuteAgo
-    ).length;
+    // Utenti online ora (attività negli ultimi 5 minuti)
+    let onlineNow = 0;
+    const onlineUsers = [];
+    
+    for(const userId in activity){
+      const userActivities = Object.values(activity[userId]);
+      const mostRecent = Math.max(...userActivities.map(a => a.lastActive));
+      
+      if(now - mostRecent < USER_ONLINE_THRESHOLD){
+        onlineNow++;
+        onlineUsers.push(userId);
+      }
+    }
     
     // Calcola tempo medio sessione
+    const sessions = getSharedSessions();
     let totalSessionTime = 0;
     let totalSessions = 0;
-    let activeSessions = 0;
     
-    users.forEach(user => {
-      if(user.sessions){
-        user.sessions.forEach(session => {
-          if(session.start && session.end){
-            totalSessionTime += (session.end - session.start);
-            totalSessions++;
-          }else if(session.start && !session.end){
-            // Sessione ancora attiva
-            totalSessionTime += (now - session.start);
-            totalSessions++;
-            activeSessions++;
-          }
-        });
-      }
-    });
+    for(const userId in sessions){
+      sessions[userId].forEach(session => {
+        if(session.start && session.end){
+          totalSessionTime += (session.end - session.start);
+          totalSessions++;
+        }else if(session.start && !session.end){
+          // Sessione ancora attiva
+          totalSessionTime += (now - session.start);
+          totalSessions++;
+        }
+      });
+    }
     
-    const avgSessionTime = totalSessions > 0 ? Math.round(totalSessionTime / totalSessions / 60000) : 0;
+    const avgSessionTime = totalSessions > 0 ? 
+      Math.round(totalSessionTime / totalSessions / 60000) : 0;
     
     return {
-      totalUsers: users.length,
+      totalUsers,
       active24h,
       onlineNow,
-      activeNow,
+      onlineUsers,
       avgSessionTime,
-      activeSessions,
       totalSessions
     };
   }
@@ -1205,13 +1269,14 @@
   function clearSession(){
     const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     if(user && user.id){
-      trackUserLogout(user.id);
+      endSharedSession(user.id);
     }
     
     localStorage.removeItem(OAUTH_TOKEN_KEY);
     localStorage.removeItem(OAUTH_USER_KEY);
     localStorage.removeItem(OAUTH_EXP_KEY);
     sessionStorage.removeItem('oauth_state');
+    currentUserData = null;
   }
   
   function formatDiscordName(user){
@@ -1223,15 +1288,11 @@
   function getAvatarUrl(user){
     if(!user) return null;
     
-    // Se l'utente ha un avatar, costruisci l'URL completo
     if(user.avatar && user.id){
-      // Determina il formato ottimale (gif se è animato, png altrimenti)
       const format = user.avatar.startsWith('a_') ? 'gif' : 'png';
-      // URL dell'avatar con dimensioni 128px per qualità ottimale
       return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${format}?size=128`;
     }
     
-    // Avatar di default basato sul discriminator
     const discriminator = parseInt(user.discriminator || '0', 10);
     return cdnDefaultAvatar(discriminator);
   }
@@ -1241,7 +1302,6 @@
     const topIcon=$('#topAvatarIcon');
     
     if(url){
-      // Precarica l'immagine per evitare flickering
       const img = new Image();
       img.src = url;
       img.onload = () => {
@@ -1250,7 +1310,6 @@
         topIcon.style.display = 'none';
       };
       img.onerror = () => {
-        // Fallback su avatar default se l'URL fallisce
         topImg.src = cdnDefaultAvatar();
         topImg.style.display = 'block';
         topIcon.style.display = 'none';
@@ -1298,37 +1357,36 @@
     const isIn = !!(token && user);
     const isAdmin = isAdminUser();
     
-    // Mostra/nascondi elementi navbar
     $('#navDonations').hidden = !isIn;
     $('#navAdmin').hidden = !isAdmin;
     $('#btnDiscordLogin').hidden = isIn;
     $('#btnLogout').hidden = !isIn;
     
     if(isIn){
-      // Se loggato, mostra avatar e nome
       setUserHeader(user);
+      currentUserData = user;
       
-      // Se è admin, gestisci aggiornamenti LIVE
+      // Aggiorna attività utente
+      updateSharedActivity(user.id);
+      
       if(isAdmin){
-        startLiveUpdates();
+        startAdminUpdates();
         if($('.page.active')?.id === 'page-admin'){
           updateAdminPanel();
         }
       }
     } else {
-      // Se non loggato, reset
       setAvatar(null);
       const n = $('#topUsername');
       n.textContent = '';
       n.hidden = true;
       $('#topAvatar').title = 'Utente';
+      currentUserData = null;
       
-      // Ferma aggiornamenti LIVE se admin si sloggia
       if(isAdmin){
-        stopLiveUpdates();
+        stopAdminUpdates();
       }
       
-      // Reindirizza se su pagina protetta
       const active = document.querySelector('.page.active')?.id?.replace('page-','');
       if(protectedRoutes.has(active) || (adminRoutes.has(active) && !isAdmin)){
         showPage('home');
@@ -1420,7 +1478,6 @@
     
     history.replaceState(null, '', location.pathname + location.search);
     
-    // Se aperto in popup, invia il token alla finestra principale
     if(window.opener && typeof window.opener.postMessage === 'function'){
       const payload = {
         type: 'discord_oauth',
@@ -1438,7 +1495,6 @@
       return true;
     }
     
-    // Se aperto direttamente
     if(params.get('error')){
       toast('Accesso Discord annullato.');
       return true;
@@ -1481,7 +1537,6 @@
     localStorage.setItem(OAUTH_TOKEN_KEY, access_token);
     localStorage.setItem(OAUTH_EXP_KEY, String(expiresAt));
     
-    // Recupera i dati utente da Discord
     const user = await fetchWithTimeoutRetry(
       'https://discord.com/api/users/@me',
       {
@@ -1495,11 +1550,18 @@
     
     localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
     
-    // Traccia il login dell'utente
-    trackUserLogin(user);
+    // Registra utente nel sistema condiviso
+    const registeredUser = registerSharedUser(user);
+    if(registeredUser){
+      registerSharedSession(user.id, registeredUser);
+      updateSharedActivity(user.id);
+    }
     
     updateAuthUI();
     toast(`Benvenuto ${formatDiscordName(user)}!`);
+    
+    // Avvia heartbeat per questo utente
+    startUserHeartbeat();
   }
   
   async function fetchWithTimeoutRetry(url, options={}, timeoutMs=6000, retries=1){
@@ -1559,15 +1621,15 @@
     const now = nowMs();
     const diff = now - timestamp;
     
-    if(diff < 1000){ // meno di 1 secondo
+    if(diff < 1000){
       return 'Adesso';
-    }else if(diff < 60000){ // meno di 1 minuto
+    }else if(diff < 60000){
       const secs = Math.floor(diff / 1000);
       return `${secs} sec fa`;
-    }else if(diff < 3600000){ // meno di 1 ora
+    }else if(diff < 3600000){
       const mins = Math.floor(diff / 60000);
       return `${mins} min fa`;
-    }else if(diff < 86400000){ // meno di 1 giorno
+    }else if(diff < 86400000){
       const hours = Math.floor(diff / 3600000);
       return `${hours} ore fa`;
     }else{
@@ -1606,19 +1668,19 @@
     try{
       cleanupOldActivity();
       const stats = getAdminStats();
-      const users = getUsersTracking();
-      const activity = getUserActivity();
+      const users = getSharedUsers();
+      const activity = getSharedActivity();
       const now = nowMs();
       
       lastFullUpdateTime = now;
       
-      // Aggiorna statistiche con timestamp
+      // Aggiorna statistiche
       $('#adminTotalUsers').textContent = stats.totalUsers;
       $('#adminActiveUsers').textContent = stats.active24h;
       $('#adminOnlineNow').textContent = stats.onlineNow;
       $('#adminAvgTime').textContent = `${stats.avgSessionTime}m`;
       
-      // Aggiorna timestamp statistiche
+      // Aggiorna timestamp
       $('#adminTotalTime').textContent = formatDate(now);
       $('#adminActiveTime').textContent = formatDate(now);
       $('#adminOnlineTime').textContent = formatDate(now);
@@ -1638,15 +1700,21 @@
         usersList.style.display = 'grid';
         $('#adminUsersCount').textContent = `(${users.length} utenti)`;
         
-        // Ordina utenti per ultimo accesso (più recente prima)
+        // Ordina utenti per ultimo accesso
         const sortedUsers = [...users].sort((a, b) => b.lastSeen - a.lastSeen);
         
         usersList.innerHTML = sortedUsers.map(user => {
-          const isOnline = activity[user.id] && 
-            (now - activity[user.id].lastActive) < (5 * 60 * 1000); // 5 minuti
+          const userActivity = activity[user.id] ? Object.values(activity[user.id]) : [];
+          const mostRecentActivity = userActivity.length > 0 ? 
+            Math.max(...userActivity.map(a => a.lastActive)) : 0;
           
-          const isActiveNow = activity[user.id] && 
-            (now - activity[user.id].lastActive) < (60 * 1000); // 1 minuto
+          const isOnline = mostRecentActivity && 
+            (now - mostRecentActivity) < USER_ONLINE_THRESHOLD;
+          
+          const isActiveNow = mostRecentActivity && 
+            (now - mostRecentActivity) < USER_ACTIVE_THRESHOLD;
+          
+          const activeTabs = userActivity.length;
           
           const avatarUrl = user.avatar ? 
             `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_')?'gif':'png'}?size=80` :
@@ -1657,7 +1725,9 @@
           const fullName = username + discriminator;
           
           const lastSeenText = isOnline ? 
-            (isActiveNow ? 'ATTIVO ORA' : `Online ${formatTimeAgo(user.lastSeen)}`) : 
+            (isActiveNow ? 
+              `ATTIVO ORA (${activeTabs} tab)` : 
+              `Online ${formatTimeAgo(mostRecentActivity)} (${activeTabs} tab)`) : 
             `Offline ${formatTimeAgo(user.lastSeen)}`;
           
           return `
@@ -1668,7 +1738,7 @@
                 <div class="admin-user-name">${fullName}</div>
                 <div class="admin-user-id">ID: ${user.id}</div>
                 <div class="admin-user-status ${isOnline ? 'status-online' : 'status-offline'}">
-                  ${isOnline ? 'ONLINE' : 'OFFLINE'}
+                  ${isOnline ? 'ONLINE' : 'OFFLINE'} ${activeTabs > 1 ? `(${activeTabs})` : ''}
                 </div>
                 <div class="admin-user-last-seen">
                   ${lastSeenText}<br>
@@ -1683,67 +1753,66 @@
       // Aggiorna informazioni sistema
       $('#adminFullUpdateTime').textContent = `${formatDate(now)} (${formatTimeAgo(now)})`;
       $('#adminNextUpdate').textContent = formatTimeUntil(now + ADMIN_UPDATE_INTERVAL);
-      $('#adminUpdateStatus').textContent = `Aggiornato #${++adminUpdateCounter}`;
+      $('#adminUpdateStatus').textContent = `Aggiornato`;
       
-      // Calcola dimensione dati
-      let totalSize = 0;
-      for(let key in localStorage){
-        if(localStorage.hasOwnProperty(key)){
-          totalSize += (localStorage[key].length * 2); // UTF-16 = 2 byte per carattere
-        }
-      }
-      const sizeKB = (totalSize / 1024).toFixed(2);
-      $('#adminDataSize').textContent = `${sizeKB} KB`;
+      // Aggiorna stato sistema
+      $('#adminSystemStatus').textContent = `Attivo (${stats.onlineNow} online)`;
       
     }catch(error){
       console.error('Errore aggiornamento pannello admin:', error);
-      $('#adminUpdateStatus').textContent = 'Errore aggiornamento';
+      $('#adminUpdateStatus').textContent = 'Errore';
+      $('#adminSystemStatus').textContent = 'Errore connessione';
     }finally{
       isUpdatingAdminPanel = false;
       if(btn) btn.classList.remove('refreshing');
     }
   }
   
-  function startLiveUpdates(){
-    // Ferma eventuali aggiornamenti precedenti
-    stopLiveUpdates();
+  // Heartbeat per utente corrente
+  function userHeartbeat(){
+    if(currentUserData && currentUserData.id){
+      updateSharedActivity(currentUserData.id);
+    }
+  }
+  
+  // Avvia heartbeat utente
+  function startUserHeartbeat(){
+    if(userHeartbeatInterval){
+      clearInterval(userHeartbeatInterval);
+    }
     
-    // Avvia heartbeat per utente corrente
-    heartbeatUserActivity();
+    userHeartbeatInterval = setInterval(() => {
+      userHeartbeat();
+    }, USER_HEARTBEAT_INTERVAL);
     
-    // Avvia intervalli LIVE
+    // Esegui immediatamente
+    userHeartbeat();
+  }
+  
+  // Avvia aggiornamenti admin
+  function startAdminUpdates(){
+    if(adminUpdateInterval){
+      clearInterval(adminUpdateInterval);
+    }
+    
     adminUpdateInterval = setInterval(() => {
       if($('.page.active')?.id === 'page-admin' && isAdminUser()){
         updateAdminPanel();
       }
     }, ADMIN_UPDATE_INTERVAL);
     
-    adminHeartbeatInterval = setInterval(() => {
-      heartbeatUserActivity();
-    }, ADMIN_HEARTBEAT_INTERVAL);
-    
-    adminCleanupInterval = setInterval(() => {
-      cleanupOldActivity();
-    }, ADMIN_CLEANUP_INTERVAL);
-    
-    console.log('Aggiornamenti LIVE avviati per admin');
+    // Esegui immediatamente
+    if($('.page.active')?.id === 'page-admin'){
+      updateAdminPanel();
+    }
   }
   
-  function stopLiveUpdates(){
+  // Ferma aggiornamenti admin
+  function stopAdminUpdates(){
     if(adminUpdateInterval){
       clearInterval(adminUpdateInterval);
       adminUpdateInterval = null;
     }
-    if(adminHeartbeatInterval){
-      clearInterval(adminHeartbeatInterval);
-      adminHeartbeatInterval = null;
-    }
-    if(adminCleanupInterval){
-      clearInterval(adminCleanupInterval);
-      adminCleanupInterval = null;
-    }
-    
-    console.log('Aggiornamenti LIVE fermati');
   }
   
   // Gestione pulsante aggiornamento manuale
@@ -1775,14 +1844,9 @@
     if(id === 'home') tryAutoplay();
     if(id === 'admin' && isAdminUser()){
       updateAdminPanel();
-      startLiveUpdates();
+      startAdminUpdates();
     }else if(isAdminUser()){
-      // Se admin ma non nella pagina admin, mantieni solo heartbeat
-      stopLiveUpdates();
-      // Mantieni heartbeat per attività utente
-      adminHeartbeatInterval = setInterval(() => {
-        heartbeatUserActivity();
-      }, ADMIN_HEARTBEAT_INTERVAL);
+      stopAdminUpdates();
     }
   }
   
@@ -1888,7 +1952,6 @@
       let online = inv.approxOnline;
       let total = inv.approxTotal;
       
-      // Prova a recuperare la presenza dal widget (più precisa)
       try{
         const w = await getWidgetPresence(inv.guildId);
         if(w && typeof w.presence === 'number'){
@@ -1908,11 +1971,14 @@
   let countsTimer = null;
   function startCountsAutoRefresh(){
     if(countsTimer) clearInterval(countsTimer);
-    countsTimer = setInterval(loadCountsOnce, 30000); // Aggiorna ogni 30 secondi
+    countsTimer = setInterval(loadCountsOnce, 30000);
   }
 
-  /* INIT */
+  /* ===== INIZIALIZZAZIONE ===== */
   window.addEventListener('load', async () => {
+    // Inizializza storage condiviso
+    initSharedStorage();
+    
     // Gestisci redirect OAuth
     await handleOAuthRedirectFragment();
     
@@ -1925,52 +1991,62 @@
     await loadCountsOnce();
     startCountsAutoRefresh();
     
-    // Avvia heartbeat per utente corrente
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    if(user && user.id){
-      updateUserActivity(user.id);
+    // Avvia heartbeat se utente loggato
+    if(isLoggedIn()){
+      const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+      if(user && user.id){
+        currentUserData = user;
+        startUserHeartbeat();
+      }
     }
     
-    // Se admin, avvia aggiornamenti minimi anche se non in pagina admin
+    // Se admin, avvia aggiornamenti
     if(isAdminUser()){
-      adminHeartbeatInterval = setInterval(() => {
-        heartbeatUserActivity();
-      }, ADMIN_HEARTBEAT_INTERVAL);
+      startAdminUpdates();
     }
   });
   
   window.addEventListener('focus', () => {
     scheduleAutoLogout();
+    
     // Aggiorna attività quando la finestra diventa attiva
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    if(user && user.id){
-      updateUserActivity(user.id);
+    if(currentUserData && currentUserData.id){
+      updateSharedActivity(currentUserData.id);
     }
   });
   
   // Traccia quando l'utente chiude la pagina
   window.addEventListener('beforeunload', () => {
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    if(user && user.id){
-      trackUserLogout(user.id);
+    if(currentUserData && currentUserData.id){
+      endSharedSession(currentUserData.id);
     }
-    stopLiveUpdates();
+    stopAdminUpdates();
+    
+    if(userHeartbeatInterval){
+      clearInterval(userHeartbeatInterval);
+      userHeartbeatInterval = null;
+    }
   });
   
-  // Aggiorna attività quando l'utente interagisce con la pagina
+  // Aggiorna attività quando l'utente interagisce
   document.addEventListener('click', () => {
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    if(user && user.id){
-      updateUserActivity(user.id);
+    if(currentUserData && currentUserData.id){
+      updateSharedActivity(currentUserData.id);
     }
   });
   
   document.addEventListener('keydown', () => {
-    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
-    if(user && user.id){
-      updateUserActivity(user.id);
+    if(currentUserData && currentUserData.id){
+      updateSharedActivity(currentUserData.id);
     }
   });
+  
+  // Aggiorna attività periodicamente anche se nessuna interazione
+  setInterval(() => {
+    if(currentUserData && currentUserData.id){
+      updateSharedActivity(currentUserData.id);
+    }
+  }, 30000);
 
   // Bind login/logout
   $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);

@@ -204,12 +204,165 @@
   .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
   .page.active{display:block}
 
+  /* ===== PAGINA ADMIN ===== */
+  #page-admin{background:#0a0f1a}
+  
+  .admin-container{
+    max-width:1200px;
+    margin:0 auto;
+    padding:20px;
+  }
+  
+  .admin-stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+    gap:20px;
+    margin-bottom:40px;
+  }
+  
+  .admin-stat-card{
+    background:#121a2a;
+    border:1px solid #2a3a61;
+    border-radius:14px;
+    padding:24px;
+    text-align:center;
+    box-shadow:var(--shadow);
+  }
+  
+  .admin-stat-value{
+    font-size:3rem;
+    font-weight:900;
+    color:#58a6ff;
+    margin:10px 0;
+  }
+  
+  .admin-stat-label{
+    font-size:1.1rem;
+    color:#9daccc;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+  }
+  
+  .admin-users-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:20px;
+    margin-top:30px;
+  }
+  
+  .admin-user-card{
+    background:#121a2a;
+    border:1px solid #2a3a61;
+    border-radius:14px;
+    padding:20px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    transition:all .3s ease;
+  }
+  
+  .admin-user-card:hover{
+    border-color:#58a6ff;
+    transform:translateY(-3px);
+  }
+  
+  .admin-user-avatar{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #58a6ff;
+  }
+  
+  .admin-user-info{
+    flex:1;
+  }
+  
+  .admin-user-name{
+    font-size:1.2rem;
+    font-weight:800;
+    color:#eaf0ff;
+    margin-bottom:4px;
+  }
+  
+  .admin-user-id{
+    font-size:.85rem;
+    color:#9daccc;
+    font-family:monospace;
+  }
+  
+  .admin-user-status{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+  
+  .status-online{
+    background:rgba(126, 231, 135, 0.15);
+    color:#7ee787;
+    border:1px solid #7ee787;
+  }
+  
+  .status-offline{
+    background:rgba(157, 172, 204, 0.15);
+    color:#9daccc;
+    border:1px solid #9daccc;
+  }
+  
+  .admin-user-last-seen{
+    font-size:.8rem;
+    color:#9daccc;
+    margin-top:4px;
+  }
+  
+  .admin-section-title{
+    font-size:1.8rem;
+    color:#eaf0ff;
+    margin:40px 0 20px;
+    padding-bottom:10px;
+    border-bottom:1px solid #2a3a61;
+  }
+  
+  .admin-empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:#9daccc;
+  }
+  
+  .admin-empty-state i{
+    font-size:4rem;
+    margin-bottom:20px;
+    opacity:.5;
+  }
+  
+  /* Pulsante Admin speciale */
+  .nav-link.admin-link{
+    background:linear-gradient(45deg, #ff6b6b, #ffa500);
+    color:#fff;
+    border:1px solid #ffa500;
+  }
+  
+  .nav-link.admin-link:hover{
+    background:linear-gradient(45deg, #ff5252, #ff8c00);
+    color:#fff;
+  }
+
   /* Responsive */
   @media (max-width:600px){
     .title-roman{font-size:2rem; margin-bottom:22px}
     .discord-numbers{
       width:100%;
       justify-content:space-around;
+    }
+    .admin-users-grid{
+      grid-template-columns:1fr;
+    }
+    .admin-stat-card{
+      padding:18px;
     }
   }
   </style>
@@ -223,6 +376,9 @@
       <a href="#" class="nav-link active" data-route="home">Home</a>
       <a href="#" class="nav-link" data-route="staff">Staff</a>
       <a href="#" class="nav-link" id="navDonations" data-route="donations" hidden>Donazioni</a>
+      <a href="#" class="nav-link" id="navAdmin" data-route="admin" hidden>
+        <i class="fa-solid fa-shield-halved"></i> Admin
+      </a>
       <a href="#" class="nav-link" id="btnDiscordLogin" title="Login con Discord">
         Login <i class="fa-brands fa-discord" aria-hidden="true"></i>
       </a>
@@ -520,6 +676,72 @@
         </div>
       </div>
     </section>
+
+    <!-- PAGINA ADMIN (visibile solo all'utente specifico) -->
+    <section id="page-admin" class="page" data-page>
+      <div class="admin-container">
+        <h2 class="title-roman">Pannello Amministratore</h2>
+        
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <i class="fa-solid fa-users" style="font-size:2rem;color:#58a6ff"></i>
+            <div class="admin-stat-value" id="adminTotalUsers">0</div>
+            <div class="admin-stat-label">Utenti Totali</div>
+          </div>
+          
+          <div class="admin-stat-card">
+            <i class="fa-solid fa-user-clock" style="font-size:2rem;color:#7ee787"></i>
+            <div class="admin-stat-value" id="adminActiveUsers">0</div>
+            <div class="admin-stat-label">Utenti Attivi (24h)</div>
+          </div>
+          
+          <div class="admin-stat-card">
+            <i class="fa-solid fa-user-check" style="font-size:2rem;color:#ffa500"></i>
+            <div class="admin-stat-value" id="adminOnlineNow">0</div>
+            <div class="admin-stat-label">Online Ora</div>
+          </div>
+          
+          <div class="admin-stat-card">
+            <i class="fa-solid fa-clock" style="font-size:2rem;color:#a78bfa"></i>
+            <div class="admin-stat-value" id="adminAvgTime">0m</div>
+            <div class="admin-stat-label">Tempo Medio Sessione</div>
+          </div>
+        </div>
+        
+        <h3 class="admin-section-title">Utenti Collegati Recentemente</h3>
+        
+        <div id="adminUsersList" class="admin-users-grid">
+          <!-- Gli utenti verranno caricati qui dinamicamente -->
+        </div>
+        
+        <div id="adminNoUsers" class="admin-empty-state" style="display:none;">
+          <i class="fa-solid fa-user-slash"></i>
+          <p>Nessun utente ha ancora effettuato il login.</p>
+          <p style="font-size:.9rem;margin-top:10px;">Gli utenti appariranno qui dopo aver effettuato il login.</p>
+        </div>
+        
+        <div style="margin-top:40px;padding:20px;background:#121a2a;border-radius:14px;border:1px solid #2a3a61;">
+          <h3 style="color:#eaf0ff;margin-bottom:15px;font-size:1.4rem;">
+            <i class="fa-solid fa-info-circle" style="color:#58a6ff;margin-right:8px;"></i>
+            Informazioni Sistema
+          </h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:15px;">
+            <div>
+              <div style="color:#9daccc;font-size:.9rem;">ID Admin Autorizzato</div>
+              <div style="color:#eaf0ff;font-family:monospace;font-size:1.1rem;">640478852308664360</div>
+            </div>
+            <div>
+              <div style="color:#9daccc;font-size:.9rem;">Ultimo Aggiornamento</div>
+              <div style="color:#eaf0ff;font-size:1.1rem;" id="adminLastUpdate">—</div>
+            </div>
+            <div>
+              <div style="color:#9daccc;font-size:.9rem;">Dati Salvati</div>
+              <div style="color:#eaf0ff;font-size:1.1rem;" id="adminDataSize">0 KB</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -550,11 +772,18 @@
   const REDIRECT_URI = 'https://alestv05.github.io/sito/';
   const DISCORD_INVITE_URL = 'https://discord.gg/EubyJqDGwU';
   const INVITE_CODE = DISCORD_INVITE_URL.split('/').filter(Boolean).pop();
+  
+  // ID dell'admin autorizzato (TUO ID DISCORD)
+  const ADMIN_USER_ID = '640478852308664360';
 
   /* Storage keys */
   const OAUTH_TOKEN_KEY = 'nr_discord_token_v1';
   const OAUTH_USER_KEY  = 'nr_discord_user_v1';
   const OAUTH_EXP_KEY   = 'nr_discord_expires_at_v1';
+  
+  /* Storage per tracciare gli utenti */
+  const USERS_TRACKING_KEY = 'nr_users_tracking_v1';
+  const USER_ACTIVITY_KEY = 'nr_user_activity_v1';
 
   /* Utils */
   const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
@@ -566,6 +795,7 @@
   const nowMs = ()=>Date.now();
 
   const protectedRoutes = new Set(['donations','donation']);
+  const adminRoutes = new Set(['admin']);
 
   /* Video */
   function tryAutoplay(){
@@ -580,6 +810,171 @@
     window.addEventListener('touchstart',kick,{once:true,passive:true});
   }
 
+  /* ===== TRACKING UTENTI ===== */
+  function getUsersTracking(){
+    try{
+      const data = localStorage.getItem(USERS_TRACKING_KEY);
+      return data ? JSON.parse(data) : [];
+    }catch(e){
+      return [];
+    }
+  }
+  
+  function saveUsersTracking(users){
+    try{
+      localStorage.setItem(USERS_TRACKING_KEY, JSON.stringify(users));
+    }catch(e){
+      console.error('Errore salvataggio tracking utenti:', e);
+    }
+  }
+  
+  function getUserActivity(){
+    try{
+      const data = localStorage.getItem(USER_ACTIVITY_KEY);
+      return data ? JSON.parse(data) : {};
+    }catch(e){
+      return {};
+    }
+  }
+  
+  function saveUserActivity(activity){
+    try{
+      localStorage.setItem(USER_ACTIVITY_KEY, JSON.stringify(activity));
+    }catch(e){
+      console.error('Errore salvataggio attività utente:', e);
+    }
+  }
+  
+  function trackUserLogin(user){
+    if(!user || !user.id) return;
+    
+    const users = getUsersTracking();
+    const now = nowMs();
+    
+    // Cerca se l'utente esiste già
+    const existingUserIndex = users.findIndex(u => u.id === user.id);
+    
+    const userData = {
+      id: user.id,
+      username: user.username || '',
+      global_name: user.global_name || user.username || '',
+      avatar: user.avatar || null,
+      discriminator: user.discriminator || '0',
+      firstSeen: existingUserIndex >= 0 ? users[existingUserIndex].firstSeen : now,
+      lastSeen: now,
+      loginCount: existingUserIndex >= 0 ? (users[existingUserIndex].loginCount || 0) + 1 : 1
+    };
+    
+    if(existingUserIndex >= 0){
+      users[existingUserIndex] = userData;
+    }else{
+      users.push(userData);
+    }
+    
+    saveUsersTracking(users);
+    
+    // Aggiorna attività corrente
+    const activity = getUserActivity();
+    activity[user.id] = {
+      lastActive: now,
+      sessionStart: now
+    };
+    saveUserActivity(activity);
+    
+    // Salva anche l'ultima sessione per statistiche
+    if(existingUserIndex >= 0){
+      if(!users[existingUserIndex].sessions) users[existingUserIndex].sessions = [];
+      users[existingUserIndex].sessions.push({
+        start: now,
+        end: null // verrà aggiornato al logout/close
+      });
+      saveUsersTracking(users);
+    }
+  }
+  
+  function updateUserActivity(userId){
+    if(!userId) return;
+    
+    const activity = getUserActivity();
+    if(activity[userId]){
+      activity[userId].lastActive = nowMs();
+      saveUserActivity(activity);
+    }
+  }
+  
+  function trackUserLogout(userId){
+    if(!userId) return;
+    
+    const users = getUsersTracking();
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if(userIndex >= 0 && users[userIndex].sessions && users[userIndex].sessions.length > 0){
+      const lastSession = users[userIndex].sessions[users[userIndex].sessions.length - 1];
+      if(lastSession && !lastSession.end){
+        lastSession.end = nowMs();
+        saveUsersTracking(users);
+      }
+    }
+    
+    // Rimuovi dall'attività corrente
+    const activity = getUserActivity();
+    delete activity[userId];
+    saveUserActivity(activity);
+  }
+  
+  function cleanupOldActivity(){
+    const activity = getUserActivity();
+    const twentyFourHoursAgo = nowMs() - (24 * 60 * 60 * 1000);
+    
+    Object.keys(activity).forEach(userId => {
+      if(activity[userId].lastActive < twentyFourHoursAgo){
+        delete activity[userId];
+      }
+    });
+    
+    saveUserActivity(activity);
+  }
+  
+  function getAdminStats(){
+    const users = getUsersTracking();
+    const activity = getUserActivity();
+    const now = nowMs();
+    const twentyFourHoursAgo = now - (24 * 60 * 60 * 1000);
+    const fiveMinutesAgo = now - (5 * 60 * 1000);
+    
+    // Utenti attivi nelle ultime 24 ore
+    const active24h = users.filter(user => user.lastSeen >= twentyFourHoursAgo).length;
+    
+    // Utenti online ora (attivi negli ultimi 5 minuti)
+    const onlineNow = Object.keys(activity).filter(userId => 
+      activity[userId] && activity[userId].lastActive >= fiveMinutesAgo
+    ).length;
+    
+    // Calcola tempo medio sessione
+    let totalSessionTime = 0;
+    let totalSessions = 0;
+    
+    users.forEach(user => {
+      if(user.sessions){
+        user.sessions.forEach(session => {
+          if(session.start && session.end){
+            totalSessionTime += (session.end - session.start);
+            totalSessions++;
+          }
+        });
+      }
+    });
+    
+    const avgSessionTime = totalSessions > 0 ? Math.round(totalSessionTime / totalSessions / 60000) : 0;
+    
+    return {
+      totalUsers: users.length,
+      active24h,
+      onlineNow,
+      avgSessionTime
+    };
+  }
+
   /* ===== LOGIN CON AVATAR ===== */
   const getToken = ()=>{
     const token = localStorage.getItem(OAUTH_TOKEN_KEY);
@@ -592,6 +987,11 @@
   const isLoggedIn = ()=>!!(getToken() && localStorage.getItem(OAUTH_USER_KEY));
   
   function clearSession(){
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+    if(user && user.id){
+      trackUserLogout(user.id);
+    }
+    
     localStorage.removeItem(OAUTH_TOKEN_KEY);
     localStorage.removeItem(OAUTH_USER_KEY);
     localStorage.removeItem(OAUTH_EXP_KEY);
@@ -671,19 +1071,31 @@
     }
   }
   
+  function isAdminUser(){
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+    return user && user.id === ADMIN_USER_ID;
+  }
+  
   function updateAuthUI(){
     const token = getToken();
     const user  = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
     const isIn = !!(token && user);
+    const isAdmin = isAdminUser();
     
     // Mostra/nascondi elementi navbar
     $('#navDonations').hidden = !isIn;
+    $('#navAdmin').hidden = !isAdmin;
     $('#btnDiscordLogin').hidden = isIn;
     $('#btnLogout').hidden = !isIn;
     
     if(isIn){
       // Se loggato, mostra avatar e nome
       setUserHeader(user);
+      
+      // Se è admin, aggiorna il pannello admin
+      if(isAdmin){
+        updateAdminPanel();
+      }
     } else {
       // Se non loggato, reset
       setAvatar(null);
@@ -694,9 +1106,13 @@
       
       // Reindirizza se su pagina protetta
       const active = document.querySelector('.page.active')?.id?.replace('page-','');
-      if(protectedRoutes.has(active)){
+      if(protectedRoutes.has(active) || (adminRoutes.has(active) && !isAdmin)){
         showPage('home');
-        toast('Effettua il login per accedere a questa sezione.');
+        if(adminRoutes.has(active)){
+          toast('Accesso riservato all\'amministratore.');
+        }else{
+          toast('Effettua il login per accedere a questa sezione.');
+        }
       }
     }
   }
@@ -855,6 +1271,9 @@
     
     localStorage.setItem(OAUTH_USER_KEY, JSON.stringify(user));
     
+    // Traccia il login dell'utente
+    trackUserLogin(user);
+    
     updateAuthUI();
     toast(`Benvenuto ${formatDiscordName(user)}!`);
   }
@@ -911,10 +1330,132 @@
     toast(name ? `Arrivederci ${name}!` : 'Logout effettuato');
   }
 
+  /* ===== PANNELO ADMIN ===== */
+  function formatTimeAgo(timestamp){
+    const now = nowMs();
+    const diff = now - timestamp;
+    
+    if(diff < 60000){ // meno di 1 minuto
+      return 'Ora';
+    }else if(diff < 3600000){ // meno di 1 ora
+      const mins = Math.floor(diff / 60000);
+      return `${mins} min fa`;
+    }else if(diff < 86400000){ // meno di 1 giorno
+      const hours = Math.floor(diff / 3600000);
+      return `${hours} ore fa`;
+    }else{
+      const days = Math.floor(diff / 86400000);
+      return `${days} giorni fa`;
+    }
+  }
+  
+  function formatDate(timestamp){
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('it-IT', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+  
+  function updateAdminPanel(){
+    if(!isAdminUser()) return;
+    
+    cleanupOldActivity();
+    const stats = getAdminStats();
+    const users = getUsersTracking();
+    const activity = getUserActivity();
+    
+    // Aggiorna statistiche
+    $('#adminTotalUsers').textContent = stats.totalUsers;
+    $('#adminActiveUsers').textContent = stats.active24h;
+    $('#adminOnlineNow').textContent = stats.onlineNow;
+    $('#adminAvgTime').textContent = `${stats.avgSessionTime}m`;
+    
+    // Aggiorna lista utenti
+    const usersList = $('#adminUsersList');
+    const noUsers = $('#adminNoUsers');
+    
+    if(users.length === 0){
+      usersList.innerHTML = '';
+      noUsers.style.display = 'block';
+      usersList.style.display = 'none';
+    }else{
+      noUsers.style.display = 'none';
+      usersList.style.display = 'grid';
+      
+      // Ordina utenti per ultimo accesso (più recente prima)
+      const sortedUsers = [...users].sort((a, b) => b.lastSeen - a.lastSeen);
+      
+      usersList.innerHTML = sortedUsers.map(user => {
+        const isOnline = activity[user.id] && 
+          (nowMs() - activity[user.id].lastActive) < (5 * 60 * 1000); // 5 minuti
+        
+        const avatarUrl = user.avatar ? 
+          `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_')?'gif':'png'}?size=80` :
+          cdnDefaultAvatar(user.discriminator);
+        
+        const username = user.global_name || user.username || 'Sconosciuto';
+        const discriminator = user.discriminator && user.discriminator !== '0' ? `#${user.discriminator}` : '';
+        const fullName = username + discriminator;
+        
+        return `
+          <div class="admin-user-card">
+            <img src="${avatarUrl}" alt="${username}" class="admin-user-avatar" crossorigin="anonymous">
+            <div class="admin-user-info">
+              <div class="admin-user-name">${fullName}</div>
+              <div class="admin-user-id">ID: ${user.id}</div>
+              <div class="admin-user-status ${isOnline ? 'status-online' : 'status-offline'}">
+                ${isOnline ? 'ONLINE' : 'OFFLINE'}
+              </div>
+              <div class="admin-user-last-seen">
+                Ultimo accesso: ${formatTimeAgo(user.lastSeen)}<br>
+                Login totali: ${user.loginCount || 1}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    // Aggiorna informazioni sistema
+    $('#adminLastUpdate').textContent = formatDate(nowMs());
+    
+    // Calcola dimensione dati
+    let totalSize = 0;
+    for(let key in localStorage){
+      if(localStorage.hasOwnProperty(key)){
+        totalSize += (localStorage[key].length * 2); // UTF-16 = 2 byte per carattere
+      }
+    }
+    const sizeKB = (totalSize / 1024).toFixed(2);
+    $('#adminDataSize').textContent = `${sizeKB} KB`;
+  }
+  
+  // Aggiorna attività utente corrente periodicamente
+  setInterval(() => {
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+    if(user && user.id){
+      updateUserActivity(user.id);
+    }
+    
+    // Se admin, aggiorna il pannello
+    if(isAdminUser()){
+      updateAdminPanel();
+    }
+  }, 60000); // Ogni minuto
+
   /* Router */
   function showPage(id){
     if(protectedRoutes.has(id) && !isLoggedIn()){
       toast('Devi effettuare il login per accedere a questa sezione.');
+      id = 'home';
+    }
+    
+    if(adminRoutes.has(id) && !isAdminUser()){
+      toast('Accesso riservato all\'amministratore.');
       id = 'home';
     }
     
@@ -925,6 +1466,7 @@
     $(`.nav-link[data-route="${id}"]`)?.classList.add('active');
     
     if(id === 'home') tryAutoplay();
+    if(id === 'admin' && isAdminUser()) updateAdminPanel();
   }
   
   document.addEventListener('click', e => {
@@ -1065,9 +1607,23 @@
     // Carica contatori Discord
     await loadCountsOnce();
     startCountsAutoRefresh();
+    
+    // Aggiorna attività utente corrente
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+    if(user && user.id){
+      updateUserActivity(user.id);
+    }
   });
   
   window.addEventListener('focus', scheduleAutoLogout);
+  
+  // Traccia quando l'utente chiude la pagina
+  window.addEventListener('beforeunload', () => {
+    const user = JSON.parse(localStorage.getItem(OAUTH_USER_KEY)||'null');
+    if(user && user.id){
+      trackUserLogout(user.id);
+    }
+  });
 
   // Bind login/logout
   $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);

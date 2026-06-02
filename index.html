@@ -475,7 +475,50 @@
 
   /* Footer */
   .site-footer{text-align:center; padding:40px 20px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
-  .stripe{height:4px; width:180px; margin:0 auto 20px; border-radius:4px; background:linear-gradient(90deg,#009246 0 33%, #fff 33% 66%, #ce2b37 66% 100%)}
+  
+  /* Bandiera Americana */
+  .usa-flag{
+    width:220px;
+    height:44px;
+    margin:0 auto 20px;
+    position:relative;
+    background: linear-gradient(180deg, 
+      #B22234 0%, #B22234 38%,
+      #FFFFFF 38%, #FFFFFF 42%,
+      #B22234 42%, #B22234 60%,
+      #FFFFFF 60%, #FFFFFF 64%,
+      #B22234 64%, #B22234 82%,
+      #FFFFFF 82%, #FFFFFF 86%,
+      #B22234 86%, #B22234 100%);
+    border-radius:4px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.3);
+    overflow:hidden;
+  }
+  .usa-flag::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 85px;
+    height: 100%;
+    background: #3C3B6E;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  .usa-flag::after{
+    content: "★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 7px;
+    color: white;
+    letter-spacing: 3px;
+    line-height: 1.4;
+    white-space: normal;
+    width: 80px;
+    text-align: center;
+    font-weight: normal;
+  }
+  
   .footer-icons{margin-top:15px; display:flex; justify-content:center; align-items:center; gap:20px;}
   .footer-icons a{color:#eaf0ff; text-decoration:none; display:inline-grid; place-items:center; width:36px; height:36px; border-radius:50%; background:#0f1625; transition:all .3s ease}
   .footer-icons a:hover{transform:translateY(-3px)}
@@ -511,6 +554,7 @@
     .stats-bar{gap:15px}
     .stat-item{padding:12px 20px; min-width:100px}
     .stat-number{font-size:1.8rem}
+    .usa-flag{width:180px; height:36px}
   }
   </style>
 </head>
@@ -759,7 +803,8 @@
   </main>
 
   <footer class="site-footer">
-    <div class="stripe"></div>
+    <!-- Bandiera Americana al posto di quella italiana -->
+    <div class="usa-flag"></div>
     <p>© 2025 California Dreaming Roleplay — La città degli angeli ti aspetta</p>
     <div class="footer-icons">
       <a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>

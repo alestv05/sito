@@ -12,19 +12,20 @@
 
   <!-- Font & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <style>
   :root{
     --bg:#070b14; --surface:#121a2a; --text:#eaf0ff; --muted:#9daccc;
     --primary:#58a6ff; --primary2:#0b6dd6; --shadow:0 18px 40px rgba(0,0,0,.55);
-    --logo-size:clamp(280px,45vw,560px); --home-video-max:440px; --home-video-min:280px;
+    --logo-size:clamp(240px,35vw,420px); --home-video-max:440px; --home-video-min:280px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
     background:var(--bg); color:var(--text);
-    font-family:'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+    font-family:'Inter', 'Bebas Neue', sans-serif;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
@@ -33,48 +34,47 @@
   /* NAVBAR */
   .site-header{
     position:sticky; top:0; z-index:20;
-    background:#0f1625dd; backdrop-filter:saturate(140%) blur(6px);
-    border-bottom:1px solid #23314f; padding:8px 14px;
+    background:#0f1625dd; backdrop-filter:saturate(140%) blur(12px);
+    border-bottom:1px solid #23314f; padding:12px 24px;
     display:flex; align-items:center; justify-content:space-between;
     flex-wrap:wrap;
-    gap:10px;
+    gap:15px;
   }
-  .nav{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+  .nav{display:flex; gap:20px; align-items:center; flex-wrap:wrap}
   .nav-link{
     position:relative; overflow:hidden;
-    color:#eaf0ff; text-decoration:none; font-weight:800;
-    padding:8px 10px; border-radius:10px; text-transform:uppercase;
+    color:#eaf0ff; text-decoration:none; font-weight:600;
+    padding:8px 12px; border-radius:10px; text-transform:uppercase;
     letter-spacing:.06em; transition:color .3s ease; display:inline-flex; gap:8px; align-items:center;
-    cursor:pointer;
+    cursor:pointer; font-size:0.9rem;
   }
   .nav-link.active,.nav-link:hover{ color:#fff }
   .nav-link::after{
-    content:""; position:absolute; left:12px; right:12px; bottom:6px; height:2px;
-    background:#ffffff; transform:scaleX(0); transform-origin:left;
+    content:""; position:absolute; left:12px; right:12px; bottom:4px; height:2px;
+    background:#58a6ff; transform:scaleX(0); transform-origin:left;
     transition:transform .25s ease; border-radius:2px;
   }
   .nav-link:hover::after,.nav-link.active::after{ transform:scaleX(1) }
 
-  .top-avatar{display:flex; gap:8px; align-items:center}
+  .top-avatar{display:flex; gap:12px; align-items:center; background:#0a0f1a; padding:6px 12px; border-radius:40px; border:1px solid #2a3a61}
   #topAvatarIcon{font-size:28px}
   #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none; border:2px solid #58a6ff}
-  #topUsername{font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:#cfe0ff}
+  #topUsername{font-weight:600; letter-spacing:.04em; color:#cfe0ff; font-size:0.9rem}
 
   /* HERO */
-  .hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 16px; overflow:hidden}
+  .hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; overflow:hidden}
   
   /* LOGO CONTAINER */
   .logo-container{
     position:relative; 
     width:var(--logo-size);
     height:var(--logo-size); 
-    margin-bottom:40px; 
+    margin-bottom:30px; 
     display:flex; 
     align-items:center; 
     justify-content:center
   }
   
-  /* LOGO BG - NUOVA IMMAGINE */
   .logo-bg{
     position:absolute; 
     inset:0;
@@ -99,128 +99,210 @@
     to{transform:translateY(6px)}
   }
 
-  .under-construction{position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center; width:100%; max-width:900px;}
-  .uc-title{font-size:clamp(36px,8vw,90px); font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-shadow:0 2px 10px rgba(0,0,0,.5); line-height:1.05;}
+  /* BENVENUTO SECTION - NUOVA SEZIONE BELLA */
+  .welcome-section{
+    position:relative; z-index:3;
+    max-width:900px;
+    margin:20px auto 40px;
+    text-align:center;
+    background:linear-gradient(135deg, rgba(18,26,42,0.8) 0%, rgba(10,15,26,0.9) 100%);
+    backdrop-filter:blur(10px);
+    border-radius:24px;
+    padding:40px 32px;
+    border:1px solid rgba(88,166,255,0.3);
+    box-shadow:0 25px 45px -12px rgba(0,0,0,0.5);
+  }
+  
+  .welcome-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#58a6ff20;
+    padding:6px 16px;
+    border-radius:40px;
+    margin-bottom:20px;
+    border:1px solid #58a6ff40;
+  }
+  .welcome-badge i{
+    color:#58a6ff;
+    font-size:0.9rem;
+  }
+  .welcome-badge span{
+    font-size:0.8rem;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-weight:600;
+    color:#58a6ff;
+  }
+  
+  .welcome-title{
+    font-size:clamp(32px,6vw,56px);
+    font-weight:800;
+    margin-bottom:20px;
+    background:linear-gradient(135deg, #fff 0%, #58a6ff 50%, #7ee787 100%);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    text-transform:uppercase;
+    letter-spacing:-0.02em;
+  }
+  
+  .welcome-description{
+    font-size:clamp(16px,3vw,18px);
+    line-height:1.6;
+    color:#cfe0ff;
+    margin-bottom:30px;
+    font-weight:400;
+  }
+  
+  .welcome-highlight{
+    color:#7ee787;
+    font-weight:600;
+  }
+  
+  .welcome-tags{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:12px;
+    margin-top:20px;
+  }
+  
+  .welcome-tag{
+    background:#0f1625;
+    padding:8px 18px;
+    border-radius:40px;
+    font-size:0.85rem;
+    font-weight:500;
+    border:1px solid #2a3a61;
+    transition:all 0.3s ease;
+  }
+  
+  .welcome-tag:hover{
+    border-color:#58a6ff;
+    transform:translateY(-2px);
+  }
+  
+  .welcome-tag i{
+    margin-right:8px;
+    color:#58a6ff;
+  }
+
+  .under-construction{
+    position:relative; z-index:3; 
+    text-align:center; 
+    margin:20px 0;
+  }
+  .uc-title{
+    font-size:clamp(24px,5vw,48px); 
+    font-weight:700; 
+    text-transform:uppercase; 
+    letter-spacing:.08em; 
+    text-shadow:0 2px 10px rgba(0,0,0,.5); 
+    line-height:1.2;
+    color:rgba(255,255,255,0.7);
+  }
 
   /* Video */
-  .home-video{display:grid; place-items:center; margin-top:40px; width:100%}
-  .home-video-head{display:flex; align-items:center; gap:8px; color:#cfe0ff; background:#0f1625; border:1px solid #2a3a61; padding:6px 10px; border-radius:10px; margin-bottom:10px; text-transform:uppercase}
-  .home-video-frame{width:min(95vw,var(--home-video-max)); max-width:var(--home-video-max); min-width:var(--home-video-min); background:#0f1528; border:2px solid #2a3a61; border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
+  .home-video{display:grid; place-items:center; margin-top:30px; width:100%}
+  .home-video-head{display:flex; align-items:center; gap:8px; color:#cfe0ff; background:#0f1625; border:1px solid #2a3a61; padding:6px 14px; border-radius:40px; margin-bottom:12px; text-transform:uppercase; font-size:0.8rem; font-weight:600}
+  .home-video-frame{width:min(95vw,var(--home-video-max)); max-width:var(--home-video-max); min-width:var(--home-video-min); background:#0f1528; border:2px solid #2a3a61; border-radius:20px; box-shadow:var(--shadow); overflow:hidden}
   .home-video-frame video{display:block; width:100%; height:auto}
 
   /* Discord Stats */
   .discord-counts{
     width:100%;
-    margin-top:26px;
+    margin-top:35px;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:10px;
+    gap:12px;
   }
   .discord-chip{
     display:inline-flex;
     align-items:center;
-    gap:8px;
-    padding:6px 14px;
+    gap:10px;
+    padding:8px 20px;
     border-radius:999px;
     background:#0f1625;
     border:1px solid #2a3a61;
+    font-weight:600;
   }
-  .discord-chip i{
-    font-size:1.2rem;
-  }
+  .discord-chip i{font-size:1.2rem; color:#5865F2}
   .discord-numbers{
     display:inline-flex;
     align-items:center;
-    gap:18px;
-    padding:8px 18px;
+    gap:25px;
+    padding:10px 25px;
     border-radius:999px;
     background:#0f1625;
     border:1px solid #2a3a61;
     box-shadow:var(--shadow);
   }
-  .discord-num{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    min-width:80px;
-  }
-  .dc-label{
-    font-size:.7rem;
-    text-transform:uppercase;
-    letter-spacing:.12em;
-    color:var(--muted);
-  }
-  .dc-value{
-    font-size:1.6rem;
-    font-weight:900;
-    line-height:1.1;
-  }
+  .discord-num{display:flex; flex-direction:column; align-items:center; min-width:90px}
+  .dc-label{font-size:.7rem; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); font-weight:500}
+  .dc-value{font-size:1.8rem; font-weight:800; line-height:1.1}
   .dc-value.online{color:#7ee787;}
-  .dc-divider{
-    width:1px;
-    height:26px;
-    background:#2a3a61;
-    opacity:.8;
-  }
+  .dc-divider{width:1px; height:30px; background:#2a3a61; opacity:.8}
 
   /* Cards Generiche */
-  .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem}
-  .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:24px; box-shadow:var(--shadow)}
+  .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem; font-weight:800}
+  .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:20px; padding:28px; box-shadow:var(--shadow)}
 
   /* Staff */
   .staff-section{max-width:1000px; margin:40px auto}
   .role{display:flex; align-items:center; gap:10px; margin:0 0 20px; font-weight:800; font-size:1.5rem}
   .role .role-icon{width:28px; height:28px; object-fit:contain; display:inline-block; filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
-  .staff-grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-  .member{background:#162137; border:1px solid #2a3a61; border-radius:14px; padding:20px; display:grid; justify-items:center; gap:12px; box-shadow:var(--shadow); transition:transform .3s ease}
-  .member:hover{transform:translateY(-5px)}
-  .avatar{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:#0f1528; color:#eaf0ff; font-size:36px; overflow:hidden}
+  .staff-grid{display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .member{background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:20px; display:grid; justify-items:center; gap:12px; transition:transform .3s ease}
+  .member:hover{transform:translateY(-5px); border-color:#58a6ff}
+  .avatar{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:#0f1528; overflow:hidden}
   .avatar img{width:100%; height:100%; object-fit:cover}
   .ring{border:2px solid #2a3a61}.ring-gold{border-color:#ffd76a}.ring-silver{border-color:#cfd7ff}
   .ring-red{border-color:#ff4d4f}.ring-green{border-color:#7ee787}.ring-purple{border-color:#a78bfa}
-  .member-name{font-weight:800; text-align:center; font-size:1.2rem}
-  .member-role{font-weight:700; font-size:.95rem; margin-top:-6px}
+  .member-name{font-weight:700; text-align:center; font-size:1.1rem}
+  .member-role{font-weight:600; font-size:.85rem; margin-top:-6px}
   .role-dev{color:#8ecaff}
   .role-eup{color:#4a90e2}
   .role-grafico{color:#ff4dd2}
 
   /* Donazioni */
   #page-donations{position:relative; padding:40px 20px}
-  .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; max-width:920px; margin:0 auto}
+  .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; max-width:920px; margin:0 auto}
   .donation-card{text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:12px; transition:transform .3s ease; cursor:pointer}
   .donation-card:hover{transform:translateY(-5px)}
-  .donation-thumb{width:100%; aspect-ratio:1/1; border-radius:14px; overflow:hidden; border:2px solid #2a3a61; background:#0f1528; display:grid; place-items:center}
+  .donation-thumb{width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; border:2px solid #2a3a61; background:#0f1528; display:grid; place-items:center}
   .donation-thumb img{width:90%; height:90%; object-fit:contain}
-  .donation-caption{font-weight:800; font-size:1.05rem; padding:6px 8px; border-radius:10px; background:rgba(23,33,55,.85); border:1px solid #2a3a61; text-align:center; text-transform:uppercase}
+  .donation-caption{font-weight:700; font-size:1rem; padding:6px 12px; border-radius:10px; background:rgba(23,33,55,.85); border:1px solid #2a3a61; text-align:center}
 
   /* Donation detail */
   #page-donation{padding:40px 16px}
   .donation-detail{max-width:960px;margin:0 auto;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
-  .donation-media{background:#0f1528;border:2px solid #2a3a61;border-radius:14px;overflow:hidden;display:grid;place-items:center;padding:16px}
+  .donation-media{background:#0f1528;border:2px solid #2a3a61;border-radius:20px;overflow:hidden;display:grid;place-items:center;padding:20px}
   .donation-media img{max-width:100%;height:auto;display:block}
-  .donation-info .price{font-size:2rem;font-weight:900;margin:6px 0 10px}
-  .donation-info pre{white-space:pre-wrap; background:#0f1528; border:1px solid #2a3a61; border-radius:10px; padding:12px; font-family:inherit; color:#cfe0ff}
+  .donation-info .price{font-size:2rem;font-weight:800;margin:6px 0 10px}
+  .donation-info pre{white-space:pre-wrap; background:#0f1528; border:1px solid #2a3a61; border-radius:12px; padding:14px; font-family:inherit; color:#cfe0ff; font-size:0.9rem}
 
   /* Pulsanti */
   .btn{
-    padding:12px 24px;
-    border-radius:10px;
-    font-weight:800;
+    padding:12px 28px;
+    border-radius:12px;
+    font-weight:700;
     text-transform:uppercase;
     letter-spacing:.05em;
     cursor:pointer;
     transition:all .3s ease;
     border:none;
     font-family:inherit;
+    font-size:0.85rem;
   }
   .btn-primary{
-    background:#58a6ff;
+    background:linear-gradient(135deg, #58a6ff, #0b6dd6);
     color:#fff;
   }
   .btn-primary:hover{
-    background:#0b6dd6;
     transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(88,166,255,0.3);
   }
   .btn-ghost{
     background:transparent;
@@ -234,20 +316,21 @@
   .actions{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; justify-content:center}
 
   /* Footer */
-  .site-footer{text-align:center; padding:30px 12px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
-  .stripe{height:8px; width:220px; margin:0 auto 12px; border-radius:6px; background:linear-gradient(90deg,#009246 0 33%, #fff 33% 66%, #ce2b37 66% 100%); border:1px solid #2a3a61}
-  .footer-icons{margin-top:10px; display:flex; justify-content:center; align-items:center; gap:18px;}
-  .footer-icons a{color:#eaf0ff; text-decoration:none; display:inline-grid; place-items:center; width:32px; height:32px;}
-  .footer-icons i{font-size:24px; line-height:1}
-  .footer-icons a.ig:hover{color:#d62976}
-  .footer-icons a.yt:hover{color:#ff0000}
-  .footer-icons a.tt:hover{color:#25f4ee}
-  .footer-icons a.dc:hover{color:#5865F2}
+  .site-footer{text-align:center; padding:40px 20px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
+  .stripe{height:4px; width:180px; margin:0 auto 20px; border-radius:4px; background:linear-gradient(90deg,#009246 0 33%, #fff 33% 66%, #ce2b37 66% 100%)}
+  .footer-icons{margin-top:15px; display:flex; justify-content:center; align-items:center; gap:20px;}
+  .footer-icons a{color:#eaf0ff; text-decoration:none; display:inline-grid; place-items:center; width:36px; height:36px; border-radius:50%; background:#0f1625; transition:all .3s ease}
+  .footer-icons a:hover{transform:translateY(-3px)}
+  .footer-icons i{font-size:20px}
+  .footer-icons a.ig:hover{background:#d62976; color:#fff}
+  .footer-icons a.yt:hover{background:#ff0000; color:#fff}
+  .footer-icons a.tt:hover{background:#25f4ee; color:#000}
+  .footer-icons a.dc:hover{background:#5865F2; color:#fff}
 
   /* Toast e Loader */
-  .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow); padding:12px 16px; border-radius:12px; font-weight:800; z-index:1000; opacity:0; transition:opacity .25s ease, transform .25s ease;}
+  .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow); padding:12px 20px; border-radius:12px; font-weight:600; z-index:1000; opacity:0; transition:all .3s ease; backdrop-filter:blur(10px);}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
-  .loader{position:fixed; inset:auto 12px 12px auto; background:#0f1625; border:1px solid #2a3a61; padding:8px 12px; border-radius:10px; font-weight:800; z-index:1100; display:none;}
+  .loader{position:fixed; inset:auto 20px 20px auto; background:#0f1625; border:1px solid #58a6ff; padding:10px 18px; border-radius:12px; font-weight:600; z-index:1100; display:none; backdrop-filter:blur(10px);}
   .loader.show{display:block}
 
   /* Pages */
@@ -256,12 +339,17 @@
 
   /* Responsive */
   @media (max-width:600px){
-    .title-roman{font-size:2rem; margin-bottom:22px}
-    .discord-numbers{
-      width:100%;
-      justify-content:space-around;
-    }
+    .title-roman{font-size:1.8rem}
+    .discord-numbers{gap:12px; padding:8px 16px}
+    .discord-num{min-width:65px}
+    .dc-value{font-size:1.3rem}
+    .welcome-section{padding:25px 20px}
+    .welcome-tags{gap:8px}
+    .welcome-tag{padding:6px 12px; font-size:0.75rem}
     .actions{flex-direction:column; align-items:stretch}
+    .site-header{padding:10px 16px}
+    .nav{gap:8px}
+    .nav-link{padding:6px 8px; font-size:0.8rem}
   }
   </style>
 </head>
@@ -288,7 +376,7 @@
   </header>
 
   <main id="app">
-    <!-- HOME -->
+    <!-- HOME - CON BENVENUTO -->
     <section id="page-home" class="page active" data-page>
       <div class="hero">
         <div class="logo-container">
@@ -296,14 +384,36 @@
           <div class="logo-glow"></div>
         </div>
 
+        <!-- NUOVA SEZIONE BENVENUTO -->
+        <div class="welcome-section">
+          <div class="welcome-badge">
+            <i class="fa-solid fa-crown"></i>
+            <span>Nuovo Server RP</span>
+          </div>
+          <h1 class="welcome-title">Benvenuto su Nova Roma!</h1>
+          <p class="welcome-description">
+            Siamo un nuovo server roleplay <span class="welcome-highlight">FiveM Italiano</span> ambientato negli Stati Uniti, 
+            precisamente a <span class="welcome-highlight">Los Angeles</span>, la città degli angeli. 
+            Se cerchi <span class="welcome-highlight">innovazione, divertimento e realismo</span>, sei nel posto giusto. 
+            <strong>Ti aspettiamo!</strong>
+          </p>
+          <div class="welcome-tags">
+            <span class="welcome-tag"><i class="fa-solid fa-gamepad"></i> FiveM</span>
+            <span class="welcome-tag"><i class="fa-solid fa-city"></i> Los Angeles</span>
+            <span class="welcome-tag"><i class="fa-solid fa-star"></i> Realismo</span>
+            <span class="welcome-tag"><i class="fa-solid fa-users"></i> Community Italiana</span>
+            <span class="welcome-tag"><i class="fa-solid fa-rocket"></i> Innovazione</span>
+          </div>
+        </div>
+
         <div class="under-construction">
-          <h1 class="uc-title">SITO IN COSTRUZIONE</h1>
+          <p class="uc-title">🚧 SITO IN COSTRUZIONE 🚧</p>
         </div>
 
         <div class="home-video">
           <div class="home-video-head">
             <i class="fa-solid fa-film"></i>
-            <span>Trailer server</span>
+            <span>Trailer ufficiale</span>
           </div>
           <div class="home-video-frame">
             <video id="nvVideo" src="https://files.catbox.moe/vq53u8.mp4" muted autoplay loop playsinline webkit-playsinline preload="auto"></video>
@@ -314,11 +424,11 @@
         <div class="discord-counts" id="discordCountsCard">
           <div class="discord-chip">
             <i class="fa-brands fa-discord"></i>
-            <span id="guildName">Community Discord</span>
+            <span id="guildName">NOVA ROMA Roleplay</span>
           </div>
           <div class="discord-numbers">
             <div class="discord-num">
-              <span class="dc-label">Totali</span>
+              <span class="dc-label">Membri</span>
               <span class="dc-value" id="countTotal">—</span>
             </div>
             <div class="dc-divider"></div>
@@ -333,7 +443,7 @@
 
     <!-- STAFF -->
     <section id="page-staff" class="page" data-page>
-      <h2 class="title-roman">Il nostro staff</h2>
+      <h2 class="title-roman">👑 Il nostro staff</h2>
 
       <div class="staff-section">
         <h3 class="role"><img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Owner</h3>
@@ -395,7 +505,7 @@
 
     <!-- DONAZIONI (solo loggati) -->
     <section id="page-donations" class="page" data-page>
-      <h2 class="title-roman">Sostieni Nova Roma</h2>
+      <h2 class="title-roman">💰 Sostieni Nova Roma</h2>
       <div id="donationsGrid" class="donations-grid">
         <div class="donation-card" data-price="5" data-img="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png">
           <div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div>
@@ -449,7 +559,7 @@
             <pre id="detailDesc"></pre>
             <div class="actions">
               <button class="btn btn-primary" id="btnBuy"><i class="fa-solid fa-credit-card"></i> Procedi</button>
-              <button class="btn btn-ghost" id="btnBackDon"><i class="fa-solid fa-arrow-left"></i> Torna alle donazioni</button>
+              <button class="btn btn-ghost" id="btnBackDon"><i class="fa-solid fa-arrow-left"></i> Torna</button>
             </div>
           </div>
         </div>
@@ -459,7 +569,7 @@
 
   <footer class="site-footer">
     <div class="stripe"></div>
-    <p>© 2025 Nova Roma Roleplay</p>
+    <p>© 2025 Nova Roma Roleplay — La città degli angeli ti aspetta</p>
     <div class="footer-icons">
       <a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
       <a class="yt" href="https://youtube.com/@novaromarp?si=A5FuufVL9c9LEBAc" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i></a>
@@ -468,7 +578,7 @@
     </div>
   </footer>
 
-  <div class="loader" id="loginLoader">Login in corso…</div>
+  <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
   /* ===== CONFIGURAZIONE ===== */
@@ -477,46 +587,32 @@
   const REDIRECT_URI = 'https://alestv05.github.io/sito/';
   const INVITE_CODE = 'TAhbywxE4A';
 
-  /* Utility */
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
   
   const toast = (message) => {
-    const existing = $('.toast');
+    let existing = $('.toast');
     if (existing) existing.remove();
-    
     const el = document.createElement('div');
     el.className = 'toast';
-    el.textContent = message;
+    el.innerHTML = `<i class="fa-solid fa-info-circle"></i> ${message}`;
     document.body.appendChild(el);
-    
     setTimeout(() => el.classList.add('show'), 10);
-    setTimeout(() => {
-      el.classList.remove('show');
-      setTimeout(() => el.remove(), 300);
-    }, 3000);
+    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3000);
   };
   
-  const showLoader = (show) => {
-    const loader = $('#loginLoader');
-    if (loader) loader.classList.toggle('show', show);
-  };
+  const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
 
-  /* ===== SISTEMA AUTH DISCORD ===== */
+  /* AUTH DISCORD */
   function getAuthToken() {
     const token = localStorage.getItem('nova_token');
     const exp = Number(localStorage.getItem('nova_expires') || 0);
     if (!token || !exp) return null;
-    if (Date.now() >= exp) {
-      clearAuth();
-      return null;
-    }
+    if (Date.now() >= exp) { clearAuth(); return null; }
     return token;
   }
   
-  function isLoggedIn() {
-    return !!(getAuthToken() && localStorage.getItem('nova_user'));
-  }
+  function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
   
   function clearAuth() {
     localStorage.removeItem('nova_token');
@@ -524,10 +620,7 @@
     localStorage.removeItem('nova_expires');
   }
   
-  function formatDiscordName(user) {
-    if (!user) return '';
-    return (user.global_name || user.username || 'Utente');
-  }
+  function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
   
   function getAvatarUrl(user) {
     if (!user) return null;
@@ -535,8 +628,8 @@
       const format = user.avatar.startsWith('a_') ? 'gif' : 'png';
       return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${format}?size=128`;
     }
-    const discriminator = parseInt(user.discriminator || '0', 10);
-    return `https://cdn.discordapp.com/embed/avatars/${discriminator % 5 || 0}.png`;
+    const disc = parseInt(user.discriminator || '0', 10);
+    return `https://cdn.discordapp.com/embed/avatars/${disc % 5 || 0}.png`;
   }
   
   function updateAuthUI() {
@@ -550,27 +643,15 @@
     
     if (isIn) {
       const avatarUrl = getAvatarUrl(user);
-      if (avatarUrl) {
-        $('#topAvatarImg').src = avatarUrl;
-        $('#topAvatarImg').style.display = 'block';
-        $('#topAvatarIcon').style.display = 'none';
-      }
+      if (avatarUrl) { $('#topAvatarImg').src = avatarUrl; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; }
       $('#topUsername').textContent = formatDiscordName(user);
       $('#topUsername').hidden = false;
       $('#topAvatar').title = formatDiscordName(user);
     } else {
-      $('#topAvatarImg').src = '';
-      $('#topAvatarImg').style.display = 'none';
-      $('#topAvatarIcon').style.display = 'block';
-      $('#topUsername').textContent = '';
-      $('#topUsername').hidden = true;
-      $('#topAvatar').title = 'Utente';
-      
+      $('#topAvatarImg').src = ''; $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block';
+      $('#topUsername').textContent = ''; $('#topUsername').hidden = true;
       const activePage = $('.page.active')?.id?.replace('page-', '');
-      if (activePage === 'donations' || activePage === 'donation') {
-        showPage('home');
-        toast('Effettua il login per accedere alle donazioni.');
-      }
+      if (activePage === 'donations' || activePage === 'donation') { showPage('home'); toast('Effettua il login per accedere.'); }
     }
   }
   
@@ -585,244 +666,143 @@
   }
   
   function beginDiscordLogin(e) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    if (isLoggedIn()) {
-      toast('Sei già loggato!');
-      return;
-    }
-    
+    if(e) { e.preventDefault(); e.stopPropagation(); }
+    if(isLoggedIn()) { toast('Sei già loggato!'); return; }
     const state = Math.random().toString(36).substr(2, 16);
     sessionStorage.setItem('oauth_state', state);
-    
     const authUrl = buildAuthURL(state);
-    const w = 520, h = 700;
-    const y = window.top.outerHeight / 2 + window.top.screenY - (h / 2);
-    const x = window.top.outerWidth / 2 + window.top.screenX - (w / 2);
-    
+    const w=520, h=700;
+    const y = window.top.outerHeight/2 + window.top.screenY - (h/2);
+    const x = window.top.outerWidth/2 + window.top.screenX - (w/2);
     const popup = window.open(authUrl, 'discord_oauth', `width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes`);
-    
     showLoader(true);
-    
-    if (!popup || popup.closed) {
-      window.location.assign(authUrl);
-      return;
-    }
-    
+    if(!popup || popup.closed) { window.location.assign(authUrl); return; }
     const messageHandler = async (event) => {
-      if (event.origin !== new URL(REDIRECT_URI).origin) return;
+      if(event.origin !== new URL(REDIRECT_URI).origin) return;
       const data = event.data || {};
-      if (data.type !== 'discord_oauth') return;
-      
+      if(data.type !== 'discord_oauth') return;
       window.removeEventListener('message', messageHandler);
-      
-      try {
-        await finalizeOAuth({
-          access_token: data.access_token,
-          token_type: data.token_type || 'Bearer',
-          expires_in: data.expires_in || 3600
-        });
-        if (popup && !popup.closed) popup.close();
-      } finally {
-        showLoader(false);
-      }
+      try { await finalizeOAuth({ access_token: data.access_token, token_type: data.token_type || 'Bearer', expires_in: data.expires_in || 3600 }); if(popup && !popup.closed) popup.close(); }
+      finally { showLoader(false); }
     };
-    
     window.addEventListener('message', messageHandler);
-    
-    let checkInterval = setInterval(() => {
-      if (popup.closed) {
-        clearInterval(checkInterval);
-        window.removeEventListener('message', messageHandler);
-        showLoader(false);
-      }
-    }, 500);
+    let checkInterval = setInterval(() => { if(popup.closed) { clearInterval(checkInterval); window.removeEventListener('message', messageHandler); showLoader(false); } }, 500);
   }
   
   async function handleOAuthRedirect() {
-    if (!window.location.hash.startsWith('#')) return false;
-    
+    if(!window.location.hash.startsWith('#')) return false;
     const params = new URLSearchParams(window.location.hash.substr(1));
     const accessToken = params.get('access_token');
     const error = params.get('error');
-    
-    if (!accessToken && !error) return false;
-    
+    if(!accessToken && !error) return false;
     history.replaceState(null, '', window.location.pathname + window.location.search);
-    
-    if (window.opener && typeof window.opener.postMessage === 'function') {
-      const payload = {
-        type: 'discord_oauth',
-        access_token: accessToken,
-        token_type: params.get('token_type') || 'Bearer',
-        expires_in: Number(params.get('expires_in') || 3600),
-        state: params.get('state')
-      };
-      
+    if(window.opener && typeof window.opener.postMessage === 'function') {
+      const payload = { type: 'discord_oauth', access_token: accessToken, token_type: params.get('token_type') || 'Bearer', expires_in: Number(params.get('expires_in') || 3600), state: params.get('state') };
       window.opener.postMessage(payload, window.opener.location.origin);
-      
-      document.body.innerHTML = `
-        <div style="padding:40px;font:600 18px sans-serif;color:#eaf0ff;background:#0f1625;height:100vh;display:grid;place-items:center;text-align:center">
-          Autenticazione completata!<br>Puoi chiudere questa finestra.
-        </div>
-      `;
+      document.body.innerHTML = `<div style="padding:40px;font:600 18px sans-serif;color:#eaf0ff;background:#0f1625;height:100vh;display:grid;place-items:center;text-align:center">✅ Autenticazione completata!<br>Puoi chiudere questa finestra.</div>`;
       setTimeout(() => window.close(), 1500);
       return true;
     }
-    
-    if (error) {
-      toast('Accesso Discord annullato.');
-      return true;
-    }
-    
+    if(error) { toast('Accesso Discord annullato.'); return true; }
     showLoader(true);
-    try {
-      await finalizeOAuth({
-        access_token: accessToken,
-        token_type: params.get('token_type') || 'Bearer',
-        expires_in: Number(params.get('expires_in') || 3600)
-      });
-    } catch (err) {
-      toast('Errore durante il login.');
-    } finally {
-      showLoader(false);
-    }
-    
+    try { await finalizeOAuth({ access_token: accessToken, token_type: params.get('token_type') || 'Bearer', expires_in: Number(params.get('expires_in') || 3600) }); }
+    catch(err) { toast('Errore durante il login.'); }
+    finally { showLoader(false); }
     return true;
   }
   
   async function finalizeOAuth({ access_token, token_type = 'Bearer', expires_in = 3600 }) {
-    if (!access_token) throw new Error('Token mancante');
-    
+    if(!access_token) throw new Error('Token mancante');
     const expiresAt = Date.now() + (expires_in * 1000) - 30000;
     localStorage.setItem('nova_token', access_token);
     localStorage.setItem('nova_expires', expiresAt.toString());
-    
-    const response = await fetch('https://discord.com/api/users/@me', {
-      headers: { 'Authorization': `${token_type} ${access_token}` }
-    });
-    
-    if (!response.ok) throw new Error('Failed to fetch user data');
-    
+    const response = await fetch('https://discord.com/api/users/@me', { headers: { 'Authorization': `${token_type} ${access_token}` } });
+    if(!response.ok) throw new Error('Failed to fetch user data');
     const userData = await response.json();
     localStorage.setItem('nova_user', JSON.stringify(userData));
-    
     updateAuthUI();
-    toast(`Benvenuto ${formatDiscordName(userData)}!`);
-    
+    toast(`👋 Benvenuto ${formatDiscordName(userData)}!`);
     return userData;
   }
   
   function logout(e) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
+    if(e) { e.preventDefault(); e.stopPropagation(); }
     const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
     const name = user ? formatDiscordName(user) : '';
-    
     clearAuth();
     updateAuthUI();
     showPage('home');
-    toast(name ? `Arrivederci ${name}!` : 'Logout effettuato');
+    toast(name ? `👋 Arrivederci ${name}!` : 'Logout effettuato');
   }
 
-  /* ===== ROUTER E NAVIGAZIONE ===== */
+  /* ROUTER */
   function showPage(pageId) {
-    if ((pageId === 'donations' || pageId === 'donation') && !isLoggedIn()) {
-      toast('Effettua il login per accedere.');
-      pageId = 'home';
-    }
-    
+    if((pageId === 'donations' || pageId === 'donation') && !isLoggedIn()) { toast('Effettua il login per accedere.'); pageId = 'home'; }
     $$('.page').forEach(page => page.classList.remove('active'));
     $$('.nav-link').forEach(link => link.classList.remove('active'));
-    
     $(`#page-${pageId}`)?.classList.add('active');
     $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
-    
-    if (pageId === 'home') {
-      const video = $('#nvVideo');
-      if (video) video.play().catch(() => {});
-    }
+    if(pageId === 'home') { const video = $('#nvVideo'); if(video) video.play().catch(()=>{}); }
   }
   
   document.addEventListener('click', (e) => {
     const link = e.target.closest('[data-route]');
-    if (link) {
-      e.preventDefault();
-      showPage(link.getAttribute('data-route'));
-    }
+    if(link) { e.preventDefault(); showPage(link.getAttribute('data-route')); }
   });
 
-  /* ===== DONAZIONI ===== */
+  /* DONAZIONI */
   const OFFER_TEXT = {
-    5: "Acquistando questo pacchetto otterrai 50.000€ in gioco\n(Apri un ticket su Discord per ricevere le ricompense)",
-    10: "Acquistando questo pacchetto otterrai 100.000€ in gioco\n(Apri un ticket su Discord per ricevere le ricompense)",
-    15: "Acquistando questo pacchetto otterrai 100.000€ in gioco\n(Apri un ticket su Discord per ricevere le ricompense)",
-    20: "Acquistando questo pacchetto otterrai 150.000€ in gioco\n(Apri un ticket su Discord per ricevere le ricompense)",
-    30: "Acquistando questo pacchetto otterrai 200.000€ in gioco\n(Apri un ticket su Discord per ricevere le ricompense)",
-    40: "Acquistando questo pacchetto otterrai 250.000€ in gioco\n(Apri un ticket su Discord per ricevere le ricompense)",
-    50: "Acquistando questo pacchetto otterrai 300.000€ in gioco + un'auto a scelta (vedi Discord)\n(Apri un ticket su Discord per ricevere le ricompense)",
-    70: "Acquistando questo pacchetto otterrai 400.000€ in gioco\n(Apri un ticket su Discord per ricevere le ricompense)"
+    5: "🎁 Acquistando questo pacchetto otterrai 50.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
+    10: "🎁 Acquistando questo pacchetto otterrai 100.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
+    15: "🎁 Acquistando questo pacchetto otterrai 100.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
+    20: "🎁 Acquistando questo pacchetto otterrai 150.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
+    30: "🎁 Acquistando questo pacchetto otterrai 200.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
+    40: "🎁 Acquistando questo pacchetto otterrai 250.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
+    50: "🎁 Acquistando questo pacchetto otterrai 300.000€ in gioco + un'auto a scelta\n📌 Apri un ticket su Discord per ricevere le ricompense",
+    70: "🎁 Acquistando questo pacchetto otterrai 400.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense"
   };
   
   const donationsGrid = $('#donationsGrid');
-  if (donationsGrid) {
+  if(donationsGrid) {
     donationsGrid.addEventListener('click', (e) => {
       const card = e.target.closest('.donation-card');
-      if (!card) return;
+      if(!card) return;
       e.preventDefault();
-      
-      if (!isLoggedIn()) {
-        toast('Effettua il login per vedere i dettagli.');
-        return;
-      }
-      
+      if(!isLoggedIn()) { toast('Effettua il login per vedere i dettagli.'); return; }
       const price = card.dataset.price || '0';
       const img = card.dataset.img || '';
-      
       $('#detailTitle').textContent = `Pacchetto ${price}€`;
       $('#detailPrice').textContent = price;
       $('#detailImg').src = img;
       $('#detailDesc').textContent = OFFER_TEXT[price] || '';
-      
       showPage('donation');
     });
   }
   
   document.addEventListener('click', (e) => {
-    if (e.target.id === 'btnBackDon') showPage('donations');
-    if (e.target.id === 'btnBuy') toast('Sistema di pagamento in sviluppo — apri un ticket su Discord.');
+    if(e.target.id === 'btnBackDon') showPage('donations');
+    if(e.target.id === 'btnBuy') toast('💳 Sistema di pagamento in sviluppo — apri un ticket su Discord.');
   });
 
-  /* ===== DISCORD STATS ===== */
+  /* DISCORD STATS */
   async function loadDiscordCounts() {
     try {
       const response = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`, { cache: 'no-cache' });
-      if (!response.ok) throw new Error();
-      
+      if(!response.ok) throw new Error();
       const data = await response.json();
       $('#guildName').textContent = data.guild?.name || 'NOVA ROMA';
       $('#countTotal').textContent = data.approximate_member_count || '—';
       $('#countOnline').textContent = data.approximate_presence_count || '—';
-    } catch (error) {
-      $('#countTotal').textContent = '—';
-      $('#countOnline').textContent = '—';
-    }
+    } catch(error) { $('#countTotal').textContent = '—'; $('#countOnline').textContent = '—'; }
   }
   
   setInterval(loadDiscordCounts, 30000);
 
-  /* ===== INIZIALIZZAZIONE ===== */
+  /* INIT */
   window.addEventListener('load', async () => {
     await handleOAuthRedirect();
     updateAuthUI();
     loadDiscordCounts();
-    
     $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
     $('#btnLogout')?.addEventListener('click', logout);
   });

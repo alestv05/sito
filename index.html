@@ -230,7 +230,7 @@
     color:#58a6ff;
   }
 
-  /* STATS BAR - NUOVA SEZIONE */
+  /* STATS BAR */
   .stats-bar{
     position:relative;
     z-index:3;
@@ -266,115 +266,6 @@
     letter-spacing:2px;
     color:#9daccc;
     margin-top:5px;
-  }
-
-  /* SERVER INFO CARDS - NUOVA SEZIONE */
-  .info-cards{
-    position:relative;
-    z-index:3;
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
-    gap:25px;
-    max-width:1100px;
-    margin:50px auto;
-    padding:0 20px;
-  }
-  .info-card{
-    background:linear-gradient(135deg, #121a2a, #0e1422);
-    border-radius:20px;
-    padding:30px 25px;
-    text-align:center;
-    border:1px solid #2a3a61;
-    transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position:relative;
-    overflow:hidden;
-  }
-  .info-card::before{
-    content:'';
-    position:absolute;
-    top:0;
-    left:-100%;
-    width:100%;
-    height:100%;
-    background:linear-gradient(90deg, transparent, rgba(88,166,255,0.1), transparent);
-    transition:left 0.6s ease;
-  }
-  .info-card:hover::before{
-    left:100%;
-  }
-  .info-card:hover{
-    transform:translateY(-8px);
-    border-color:#58a6ff;
-    box-shadow:0 20px 40px rgba(0,0,0,0.4);
-  }
-  .info-icon{
-    width:70px;
-    height:70px;
-    margin:0 auto 20px;
-    background:linear-gradient(135deg, #1b2747, #0f1625);
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:1px solid #2a3a61;
-  }
-  .info-icon i{
-    font-size:2rem;
-    color:#58a6ff;
-  }
-  .info-card h3{
-    font-size:1.5rem;
-    margin-bottom:15px;
-    text-transform:uppercase;
-  }
-  .info-card p{
-    color:#9daccc;
-    line-height:1.5;
-    font-size:0.9rem;
-  }
-
-  /* COUNTDOWN SECTION - NUOVA SEZIONE */
-  .countdown-section{
-    position:relative;
-    z-index:3;
-    text-align:center;
-    margin:40px auto;
-    padding:40px 20px;
-    max-width:700px;
-    background:linear-gradient(135deg, rgba(88,166,255,0.05), rgba(126,231,135,0.02));
-    border-radius:30px;
-    border:1px solid rgba(88,166,255,0.2);
-  }
-  .countdown-title{
-    font-size:1.2rem;
-    text-transform:uppercase;
-    letter-spacing:3px;
-    color:#9daccc;
-    margin-bottom:20px;
-  }
-  .countdown-timer{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    flex-wrap:wrap;
-  }
-  .countdown-box{
-    background:#0f1625;
-    padding:15px 20px;
-    border-radius:15px;
-    min-width:80px;
-    border:1px solid #2a3a61;
-  }
-  .countdown-number{
-    font-size:2.5rem;
-    font-weight:800;
-    color:#58a6ff;
-  }
-  .countdown-label{
-    font-size:0.7rem;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    color:#9daccc;
   }
 
   /* Video */
@@ -419,6 +310,38 @@
     display:block; 
     width:100%; 
     height:auto
+  }
+
+  /* CTA BUTTON */
+  .cta-button{
+    position:relative;
+    z-index:3;
+    margin:40px auto 20px;
+  }
+  .btn-join{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    background:linear-gradient(135deg, #5865F2, #4752c4);
+    padding:16px 40px;
+    border-radius:50px;
+    font-weight:800;
+    font-size:1.2rem;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:#fff;
+    text-decoration:none;
+    transition:all 0.3s ease;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 8px 25px rgba(88,101,242,0.3);
+  }
+  .btn-join:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 35px rgba(88,101,242,0.4);
+  }
+  .btn-join i{
+    font-size:1.3rem;
   }
 
   /* Discord Stats */
@@ -467,38 +390,6 @@
     50%{text-shadow:0 0 10px #7ee787;}
   }
   .dc-divider{width:1px; height:30px; background:#2a3a61; opacity:.8}
-
-  /* CTA BUTTON - NUOVO */
-  .cta-button{
-    position:relative;
-    z-index:3;
-    margin:40px auto 20px;
-  }
-  .btn-join{
-    display:inline-flex;
-    align-items:center;
-    gap:12px;
-    background:linear-gradient(135deg, #5865F2, #4752c4);
-    padding:16px 40px;
-    border-radius:50px;
-    font-weight:800;
-    font-size:1.2rem;
-    text-transform:uppercase;
-    letter-spacing:2px;
-    color:#fff;
-    text-decoration:none;
-    transition:all 0.3s ease;
-    border:none;
-    cursor:pointer;
-    box-shadow:0 8px 25px rgba(88,101,242,0.3);
-  }
-  .btn-join:hover{
-    transform:translateY(-3px);
-    box-shadow:0 15px 35px rgba(88,101,242,0.4);
-  }
-  .btn-join i{
-    font-size:1.3rem;
-  }
 
   /* Animazioni fade */
   @keyframes fadeInUp{
@@ -620,8 +511,6 @@
     .stats-bar{gap:15px}
     .stat-item{padding:12px 20px; min-width:100px}
     .stat-number{font-size:1.8rem}
-    .countdown-box{padding:10px 15px; min-width:60px}
-    .countdown-number{font-size:1.8rem}
   }
   </style>
 </head>
@@ -648,7 +537,7 @@
   </header>
 
   <main id="app">
-    <!-- HOME - COMPLETAMENTE RINNOVATA -->
+    <!-- HOME -->
     <section id="page-home" class="page active" data-page>
       <div class="hero">
         <!-- Particelle animate -->
@@ -703,55 +592,6 @@
           </div>
         </div>
 
-        <!-- INFO CARDS -->
-        <div class="info-cards">
-          <div class="info-card">
-            <div class="info-icon"><i class="fa-solid fa-handshake"></i></div>
-            <h3>Roleplay Serio</h3>
-            <p>Regole chiare e gestione attiva per un'esperienza di gioco realistica e coinvolgente</p>
-          </div>
-          <div class="info-card">
-            <div class="info-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-            <h3>Economia Reale</h3>
-            <p>Sistema economico bilanciato con lavori, aziende e possibilità di crescita</p>
-          </div>
-          <div class="info-card">
-            <div class="info-icon"><i class="fa-solid fa-headset"></i></div>
-            <h3>Staff Dedicated</h3>
-            <p>Team di moderazione attivo 24/7 per supportare la community</p>
-          </div>
-          <div class="info-card">
-            <div class="info-icon"><i class="fa-solid fa-gun"></i></div>
-            <h3>Custom Scripts</h3>
-            <p>Script esclusivi creati per offrire un gameplay unico e innovativo</p>
-          </div>
-        </div>
-
-        <!-- COUNTDOWN SECTION -->
-        <div class="countdown-section">
-          <div class="countdown-title">
-            <i class="fa-solid fa-calendar-alt"></i> Prossimo Evento
-          </div>
-          <div class="countdown-timer" id="countdownTimer">
-            <div class="countdown-box">
-              <div class="countdown-number" id="days">00</div>
-              <div class="countdown-label">Giorni</div>
-            </div>
-            <div class="countdown-box">
-              <div class="countdown-number" id="hours">00</div>
-              <div class="countdown-label">Ore</div>
-            </div>
-            <div class="countdown-box">
-              <div class="countdown-number" id="minutes">00</div>
-              <div class="countdown-label">Minuti</div>
-            </div>
-            <div class="countdown-box">
-              <div class="countdown-number" id="seconds">00</div>
-              <div class="countdown-label">Secondi</div>
-            </div>
-          </div>
-        </div>
-
         <!-- Video -->
         <div class="home-video">
           <div class="home-video-head">
@@ -792,7 +632,7 @@
       </div>
     </section>
 
-    <!-- STAFF (invariato) -->
+    <!-- STAFF -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman">👑 Il nostro staff</h2>
 
@@ -954,7 +794,7 @@
   
   const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
 
-  /* PARTICLLE ANIMATE */
+  /* PARTICELLE ANIMATE */
   function createParticles() {
     const container = $('#particles');
     if(!container) return;
@@ -971,38 +811,6 @@
       container.appendChild(particle);
     }
   }
-
-  /* COUNTDOWN TIMER */
-  function updateCountdown() {
-    // Prossimo evento: ogni sabato alle 20:00
-    const now = new Date();
-    const nextEvent = new Date();
-    nextEvent.setDate(now.getDate() + ((6 - now.getDay() + 7) % 7));
-    nextEvent.setHours(20, 0, 0, 0);
-    
-    if(nextEvent <= now) {
-      nextEvent.setDate(nextEvent.getDate() + 7);
-    }
-    
-    const diff = nextEvent - now;
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (86400000)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (3600000)) / (1000 * 60));
-    const seconds = Math.floor((diff % (60000)) / 1000);
-    
-    const daysEl = $('#days');
-    const hoursEl = $('#hours');
-    const minutesEl = $('#minutes');
-    const secondsEl = $('#seconds');
-    
-    if(daysEl) daysEl.textContent = String(days).padStart(2, '0');
-    if(hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
-    if(minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
-    if(secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
-  }
-  
-  setInterval(updateCountdown, 1000);
-  updateCountdown();
 
   /* AUTH DISCORD */
   function getAuthToken() {

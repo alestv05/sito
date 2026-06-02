@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>California Dreaming Roleplay | FontAwesome Icons</title>
+  <title>California Dreaming Roleplay | Regolamento</title>
 
   <!-- Preconnect Discord -->
   <link rel="preconnect" href="https://discord.com" crossorigin>
@@ -414,54 +414,142 @@
   .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:20px; padding:28px; box-shadow:var(--shadow)}
 
   /* Regolamento Page Style */
-  .regolamento-container{
-    max-width: 1000px;
+  .regolamento-wrapper{
+    max-width: 1300px;
     margin: 0 auto;
     padding: 20px;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
   }
+  
+  .regolamento-sidebar{
+    flex: 0 0 260px;
+    background: #0f1625;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid #2a3a61;
+    position: sticky;
+    top: 90px;
+    height: fit-content;
+  }
+  
+  .regolamento-sidebar h3{
+    color: #58a6ff;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #2a3a61;
+    padding-bottom: 12px;
+  }
+  
+  .regolamento-buttons{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .reg-button{
+    background: transparent;
+    border: none;
+    color: #cfe0ff;
+    padding: 12px 15px;
+    text-align: left;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: inherit;
+  }
+  
+  .reg-button i{
+    width: 24px;
+    color: #58a6ff;
+    font-size: 1rem;
+  }
+  
+  .reg-button:hover{
+    background: #1a2538;
+    transform: translateX(5px);
+  }
+  
+  .reg-button.active{
+    background: linear-gradient(135deg, #58a6ff20, #0b6dd620);
+    border-left: 3px solid #58a6ff;
+    color: #fff;
+  }
+  
+  .regolamento-content{
+    flex: 1;
+    min-width: 280px;
+  }
+  
   .regolamento-section{
     background: #121a2a;
     border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 30px;
-    border: 1px solid #2a3a61;
-    transition: transform 0.3s ease;
-  }
-  .regolamento-section:hover{
-    transform: translateY(-3px);
-    border-color: #58a6ff;
-  }
-  .regolamento-section h3{
-    color: #58a6ff;
-    font-size: 1.6rem;
+    padding: 30px;
     margin-bottom: 20px;
+    border: 1px solid #2a3a61;
+    animation: fadeInUp 0.4s ease;
+    display: none;
+  }
+  
+  .regolamento-section.active-section{
+    display: block;
+  }
+  
+  .regolamento-section h2{
+    color: #58a6ff;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
     display: flex;
     align-items: center;
     gap: 12px;
     border-left: 4px solid #58a6ff;
-    padding-left: 15px;
+    padding-left: 20px;
   }
-  .regolamento-section h3 i{
-    font-size: 1.8rem;
+  
+  .regolamento-section h2 i{
+    font-size: 1.6rem;
   }
+  
+  .regolamento-section h3{
+    color: #7ee787;
+    font-size: 1.3rem;
+    margin: 20px 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
   .regolamento-section p{
     color: #cfe0ff;
-    line-height: 1.6;
+    line-height: 1.7;
     margin-bottom: 15px;
   }
+  
   .regolamento-section ul{
     list-style: none;
     padding-left: 0;
   }
+  
   .regolamento-section ul li{
     color: #cfe0ff;
     padding: 10px 0 10px 25px;
     position: relative;
     border-bottom: 1px solid #2a3a61;
   }
+  
   .regolamento-section ul li:last-child{
     border-bottom: none;
   }
+  
   .regolamento-section ul li:before{
     content: "•";
     color: #58a6ff;
@@ -470,21 +558,37 @@
     left: 0;
     font-size: 1.2rem;
   }
+  
   .regolamento-section ul li i{
     margin-right: 10px;
     color: #7ee787;
     width: 20px;
   }
+  
   .warning-box{
     background: rgba(255, 77, 79, 0.1);
     border-left: 4px solid #ff4d4f;
     padding: 15px;
     border-radius: 10px;
-    margin-top: 15px;
+    margin: 15px 0;
   }
+  
   .warning-box i{
     color: #ff4d4f;
     margin-right: 10px;
+  }
+  
+  .info-box{
+    background: rgba(88, 166, 255, 0.1);
+    border-left: 4px solid #58a6ff;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+  }
+  
+  .term-highlight{
+    color: #58a6ff;
+    font-weight: 600;
   }
 
   /* STAFF con icone FontAwesome migliorate */
@@ -586,7 +690,22 @@
   .page.active{display:block}
 
   /* Responsive */
-  @media (max-width:600px){
+  @media (max-width:768px){
+    .regolamento-wrapper{
+      flex-direction: column;
+    }
+    .regolamento-sidebar{
+      position: static;
+      flex: auto;
+    }
+    .regolamento-buttons{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .reg-button{
+      padding: 10px 12px;
+    }
     .title-roman{font-size:1.8rem}
     .discord-numbers{gap:12px; padding:8px 16px}
     .discord-num{min-width:65px}
@@ -602,8 +721,8 @@
     .stat-item{padding:12px 20px; min-width:100px}
     .stat-number{font-size:1.8rem}
     .stat-number i { font-size: 1.4rem; }
-    .regolamento-section h3{font-size:1.3rem;}
-    .regolamento-section h3 i{font-size:1.3rem;}
+    .regolamento-section h2{font-size:1.4rem;}
+    .regolamento-section h2 i{font-size:1.3rem;}
   }
   </style>
 </head>
@@ -720,7 +839,7 @@
       </div>
     </section>
 
-    <!-- STAFF - Icone FontAwesome ovunque -->
+    <!-- STAFF -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-crown"></i> Il nostro staff</h2>
 
@@ -769,80 +888,243 @@
       </div>
     </section>
 
-    <!-- REGOLAMENTO - Nuova Pagina -->
+    <!-- REGOLAMENTO - Con tutti i sottopulsanti -->
     <section id="page-regolamento" class="page" data-page>
-      <div class="regolamento-container">
-        <h2 class="title-roman"><i class="fa-solid fa-book"></i> Regolamento del Server</h2>
-        
-        <div class="regolamento-section">
-          <h3><i class="fa-solid fa-shield-haltered"></i> Regole Generali</h3>
-          <ul>
-            <li><i class="fa-regular fa-circle-check"></i> Rispetta tutti i giocatori e lo staff. Nessuna forma di discriminazione o molestia sarà tollerata.</li>
-            <li><i class="fa-solid fa-ear-listen"></i> Segui sempre le indicazioni dello staff. Le loro decisioni sono finali.</li>
-            <li><i class="fa-solid fa-language"></i> Usa esclusivamente la lingua italiana in chat vocale e testuale.</li>
-            <li><i class="fa-solid fa-microphone"></i> È obbligatorio l'uso del microfono per il roleplay.</li>
-            <li><i class="fa-solid fa-face-smile"></i> Mantieni un atteggiamento maturo e rispettoso in ogni situazione.</li>
-          </ul>
+      <div class="regolamento-wrapper">
+        <!-- Sidebar con bottoni -->
+        <div class="regolamento-sidebar">
+          <h3><i class="fa-solid fa-book-open"></i> Sezioni</h3>
+          <div class="regolamento-buttons">
+            <button class="reg-button" data-reg-section="generale"><i class="fa-solid fa-gavel"></i> Regolamento Generale</button>
+            <button class="reg-button" data-reg-section="azioni"><i class="fa-solid fa-hand-fist"></i> Regolamento Azioni</button>
+            <button class="reg-button" data-reg-section="loot"><i class="fa-solid fa-sack-dollar"></i> Regolamento Loot</button>
+            <button class="reg-button" data-reg-section="permadeath"><i class="fa-solid fa-skull"></i> Regolamento Permadeath</button>
+            <button class="reg-button" data-reg-section="safezone"><i class="fa-solid fa-shield"></i> Regolamento Safezone</button>
+            <button class="reg-button" data-reg-section="capifazione"><i class="fa-solid fa-crown"></i> Regolamento Capi Fazione</button>
+            <button class="reg-button" data-reg-section="lavori"><i class="fa-solid fa-briefcase"></i> Regolamento Lavori e Locali</button>
+            <button class="reg-button" data-reg-section="forzeordine"><i class="fa-solid fa-shield-haltered"></i> Regolamento Forze dell'Ordine</button>
+            <button class="reg-button" data-reg-section="emergenza"><i class="fa-solid fa-truck-medical"></i> Regolamento Servizi di Emergenza</button>
+            <button class="reg-button" data-reg-section="incidenti"><i class="fa-solid fa-car-crash"></i> Regolamento Incidenti</button>
+            <button class="reg-button" data-reg-section="criminalita"><i class="fa-solid fa-mask"></i> Regolamento Criminalità</button>
+            <button class="reg-button" data-reg-section="rapine"><i class="fa-solid fa-handcuffs"></i> Regolamento Rapine</button>
+          </div>
         </div>
 
-        <div class="regolamento-section">
-          <h3><i class="fa-solid fa-gun"></i> Regole Roleplay</h3>
-          <ul>
-            <li><i class="fa-regular fa-clock"></i> Rispetta il FearRP: se sei sotto tiro, comportati di conseguenza.</li>
-            <li><i class="fa-solid fa-car"></i> Segui il Codice della Strada: guida in modo realistico.</li>
-            <li><i class="fa-solid fa-heartbeat"></i> Il Deathmatch (uccidere senza motivo) è vietato.</li>
-            <li><i class="fa-solid fa-truck-fast"></i> Value Your Life: la tua vita è importante, evita azioni suicide in RP.</li>
-            <li><i class="fa-solid fa-handcuffs"></i> Il combat logging (uscire durante un'azione RP) è severamente vietato.</li>
-            <li><i class="fa-solid fa-building"></i> Rispetta le proprietà pubbliche e private in gioco.</li>
-          </ul>
-        </div>
+        <!-- Contenuto dinamico -->
+        <div class="regolamento-content">
+          <!-- Regolamento Generale -->
+          <div id="reg-generale" class="regolamento-section active-section">
+            <h2><i class="fa-solid fa-gavel"></i> Regolamento Generale</h2>
+            <p>L'educazione e il rispetto reciproco sono aspetti fondamentali della community di California Dreaming Roleplay. Riteniamo che ci siano modi e modi di dire le cose e, sebbene sia pressoché naturale alterarsi per qualsiasi situazione spiacevole, è necessario che si mantenga un comportamento tollerabile per garantire un'esperienza di gioco sempre gradevole.</p>
+            <p>Vi si chiede, quindi, di gestire ogni impulsività in modo impeccabile, specie nei momenti in cui si è a conoscenza o si teme che le proprie azioni possano ledere gli interessi di un altro utente. Vi si ricorda, inoltre, che non c'è diatriba che non si possa risolvere attraverso il confronto pacifico e, in extrema ratio, i mezzi predisposti dallo staff per la risoluzione di eventuali conflitti: <strong class="term-highlight">Ticket e Assistenze</strong>.</p>
+            
+            <h3><i class="fa-solid fa-circle-info"></i> Regole Fondamentali</h3>
+            <ul>
+              <li><i class="fa-regular fa-circle-check"></i> Fate roleplay in ogni momento: non vi si autorizza in alcun caso a bloccare una scena a causa di infrazioni del regolamento commesse dai partecipanti (Es: chiamare l'angioletto).</li>
+              <li><i class="fa-regular fa-circle-check"></i> Nessuno è autorizzato ad infrangere le regole del server.</li>
+            </ul>
 
-        <div class="regolamento-section">
-          <h3><i class="fa-solid fa-car"></i> Regole Veicoli e Volo</h3>
-          <ul>
-            <li><i class="fa-solid fa-gauge-high"></i> Rispetta i limiti di velocità nelle aree urbane.</li>
-            <li><i class="fa-solid fa-helicopter"></i> Per utilizzare velivoli è necessario avere una motivazione RP valida.</li>
-            <li><i class="fa-solid fa-circle-parking"></i> Parcheggia sempre in modo appropriato e non bloccare strade o ingressi.</li>
-            <li><i class="fa-solid fa-screwdriver-wrench"></i> Le modifiche estetiche ai veicoli devono essere realistiche.</li>
-          </ul>
-        </div>
+            <h3><i class="fa-solid fa-ban"></i> Regole Principali</h3>
+            <ul>
+              <li><i class="fa-solid fa-skull"></i> <strong class="term-highlight">RDM (Random Deathmatch):</strong> Uccidere o ferire un'altra persona senza un valido motivo roleplay. Non è ammesso provocare qualcuno con l'unico scopo di far partire una rissa/sparatoria.</li>
+              <li><i class="fa-solid fa-car"></i> <strong class="term-highlight">VDM (Vehicle Deathmatch):</strong> Uccidere o ferire un'altra persona senza un valido motivo roleplay attraverso l'utilizzo di veicolo (Es: Investendo la persona fino a quando muore).</li>
+              <li><i class="fa-solid fa-dragon"></i> <strong class="term-highlight">POWERGAME:</strong> Consiste nel compiere atti umanamente impossibili nonostante la fisica di GTA V li renda possibili (Es: Cadere da un'altezza notevole e non ruolare alcuna ferita.)</li>
+              <li><i class="fa-solid fa-eye"></i> <strong class="term-highlight">METAGAME:</strong> L'utilizzo In Character (IC) di informazioni che si conoscono Out Of Character (OOC) è vietato. Nel metagame rientrano anche Stream Sniping e Back Seating.</li>
+              <li><i class="fa-solid fa-stream"></i> <strong class="term-highlight">STREAM SNIPING:</strong> Ricavare delle informazioni RP tramite la live di uno streamer. Disturbare il gioco dello streamer raggiungendo la sua posizione ottenuta tramite la stream.</li>
+              <li><i class="fa-solid fa-chair"></i> <strong class="term-highlight">BACK SEATING:</strong> Utilizzare la chat della live di uno streamer al fine di consigliare le azioni da intraprendere. Di conseguenza, lo streamer non è autorizzato a seguire le azioni consigliate.</li>
+              <li><i class="fa-solid fa-face-frown"></i> <strong class="term-highlight">FAIL RP:</strong> Si verifica quando un giocatore mantiene comportamenti irrealistici, forzati e impossibili. Ad esempio cambiare la propria interpretazione, troncando la storia roleplay.</li>
+              <li><i class="fa-solid fa-gun"></i> <strong class="term-highlight">REVENGE KILL:</strong> Consiste nell'uccidere o tentare di uccidere il personaggio che ci ha eliminati in precedenza.</li>
+              <li><i class="fa-solid fa-face-fearful"></i> <strong class="term-highlight">NO FEAR:</strong> Non simulare la paura e/o preoccupazione in azioni di panico.</li>
+              <li><i class="fa-solid fa-person-running"></i> <strong class="term-highlight">BUNNY HOP:</strong> Saltare da una parte all'altra in ripetuta per acquisire maggiore velocità o per schivare proiettili.</li>
+              <li><i class="fa-solid fa-handcuffs"></i> <strong class="term-highlight">COP BAITING:</strong> E' severamente vietato provocare e disturbare le FdO con l'intento di creare un inseguimento senza una motivazione.</li>
+              <li><i class="fa-solid fa-right-from-bracket"></i> <strong class="term-highlight">COMBATLOG:</strong> Uscire dal server di gioco mentre un'azione è in corso per fuggire da situazioni di svantaggio; Entrare in gioco mentre si è a conoscenza di un'azione in corso per portare vantaggio alla propria fazione.</li>
+              <li><i class="fa-solid fa-comment-dots"></i> <strong class="term-highlight">MIX CHAT:</strong> Scambiare l'utilizzo delle varie chat presenti con la chat IC (In Character) e/o viceversa.</li>
+              <li><i class="fa-solid fa-bug"></i> <strong class="term-highlight">BUG ABUSING:</strong> Sfruttare un bug, un errore di gioco e/o un glitch a proprio vantaggio.</li>
+              <li><i class="fa-solid fa-car-side"></i> <strong class="term-highlight">CAR SURF:</strong> Stanziare sopra la carrozzeria di un veicolo che è in movimento.</li>
+              <li><i class="fa-solid fa-car"></i> <strong class="term-highlight">CARJACK:</strong> Rubare il veicolo ad una persona senza una valida motivazione e scena.</li>
+            </ul>
 
-        <div class="regolamento-section">
-          <h3><i class="fa-solid fa-store"></i> Regole Economia e Lavori</h3>
-          <ul>
-            <li><i class="fa-solid fa-sack-dollar"></i> È vietato il powergaming: sfruttare meccaniche di gioco a tuo vantaggio irrealistico.</li>
-            <li><i class="fa-solid fa-chart-line"></i> Non è permesso scambiare denaro tra personaggi senza una valida ragione RP.</li>
-            <li><i class="fa-solid fa-briefcase"></i> Ogni lavoro deve essere svolto con serietà e realismo.</li>
-            <li><i class="fa-solid fa-cart-shopping"></i> I prezzi nei negozi e nelle attività devono essere realistici.</li>
-          </ul>
-        </div>
+            <h3><i class="fa-solid fa-language"></i> Linguaggio e Comportamento</h3>
+            <ul>
+              <li><i class="fa-solid fa-message"></i> È vietato l'utilizzo di un LINGUAGGIO VOLGARE ED OFFENSIVO se non a scopo di RP (inclusa tossicità). È severamente vietato utilizzare termini non concessi dal regolamento di Twitch.tv.</li>
+              <li><i class="fa-solid fa-eye"></i> <strong class="term-highlight">ABUSO DI TERZA PERSONA:</strong> Utilizzare la terza persona per poter vedere aree che il proprio personaggio non sarebbe in grado di vedere.</li>
+              <li>È severamente vietato l'uso improprio dello /me.</li>
+              <li>È severamente vietato l'utilizzo di tutte le terze parti che possano avvantaggiare il giocatore (Mod grafiche, grafiche stretchate, boost passi e armi, no prop, no bush, no vegetation, low vegetation, crosshair, modifiche al killfeed, rapid fire, no recoil e no rolas). E' vietato l'utilizzo di macro.</li>
+              <li>Se si è in compagnia, è vietato riprodurre brani musicali protetti da copyright.</li>
+              <li>È severamente vietato l'utilizzo di nomi non consoni all'rp: nomi troll e nomi famosi.</li>
+            </ul>
 
-        <div class="regolamento-section">
-          <h3><i class="fa-solid fa-message"></i> Regole Chat e Comportamento</h3>
-          <ul>
-            <li><i class="fa-solid fa-comment-dots"></i> Usa /ooc solo per comunicazioni fuori RP necessarie.</li>
-            <li><i class="fa-solid fa-spam"></i> Niente spam o flood in chat.</li>
-            <li><i class="fa-solid fa-tag"></i> I nomi dei personaggi devono essere realistici (es. Nome Cognome).</li>
-            <li><i class="fa-solid fa-clipboard"></i> In caso di dubbi, contatta lo staff tramite ticket.</li>
-          </ul>
-        </div>
+            <h3><i class="fa-solid fa-user-astronaut"></i> Aspetto e Riconoscimento</h3>
+            <ul>
+              <li>È vietato utilizzare il personaggio iniziale (Skin base). Bisogna cambiare aspetto senza bug di arti invisibili, vestiti strappati o la maschera in viso.</li>
+              <li>Durante l'utilizzo di una maschera che copre totalmente il viso, è consentito l'uso di un modificatore di voce. In ogni caso, sia che il modificatore sia attivo o meno, la voce non può essere riconosciuta.</li>
+              <li>Sarà possibile riconoscere una persona dai vestiti se trovata nei pressi del luogo di commissione del fatto (es. ladro di auto segnalato vicino all'armeria che è vestito con tuta blu).</li>
+              <li>Sarà possibile risalire all'identità di una persona, mediante i suoi tatuaggi se già noto alle Forze dell'Ordine (Es. persona già arrestata con dei tatuaggi schedati, potrà essere eventualmente un elemento per essere riconosciuto) oppure già nota a terzi soggetti.</li>
+              <li>Mascherare parzialmente il viso (Es. bandana) può permettere il riconoscimento della persona se già noti gli altri suoi particolari del viso (Es. occhi, taglio o colore capelli particolari, tatuaggi).</li>
+            </ul>
 
-        <div class="regolamento-section">
-          <div class="warning-box">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <strong>Importante:</strong> La violazione di queste regole può portare a sanzioni che vanno dal warn al ban permanente, a seconda della gravità. Lo staff si riserva il diritto di prendere decisioni in casi non esplicitamente coperti dal regolamento.
+            <h3><i class="fa-solid fa-suitcase"></i> Lavori e Fazioni</h3>
+            <ul>
+              <li>L'utilizzo del comando /me DEVE essere utilizzato soltanto per le azioni compiute e non può essere utilizzato per i pensieri.</li>
+              <li>E' vietato a tutti i player con un lavoro whitelist, giocare su altri server WL; tale violazione comporterà la rimozione immediata del job con relativo richiamo, tale regola è valida anche su server no WL.</li>
+              <li>E' vietato guidare qualsiasi tipo di veivolo (Elicottero/Aereo) senza aver preso il Brevetto di volo in game, salvo per le persone appartenenti alla Cupola.</li>
+              <li>I veicoli di fazione (lavoro WL) dovranno essere utilizzati esclusivamente per scopi di fazione/Lavoro no WL.</li>
+              <li>Per entrare nelle fazioni legali occorrerà presentare l'apposito bando su discord (se aperti) e seguire le indicazioni che verranno date. E' assolutamente vietato per i capi fazione fazionare gente senza bandi (salvo autorizzazione del Managment).</li>
+            </ul>
+
+            <div class="warning-box">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <strong>Nota Bene:</strong> La violazione di queste regole può portare a sanzioni che vanno dal warn al ban permanente. Lo staff si riserva il diritto di prendere decisioni in casi non esplicitamente coperti dal regolamento.
+            </div>
+          </div>
+
+          <!-- Regolamento Azioni -->
+          <div id="reg-azioni" class="regolamento-section">
+            <h2><i class="fa-solid fa-hand-fist"></i> Regolamento Azioni</h2>
+            <p>Le azioni RP devono essere sempre giustificate da un contesto valido e coerente con il personaggio interpretato.</p>
+            <ul>
+              <li><i class="fa-regular fa-clock"></i> Ogni azione violenta deve avere una motivazione RP chiara e proporzionata.</li>
+              <li><i class="fa-solid fa-handcuffs"></i> Le azioni di arresto devono seguire la procedura standard.</li>
+              <li><i class="fa-solid fa-truck-medical"></i> Le cure mediche devono essere richieste tramite /me.</li>
+              <li><i class="fa-solid fa-gavel"></i> Le azioni legali devono essere documentate.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Loot -->
+          <div id="reg-loot" class="regolamento-section">
+            <h2><i class="fa-solid fa-sack-dollar"></i> Regolamento Loot</h2>
+            <p>Il loot dei cadaveri è consentito solo in specifiche situazioni RP.</p>
+            <ul>
+              <li><i class="fa-solid fa-skull"></i> È possibile saccheggiare solo il cadavere di un giocatore che si ha ucciso in uno scontro RP valido.</li>
+              <li><i class="fa-solid fa-handcuffs"></i> Non è permesso lootare agenti delle Forze dell'Ordine.</li>
+              <li><i class="fa-solid fa-truck-medical"></i> I dottori possono lootare solo materiale medico.</li>
+              <li><i class="fa-solid fa-clock"></i> Il loot deve avvenire entro 5 minuti dalla morte.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Permadeath -->
+          <div id="reg-permadeath" class="regolamento-section">
+            <h2><i class="fa-solid fa-skull"></i> Regolamento Permadeath</h2>
+            <p>Il permadeath è una meccanica che può essere attivata in determinate circostanze.</p>
+            <ul>
+              <li><i class="fa-solid fa-heartbeat"></i> La morte definitiva del personaggio può essere volontaria o forzata da situazioni estreme.</li>
+              <li><i class="fa-solid fa-file-signature"></i> In caso di permadeath, il giocatore deve creare un nuovo personaggio.</li>
+              <li><i class="fa-solid fa-handcuffs"></i> I beni del personaggio defunto vanno in gestione allo staff.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Safezone -->
+          <div id="reg-safezone" class="regolamento-section">
+            <h2><i class="fa-solid fa-shield"></i> Regolamento Safezone</h2>
+            <p>Le safezone sono aree protette dove non sono consentite azioni violente.</p>
+            <ul>
+              <li><i class="fa-solid fa-hospital"></i> Gli ospedali sono considerati safezone.</li>
+              <li><i class="fa-solid fa-handcuffs"></i> I commissariati sono safezone per le Forze dell'Ordine.</li>
+              <li><i class="fa-solid fa-gun"></i> È vietato sparare o commettere reati all'interno delle safezone.</li>
+              <li><i class="fa-solid fa-car"></i> Anche i parcheggi dei veicoli di servizio sono protetti.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Capi Fazione -->
+          <div id="reg-capifazione" class="regolamento-section">
+            <h2><i class="fa-solid fa-crown"></i> Regolamento Capi Fazione</h2>
+            <p>I capi fazione hanno responsabilità aggiuntive all'interno del server.</p>
+            <ul>
+              <li><i class="fa-solid fa-clipboard-list"></i> Devono gestire i membri della propria fazione.</li>
+              <li><i class="fa-solid fa-envelope"></i> Devono rispondere ai ticket entro 48 ore.</li>
+              <li><i class="fa-solid fa-scale-balanced"></i> Devono far rispettare il regolamento all'interno della fazione.</li>
+              <li><i class="fa-solid fa-chart-line"></i> Devono organizzare attività di fazione settimanali.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Lavori e Locali -->
+          <div id="reg-lavori" class="regolamento-section">
+            <h2><i class="fa-solid fa-briefcase"></i> Regolamento Lavori e Locali</h2>
+            <p>I lavori e i locali devono essere gestiti con serietà e professionalità.</p>
+            <ul>
+              <li><i class="fa-solid fa-store"></i> Ogni attività deve avere orari di apertura coerenti.</li>
+              <li><i class="fa-solid fa-tag"></i> I prezzi devono essere realistici.</li>
+              <li><i class="fa-solid fa-users"></i> È obbligatoria la presenza di personale durante l'orario di apertura.</li>
+              <li><i class="fa-solid fa-chart-simple"></i> Le entrate vanno dichiarate al governo.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Forze dell'Ordine -->
+          <div id="reg-forzeordine" class="regolamento-section">
+            <h2><i class="fa-solid fa-shield-haltered"></i> Regolamento Forze dell'Ordine</h2>
+            <p>Le Forze dell'Ordine devono rispettare rigidi protocolli.</p>
+            <ul>
+              <li><i class="fa-solid fa-handcuffs"></i> Devono seguire la procedura di arresto standard.</li>
+              <li><i class="fa-solid fa-gun"></i> Possono usare la forza solo quando necessario.</li>
+              <li><i class="fa-solid fa-car"></i> Devono rispettare il codice della strada durante gli inseguimenti.</li>
+              <li><i class="fa-solid fa-file-signature"></i> Devono compilare rapporti per ogni intervento.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Servizi di Emergenza -->
+          <div id="reg-emergenza" class="regolamento-section">
+            <h2><i class="fa-solid fa-truck-medical"></i> Regolamento Servizi di Emergenza</h2>
+            <p>I servizi di emergenza (EMS, Vigili del Fuoco) devono rispondere tempestivamente alle chiamate.</p>
+            <ul>
+              <li><i class="fa-solid fa-truck"></i> Devono raggiungere la scena entro tempi ragionevoli.</li>
+              <li><i class="fa-solid fa-heartbeat"></i> Devono stabilizzare i pazienti prima del trasporto.</li>
+              <li><i class="fa-solid fa-file-medical"></i> Devono compilare referti medici.</li>
+              <li><i class="fa-solid fa-fire-extinguisher"></i> Devono risolvere le emergenze in modo realistico.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Incidenti -->
+          <div id="reg-incidenti" class="regolamento-section">
+            <h2><i class="fa-solid fa-car-crash"></i> Regolamento Incidenti</h2>
+            <p>Gli incidenti stradali devono essere gestiti con realismo.</p>
+            <ul>
+              <li><i class="fa-solid fa-car"></i> In caso di incidente grave, bisogna attendere l'arrivo delle autorità.</li>
+              <li><i class="fa-solid fa-hand"></i> Non è permesso lasciare la scena se si è coinvolti.</li>
+              <li><i class="fa-solid fa-clipboard"></i> Le Forze dell'Ordine devono ricostruire la dinamica.</li>
+              <li><i class="fa-solid fa-truck-medical"></i> I feriti devono ricevere cure prima di essere spostati.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Criminalità -->
+          <div id="reg-criminalita" class="regolamento-section">
+            <h2><i class="fa-solid fa-mask"></i> Regolamento Criminalità</h2>
+            <p>Le attività criminali devono essere gestite con discrezione e realismo.</p>
+            <ul>
+              <li><i class="fa-solid fa-gun"></i> Le rapine devono avere una pianificazione RP.</li>
+              <li><i class="fa-solid fa-mask"></i> L'uso della maschera è obbligatorio durante i crimini.</li>
+              <li><i class="fa-solid fa-handcuffs"></i> Se arrestati, i criminali devono collaborare con le FdO.</li>
+              <li><i class="fa-solid fa-building"></i> Le basi criminali devono essere nascoste alla vista.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Rapine -->
+          <div id="reg-rapine" class="regolamento-section">
+            <h2><i class="fa-solid fa-handcuffs"></i> Regolamento Rapine</h2>
+            <p>Le rapine sono consentite solo con determinate limitazioni.</p>
+            <ul>
+              <li><i class="fa-solid fa-clock"></i> Non più di 3 rapine al giorno per persona.</li>
+              <li><i class="fa-solid fa-store"></i> È vietato rapinare lo stesso negozio due volte nella stessa ora.</li>
+              <li><i class="fa-solid fa-gun"></i> È obbligatorio mostrare l'arma durante la rapina.</li>
+              <li><i class="fa-solid fa-sack-dollar"></i> Il bottino massimo è stabilito dallo staff.</li>
+              <li><i class="fa-solid fa-handcuffs"></i> Gli ostaggi devono essere rilasciati dopo la fuga.</li>
+            </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- DONAZIONI E DETTAGLIO... (già presenti) -->
+    <!-- DONAZIONI E DETTAGLIO -->
     <section id="page-donations" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-coins"></i> Sostieni California Dreaming</h2>
-      <div id="donationsGrid" class="donations-grid">... </div>
+      <div id="donationsGrid" class="donations-grid"></div>
     </section>
     <section id="page-donation" class="page" data-page>
-      <div class="card">...</div>
+      <div class="card">
+        <div class="donation-detail">
+          <div class="donation-media"><img id="detailImg" src="" alt=""></div>
+          <div class="donation-info"><h2 id="detailTitle"></h2><div class="price" id="detailPrice"></div><pre id="detailDesc"></pre><div class="actions"><button class="btn btn-primary" id="btnBuy"><i class="fa-solid fa-cart-shopping"></i> Acquista</button><button class="btn btn-ghost" id="btnBackDon"><i class="fa-solid fa-arrow-left"></i> Torna indietro</button></div></div>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -879,6 +1161,7 @@
     }
     
     const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
+    
     function createParticles() {
       const container = $('#particles');
       if(!container) return;
@@ -893,11 +1176,13 @@
         container.appendChild(p);
       }
     }
+    
     function getAuthToken() { const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); if(!t||!e) return null; if(Date.now()>=e){clearAuth();return null;} return t; }
     function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
     function clearAuth() { localStorage.removeItem('nova_token'); localStorage.removeItem('nova_user'); localStorage.removeItem('nova_expires'); }
     function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
     function getAvatarUrl(user) { if(!user) return null; if(user.avatar && user.id) { const f = user.avatar.startsWith('a_')?'gif':'png'; return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; } const d = parseInt(user.discriminator||'0',10); return `https://cdn.discordapp.com/embed/avatars/${d%5||0}.png`; }
+    
     function updateAuthUI() {
       const token = getAuthToken();
       const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
@@ -917,7 +1202,9 @@
         if(active === 'donations' || active === 'donation') showPage('home');
       }
     }
+    
     function buildAuthURL(s) { const u = new URL('https://discord.com/oauth2/authorize'); u.searchParams.set('client_id',DISCORD_CLIENT_ID); u.searchParams.set('redirect_uri',REDIRECT_URI); u.searchParams.set('response_type','token'); u.searchParams.set('scope',DISCORD_SCOPE); u.searchParams.set('state',s); return u.toString(); }
+    
     async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
       if(!access_token) throw new Error('No token');
       localStorage.setItem('nova_token',access_token);
@@ -929,6 +1216,7 @@
       updateAuthUI();
       toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
     }
+    
     function beginDiscordLogin(e) {
       if(e){e.preventDefault();} if(isLoggedIn()){toast('Sei già loggato!','fa-solid fa-check');return;}
       const state = Math.random().toString(36).substr(2,16);
@@ -941,6 +1229,7 @@
       window.addEventListener('message',handler);
       setInterval(()=>{ if(popup?.closed){ window.removeEventListener('message',handler); showLoader(false); } },500);
     }
+    
     async function handleOAuthRedirect() {
       if(!window.location.hash.startsWith('#')) return false;
       const p = new URLSearchParams(window.location.hash.substr(1));
@@ -958,7 +1247,9 @@
       try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); }
       return true;
     }
+    
     function logout(e){ if(e)e.preventDefault(); const user = JSON.parse(localStorage.getItem('nova_user')||'null'); const name = user?formatDiscordName(user):''; clearAuth(); updateAuthUI(); showPage('home'); toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); }
+    
     function showPage(pageId) {
       if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ toast('Accedi per vedere le donazioni','fa-solid fa-lock'); pageId='home'; }
       $$('.page').forEach(p=>p.classList.remove('active'));
@@ -967,7 +1258,40 @@
       $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
       if(pageId==='home') $('#nvVideo')?.play().catch(()=>{});
     }
+    
     document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
+    
+    // Regolamento sezioni
+    function initRegolamento() {
+      const buttons = document.querySelectorAll('.reg-button');
+      const sections = document.querySelectorAll('.regolamento-section');
+      
+      function showSection(sectionId) {
+        sections.forEach(section => section.classList.remove('active-section'));
+        const targetSection = document.getElementById(`reg-${sectionId}`);
+        if(targetSection) targetSection.classList.add('active-section');
+        
+        buttons.forEach(btn => {
+          if(btn.dataset.regSection === sectionId) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+      
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const section = btn.dataset.regSection;
+          showSection(section);
+        });
+      });
+      
+      // Mostra la prima sezione di default
+      if(buttons.length > 0) {
+        showSection('generale');
+      }
+    }
     
     // Donations init
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"};
@@ -994,6 +1318,7 @@
         showPage('donation');
       });
     }
+    
     document.addEventListener('click',(e)=>{
       if(e.target.id==='btnBackDon') showPage('donations');
       if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket');
@@ -1010,6 +1335,7 @@
         $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—';
       }catch(e){ $('#countTotal').textContent='—'; $('#countOnline').textContent='—'; $('#statMembers').textContent='—'; }
     }
+    
     window.addEventListener('load', async ()=>{
       createParticles();
       await handleOAuthRedirect();
@@ -1018,6 +1344,7 @@
       setInterval(loadDiscordCounts,30000);
       $('#btnDiscordLogin')?.addEventListener('click',beginDiscordLogin);
       $('#btnLogout')?.addEventListener('click',logout);
+      initRegolamento();
     });
   </script>
 </body>

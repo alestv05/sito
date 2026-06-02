@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NOVA ROMA Roleplay</title>
+  <title>California Dreaming Roleplay</title>
 
   <!-- Preconnect Discord -->
   <link rel="preconnect" href="https://discord.com" crossorigin>
@@ -99,7 +99,7 @@
     to{transform:translateY(6px)}
   }
 
-  /* BENVENUTO SECTION - NUOVA SEZIONE BELLA */
+  /* BENVENUTO SECTION */
   .welcome-section{
     position:relative; z-index:3;
     max-width:900px;
@@ -376,7 +376,7 @@
   </header>
 
   <main id="app">
-    <!-- HOME - CON BENVENUTO -->
+    <!-- HOME -->
     <section id="page-home" class="page active" data-page>
       <div class="hero">
         <div class="logo-container">
@@ -384,13 +384,13 @@
           <div class="logo-glow"></div>
         </div>
 
-        <!-- NUOVA SEZIONE BENVENUTO -->
+        <!-- SEZIONE BENVENUTO -->
         <div class="welcome-section">
           <div class="welcome-badge">
             <i class="fa-solid fa-crown"></i>
             <span>Nuovo Server RP</span>
           </div>
-          <h1 class="welcome-title">Benvenuto su Nova Roma!</h1>
+          <h1 class="welcome-title">Benvenuto su California Dreaming!</h1>
           <p class="welcome-description">
             Siamo un nuovo server roleplay <span class="welcome-highlight">FiveM Italiano</span> ambientato negli Stati Uniti, 
             precisamente a <span class="welcome-highlight">Los Angeles</span>, la città degli angeli. 
@@ -424,7 +424,7 @@
         <div class="discord-counts" id="discordCountsCard">
           <div class="discord-chip">
             <i class="fa-brands fa-discord"></i>
-            <span id="guildName">NOVA ROMA Roleplay</span>
+            <span id="guildName">California Dreaming RP</span>
           </div>
           <div class="discord-numbers">
             <div class="discord-num">
@@ -503,9 +503,9 @@
       </div>
     </section>
 
-    <!-- DONAZIONI (solo loggati) -->
+    <!-- DONAZIONI -->
     <section id="page-donations" class="page" data-page>
-      <h2 class="title-roman">💰 Sostieni Nova Roma</h2>
+      <h2 class="title-roman">💰 Sostieni California Dreaming</h2>
       <div id="donationsGrid" class="donations-grid">
         <div class="donation-card" data-price="5" data-img="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png">
           <div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div>
@@ -569,7 +569,7 @@
 
   <footer class="site-footer">
     <div class="stripe"></div>
-    <p>© 2025 Nova Roma Roleplay — La città degli angeli ti aspetta</p>
+    <p>© 2025 California Dreaming Roleplay — La città degli angeli ti aspetta</p>
     <div class="footer-icons">
       <a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
       <a class="yt" href="https://youtube.com/@novaromarp?si=A5FuufVL9c9LEBAc" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i></a>
@@ -790,7 +790,7 @@
       const response = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`, { cache: 'no-cache' });
       if(!response.ok) throw new Error();
       const data = await response.json();
-      $('#guildName').textContent = data.guild?.name || 'NOVA ROMA';
+      $('#guildName').textContent = data.guild?.name || 'California Dreaming RP';
       $('#countTotal').textContent = data.approximate_member_count || '—';
       $('#countOnline').textContent = data.approximate_presence_count || '—';
     } catch(error) { $('#countTotal').textContent = '—'; $('#countOnline').textContent = '—'; }

@@ -413,6 +413,80 @@
   .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem; font-weight:800}
   .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:20px; padding:28px; box-shadow:var(--shadow)}
 
+  /* Regolamento Page Style */
+  .regolamento-container{
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .regolamento-section{
+    background: #121a2a;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #2a3a61;
+    transition: transform 0.3s ease;
+  }
+  .regolamento-section:hover{
+    transform: translateY(-3px);
+    border-color: #58a6ff;
+  }
+  .regolamento-section h3{
+    color: #58a6ff;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 4px solid #58a6ff;
+    padding-left: 15px;
+  }
+  .regolamento-section h3 i{
+    font-size: 1.8rem;
+  }
+  .regolamento-section p{
+    color: #cfe0ff;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  .regolamento-section ul{
+    list-style: none;
+    padding-left: 0;
+  }
+  .regolamento-section ul li{
+    color: #cfe0ff;
+    padding: 10px 0 10px 25px;
+    position: relative;
+    border-bottom: 1px solid #2a3a61;
+  }
+  .regolamento-section ul li:last-child{
+    border-bottom: none;
+  }
+  .regolamento-section ul li:before{
+    content: "•";
+    color: #58a6ff;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    font-size: 1.2rem;
+  }
+  .regolamento-section ul li i{
+    margin-right: 10px;
+    color: #7ee787;
+    width: 20px;
+  }
+  .warning-box{
+    background: rgba(255, 77, 79, 0.1);
+    border-left: 4px solid #ff4d4f;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+  }
+  .warning-box i{
+    color: #ff4d4f;
+    margin-right: 10px;
+  }
+
   /* STAFF con icone FontAwesome migliorate */
   .staff-section{max-width:1000px; margin:40px auto}
   .role{
@@ -528,6 +602,8 @@
     .stat-item{padding:12px 20px; min-width:100px}
     .stat-number{font-size:1.8rem}
     .stat-number i { font-size: 1.4rem; }
+    .regolamento-section h3{font-size:1.3rem;}
+    .regolamento-section h3 i{font-size:1.3rem;}
   }
   </style>
 </head>
@@ -539,6 +615,7 @@
     <nav class="nav" id="mainNav">
       <a class="nav-link active" data-route="home"><i class="fa-solid fa-house"></i> Home</a>
       <a class="nav-link" data-route="staff"><i class="fa-solid fa-users"></i> Staff</a>
+      <a class="nav-link" data-route="regolamento"><i class="fa-solid fa-book"></i> Regolamento</a>
       <a class="nav-link" id="navDonations" data-route="donations" hidden><i class="fa-solid fa-hand-holding-heart"></i> Donazioni</a>
       <a class="nav-link" id="btnDiscordLogin" title="Login con Discord">
         <i class="fa-brands fa-discord"></i> Login
@@ -688,6 +765,73 @@
         <div class="staff-grid">
           <div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre"></div><div class="member-name">Andre</div></div>
           <div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco"></div><div class="member-name">Falco</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGOLAMENTO - Nuova Pagina -->
+    <section id="page-regolamento" class="page" data-page>
+      <div class="regolamento-container">
+        <h2 class="title-roman"><i class="fa-solid fa-book"></i> Regolamento del Server</h2>
+        
+        <div class="regolamento-section">
+          <h3><i class="fa-solid fa-shield-haltered"></i> Regole Generali</h3>
+          <ul>
+            <li><i class="fa-regular fa-circle-check"></i> Rispetta tutti i giocatori e lo staff. Nessuna forma di discriminazione o molestia sarà tollerata.</li>
+            <li><i class="fa-solid fa-ear-listen"></i> Segui sempre le indicazioni dello staff. Le loro decisioni sono finali.</li>
+            <li><i class="fa-solid fa-language"></i> Usa esclusivamente la lingua italiana in chat vocale e testuale.</li>
+            <li><i class="fa-solid fa-microphone"></i> È obbligatorio l'uso del microfono per il roleplay.</li>
+            <li><i class="fa-solid fa-face-smile"></i> Mantieni un atteggiamento maturo e rispettoso in ogni situazione.</li>
+          </ul>
+        </div>
+
+        <div class="regolamento-section">
+          <h3><i class="fa-solid fa-gun"></i> Regole Roleplay</h3>
+          <ul>
+            <li><i class="fa-regular fa-clock"></i> Rispetta il FearRP: se sei sotto tiro, comportati di conseguenza.</li>
+            <li><i class="fa-solid fa-car"></i> Segui il Codice della Strada: guida in modo realistico.</li>
+            <li><i class="fa-solid fa-heartbeat"></i> Il Deathmatch (uccidere senza motivo) è vietato.</li>
+            <li><i class="fa-solid fa-truck-fast"></i> Value Your Life: la tua vita è importante, evita azioni suicide in RP.</li>
+            <li><i class="fa-solid fa-handcuffs"></i> Il combat logging (uscire durante un'azione RP) è severamente vietato.</li>
+            <li><i class="fa-solid fa-building"></i> Rispetta le proprietà pubbliche e private in gioco.</li>
+          </ul>
+        </div>
+
+        <div class="regolamento-section">
+          <h3><i class="fa-solid fa-car"></i> Regole Veicoli e Volo</h3>
+          <ul>
+            <li><i class="fa-solid fa-gauge-high"></i> Rispetta i limiti di velocità nelle aree urbane.</li>
+            <li><i class="fa-solid fa-helicopter"></i> Per utilizzare velivoli è necessario avere una motivazione RP valida.</li>
+            <li><i class="fa-solid fa-circle-parking"></i> Parcheggia sempre in modo appropriato e non bloccare strade o ingressi.</li>
+            <li><i class="fa-solid fa-screwdriver-wrench"></i> Le modifiche estetiche ai veicoli devono essere realistiche.</li>
+          </ul>
+        </div>
+
+        <div class="regolamento-section">
+          <h3><i class="fa-solid fa-store"></i> Regole Economia e Lavori</h3>
+          <ul>
+            <li><i class="fa-solid fa-sack-dollar"></i> È vietato il powergaming: sfruttare meccaniche di gioco a tuo vantaggio irrealistico.</li>
+            <li><i class="fa-solid fa-chart-line"></i> Non è permesso scambiare denaro tra personaggi senza una valida ragione RP.</li>
+            <li><i class="fa-solid fa-briefcase"></i> Ogni lavoro deve essere svolto con serietà e realismo.</li>
+            <li><i class="fa-solid fa-cart-shopping"></i> I prezzi nei negozi e nelle attività devono essere realistici.</li>
+          </ul>
+        </div>
+
+        <div class="regolamento-section">
+          <h3><i class="fa-solid fa-message"></i> Regole Chat e Comportamento</h3>
+          <ul>
+            <li><i class="fa-solid fa-comment-dots"></i> Usa /ooc solo per comunicazioni fuori RP necessarie.</li>
+            <li><i class="fa-solid fa-spam"></i> Niente spam o flood in chat.</li>
+            <li><i class="fa-solid fa-tag"></i> I nomi dei personaggi devono essere realistici (es. Nome Cognome).</li>
+            <li><i class="fa-solid fa-clipboard"></i> In caso di dubbi, contatta lo staff tramite ticket.</li>
+          </ul>
+        </div>
+
+        <div class="regolamento-section">
+          <div class="warning-box">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <strong>Importante:</strong> La violazione di queste regole può portare a sanzioni che vanno dal warn al ban permanente, a seconda della gravità. Lo staff si riserva il diritto di prendere decisioni in casi non esplicitamente coperti dal regolamento.
+          </div>
         </div>
       </div>
     </section>

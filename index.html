@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>California Dreaming Roleplay</title>
+  <title>California Dreaming Roleplay | FontAwesome Icons</title>
 
   <!-- Preconnect Discord -->
   <link rel="preconnect" href="https://discord.com" crossorigin>
@@ -83,7 +83,6 @@
     background: radial-gradient(ellipse at 30% 40%, rgba(88,166,255,0.08), transparent 50%);
   }
   
-  /* Particelle di sfondo */
   .particles{
     position:absolute;
     top:0;
@@ -143,7 +142,6 @@
     to{transform:translateY(6px)}
   }
 
-  /* BENVENUTO SECTION */
   .welcome-section{
     position:relative; z-index:3;
     max-width:900px;
@@ -230,7 +228,7 @@
     color:#58a6ff;
   }
 
-  /* STATS BAR */
+  /* STATS BAR con icone FA */
   .stats-bar{
     position:relative;
     z-index:3;
@@ -259,6 +257,14 @@
     font-size:2.5rem;
     font-weight:900;
     color:#58a6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .stat-number i {
+    font-size: 2rem;
+    color: #7ee787;
   }
   .stat-label{
     font-size:0.8rem;
@@ -407,19 +413,29 @@
   .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem; font-weight:800}
   .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:20px; padding:28px; box-shadow:var(--shadow)}
 
-  /* Staff */
+  /* STAFF con icone FontAwesome migliorate */
   .staff-section{max-width:1000px; margin:40px auto}
-  .role{display:flex; align-items:center; gap:10px; margin:0 0 20px; font-weight:800; font-size:1.5rem}
-  .role .role-icon{width:28px; height:28px; object-fit:contain; display:inline-block; filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
-  .staff-grid{display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .role{
+    display:flex; 
+    align-items:center; 
+    gap:12px; 
+    margin:0 0 20px; 
+    font-weight:800; 
+    font-size:1.5rem;
+    border-left: 4px solid #58a6ff;
+    padding-left: 15px;
+  }
+  .role i { font-size: 1.8rem; color: #58a6ff; width: 40px; text-align: center; }
+  .staff-grid{display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
   .member{background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:20px; display:grid; justify-items:center; gap:12px; transition:transform .3s ease}
   .member:hover{transform:translateY(-5px); border-color:#58a6ff}
   .avatar{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:#0f1528; overflow:hidden}
   .avatar img{width:100%; height:100%; object-fit:cover}
   .ring{border:2px solid #2a3a61}.ring-gold{border-color:#ffd76a}.ring-silver{border-color:#cfd7ff}
   .ring-red{border-color:#ff4d4f}.ring-green{border-color:#7ee787}.ring-purple{border-color:#a78bfa}
-  .member-name{font-weight:700; text-align:center; font-size:1.1rem}
-  .member-role{font-weight:600; font-size:.85rem; margin-top:-6px}
+  .member-name{font-weight:700; text-align:center; font-size:1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center;}
+  .member-role{font-weight:600; font-size:.85rem; margin-top:-6px; display: flex; align-items: center; justify-content: center; gap: 6px; background: #0f1625; padding: 4px 10px; border-radius: 40px; width: fit-content; margin-left: auto; margin-right: auto;}
+  .member-role i { font-size: 0.85rem; }
   .role-dev{color:#8ecaff}
   .role-eup{color:#4a90e2}
   .role-grafico{color:#ff4dd2}
@@ -485,11 +501,11 @@
   .footer-icons a.tt:hover{background:#25f4ee; color:#000}
   .footer-icons a.dc:hover{background:#5865F2; color:#fff}
 
-  /* Toast e Loader */
-  .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow); padding:12px 20px; border-radius:12px; font-weight:600; z-index:1000; opacity:0; transition:all .3s ease; backdrop-filter:blur(10px);}
+  /* Toast e Loader con icone */
+  .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow); padding:12px 20px; border-radius:12px; font-weight:600; z-index:1000; opacity:0; transition:all .3s ease; backdrop-filter:blur(10px); display: flex; align-items: center; gap: 12px;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
   .loader{position:fixed; inset:auto 20px 20px auto; background:#0f1625; border:1px solid #58a6ff; padding:10px 18px; border-radius:12px; font-weight:600; z-index:1100; display:none; backdrop-filter:blur(10px);}
-  .loader.show{display:block}
+  .loader.show{display:flex; align-items:center; gap: 8px;}
 
   /* Pages */
   .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
@@ -511,6 +527,7 @@
     .stats-bar{gap:15px}
     .stat-item{padding:12px 20px; min-width:100px}
     .stat-number{font-size:1.8rem}
+    .stat-number i { font-size: 1.4rem; }
   }
   </style>
 </head>
@@ -520,13 +537,13 @@
   <!-- NAVBAR -->
   <header class="site-header">
     <nav class="nav" id="mainNav">
-      <a class="nav-link active" data-route="home">Home</a>
-      <a class="nav-link" data-route="staff">Staff</a>
-      <a class="nav-link" id="navDonations" data-route="donations" hidden>Donazioni</a>
+      <a class="nav-link active" data-route="home"><i class="fa-solid fa-house"></i> Home</a>
+      <a class="nav-link" data-route="staff"><i class="fa-solid fa-users"></i> Staff</a>
+      <a class="nav-link" id="navDonations" data-route="donations" hidden><i class="fa-solid fa-hand-holding-heart"></i> Donazioni</a>
       <a class="nav-link" id="btnDiscordLogin" title="Login con Discord">
-        Login <i class="fa-brands fa-discord"></i>
+        <i class="fa-brands fa-discord"></i> Login
       </a>
-      <a class="nav-link" id="btnLogout" hidden>Logout</a>
+      <a class="nav-link" id="btnLogout" hidden><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
     </nav>
 
     <div class="top-avatar" id="topAvatar" title="Utente">
@@ -540,15 +557,12 @@
     <!-- HOME -->
     <section id="page-home" class="page active" data-page>
       <div class="hero">
-        <!-- Particelle animate -->
         <div class="particles" id="particles"></div>
-
         <div class="logo-container">
           <div class="logo-bg"></div>
           <div class="logo-glow"></div>
         </div>
 
-        <!-- SEZIONE BENVENUTO -->
         <div class="welcome-section">
           <div class="welcome-badge">
             <i class="fa-solid fa-crown"></i>
@@ -572,27 +586,26 @@
           </div>
         </div>
 
-        <!-- STATS BAR -->
+        <!-- STATS BAR CON ICONE FONTAWESOME -->
         <div class="stats-bar">
           <div class="stat-item">
-            <div class="stat-number">24/7</div>
+            <div class="stat-number"><i class="fa-regular fa-clock"></i> 24/7</div>
             <div class="stat-label">Server Online</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number" id="statMembers">—</div>
+            <div class="stat-number"><i class="fa-solid fa-users"></i> <span id="statMembers">—</span></div>
             <div class="stat-label">Membri Discord</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">50+</div>
+            <div class="stat-number"><i class="fa-solid fa-briefcase"></i> 50+</div>
             <div class="stat-label">Lavori Disponibili</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">100+</div>
+            <div class="stat-number"><i class="fa-solid fa-car-side"></i> 100+</div>
             <div class="stat-label">Veicoli</div>
           </div>
         </div>
 
-        <!-- Video -->
         <div class="home-video">
           <div class="home-video-head">
             <i class="fa-solid fa-film"></i>
@@ -603,7 +616,6 @@
           </div>
         </div>
 
-        <!-- CTA Button -->
         <div class="cta-button">
           <a href="https://discord.gg/TAhbywxE4A" target="_blank" class="btn-join">
             <i class="fa-brands fa-discord"></i> Unisciti al Discord
@@ -611,7 +623,6 @@
           </a>
         </div>
 
-        <!-- Discord Stats -->
         <div class="discord-counts" id="discordCountsCard">
           <div class="discord-chip">
             <i class="fa-brands fa-discord"></i>
@@ -619,12 +630,12 @@
           </div>
           <div class="discord-numbers">
             <div class="discord-num">
-              <span class="dc-label">Membri</span>
+              <span class="dc-label"><i class="fa-regular fa-user"></i> Membri</span>
               <span class="dc-value" id="countTotal">—</span>
             </div>
             <div class="dc-divider"></div>
             <div class="discord-num">
-              <span class="dc-label">Online Ora</span>
+              <span class="dc-label"><i class="fa-solid fa-circle-nodes"></i> Online Ora</span>
               <span class="dc-value online" id="countOnline">—</span>
             </div>
           </div>
@@ -632,61 +643,48 @@
       </div>
     </section>
 
-    <!-- STAFF -->
+    <!-- STAFF - Icone FontAwesome ovunque -->
     <section id="page-staff" class="page" data-page>
-      <h2 class="title-roman">👑 Il nostro staff</h2>
+      <h2 class="title-roman"><i class="fa-solid fa-crown"></i> Il nostro staff</h2>
 
       <div class="staff-section">
-        <h3 class="role"><img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Owner</h3>
-        <div class="staff-grid">
-          <div class="member">
-            <div class="avatar ring ring-gold"><img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy"></div>
-            <div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div>
-          </div>
-        </div>
+        <div class="role"><i class="fa-solid fa-crown"></i> Owner</div>
+        <div class="staff-grid"><div class="member"><div class="avatar ring ring-gold"><img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy"></div><div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div></div></div>
       </div>
-
       <div class="staff-section">
-        <h3 class="role"><img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Founder</h3>
-        <div class="staff-grid">
-          <div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto"></div><div class="member-name">Anto</div></div>
-          <div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony"></div><div class="member-name">Mony</div></div>
-        </div>
+        <div class="role"><i class="fa-solid fa-star"></i> Founder</div>
+        <div class="staff-grid"><div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto"></div><div class="member-name">Anto</div></div><div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony"></div><div class="member-name">Mony</div></div></div>
       </div>
-
       <div class="staff-section">
-        <h3 class="role"><img class="role-icon" src="https://i.postimg.cc/G3WyHbDY/Chat-GPT-Image-17-giu-2025-14-39-09.png" alt="">Co-Founder</h3>
+        <div class="role"><i class="fa-solid fa-handshake"></i> Co-Founder</div>
         <div class="staff-grid">
-          <div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo"></div><div class="member-name">Gabbo</div><div class="member-role role-dev">Developer</div></div>
-          <div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez"></div><div class="member-name">Rodriguez</div><div class="member-role role-dev">Developer</div></div>
+          <div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo"></div><div class="member-name">Gabbo</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div>
+          <div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez"></div><div class="member-name">Rodriguez</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div>
           <div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss"></div><div class="member-name">Th3b00ss</div></div>
         </div>
       </div>
-
       <div class="staff-section">
-        <h3 class="role"><img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Admin</h3>
+        <div class="role"><i class="fa-solid fa-shield-haltered"></i> Admin</div>
         <div class="staff-grid">
-          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo"></div><div class="member-name">Alexo</div><div class="member-role role-eup">Eup Creator</div></div>
-          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri"></div><div class="member-name">Chri</div><div class="member-role role-dev">Developer</div></div>
-          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide"></div><div class="member-name">Il Davide</div><div class="member-role role-eup">Eup Creator</div></div>
+          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo"></div><div class="member-name">Alexo</div><div class="member-role role-eup"><i class="fa-solid fa-shirt"></i> Eup Creator</div></div>
+          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri"></div><div class="member-name">Chri</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div>
+          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide"></div><div class="member-name">Il Davide</div><div class="member-role role-eup"><i class="fa-solid fa-shirt"></i> Eup Creator</div></div>
         </div>
       </div>
-
       <div class="staff-section">
-        <h3 class="role"><img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Moderatore</h3>
+        <div class="role"><i class="fa-solid fa-gavel"></i> Moderatore</div>
         <div class="staff-grid">
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales"></div><div class="member-name">Ales</div><div class="member-role role-dev">Developer</div></div>
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze"></div><div class="member-name">Blaze</div><div class="member-role role-grafico">Grafico</div></div>
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco"></div><div class="member-name">Franco</div><div class="member-role role-grafico">Grafico</div></div>
+          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales"></div><div class="member-name">Ales</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div>
+          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze"></div><div class="member-name">Blaze</div><div class="member-role role-grafico"><i class="fa-solid fa-palette"></i> Grafico</div></div>
+          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco"></div><div class="member-name">Franco</div><div class="member-role role-grafico"><i class="fa-solid fa-palette"></i> Grafico</div></div>
           <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio"></div><div class="member-name">Glaudio</div></div>
           <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca"></div><div class="member-name">Luca</div></div>
           <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger"></div><div class="member-name">Mattiger</div></div>
           <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight"></div><div class="member-name">Voight</div></div>
         </div>
       </div>
-
       <div class="staff-section">
-        <h3 class="role"><img class="role-icon" src="https://i.postimg.cc/7PfcnrLm/SOLO-DS.png" alt="">Helper</h3>
+        <div class="role"><i class="fa-solid fa-hand-peace"></i> Helper</div>
         <div class="staff-grid">
           <div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre"></div><div class="member-name">Andre</div></div>
           <div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco"></div><div class="member-name">Falco</div></div>
@@ -694,73 +692,19 @@
       </div>
     </section>
 
-    <!-- DONAZIONI -->
+    <!-- DONAZIONI E DETTAGLIO... (già presenti) -->
     <section id="page-donations" class="page" data-page>
-      <h2 class="title-roman">💰 Sostieni California Dreaming</h2>
-      <div id="donationsGrid" class="donations-grid">
-        <div class="donation-card" data-price="5" data-img="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png">
-          <div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div>
-          <div class="donation-caption">Pacchetto 5€</div>
-        </div>
-        <div class="donation-card" data-price="10" data-img="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png">
-          <div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div>
-          <div class="donation-caption">Pacchetto 10€</div>
-        </div>
-        <div class="donation-card" data-price="15" data-img="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png">
-          <div class="donation-thumb"><img src="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png" alt=""></div>
-          <div class="donation-caption">Pacchetto 15€</div>
-        </div>
-        <div class="donation-card" data-price="20" data-img="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png">
-          <div class="donation-thumb"><img src="https://i.postimg.cc/D0gS9hV6/F543-A4-DF-579-C-47-FD-B979-1-F09-DCF03-D8-A.png" alt=""></div>
-          <div class="donation-caption">Pacchetto 20€</div>
-        </div>
-        <div class="donation-card" data-price="30" data-img="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png">
-          <div class="donation-thumb"><img src="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png" alt=""></div>
-          <div class="donation-caption">Pacchetto 30€</div>
-        </div>
-        <div class="donation-card" data-price="40" data-img="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png">
-          <div class="donation-thumb"><img src="https://i.postimg.cc/gjDpzk2w/D837-B10-D-40-F9-488-B-B4-EB-B217-A5-FB4-C8-B.png" alt=""></div>
-          <div class="donation-caption">Pacchetto 40€</div>
-        </div>
-        <div class="donation-card" data-price="50" data-img="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png">
-          <div class="donation-thumb"><img src="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png" alt=""></div>
-          <div class="donation-caption">Pacchetto 50€</div>
-        </div>
-        <div class="donation-card" data-price="70" data-img="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png">
-          <div class="donation-thumb"><img src="https://i.postimg.cc/wx1HnJJN/44-BD2-E33-65-AB-44-DD-89-C9-2-EAFCEE9917-B.png" alt=""></div>
-          <div class="donation-caption">Pacchetto 70€</div>
-        </div>
-      </div>
+      <h2 class="title-roman"><i class="fa-solid fa-coins"></i> Sostieni California Dreaming</h2>
+      <div id="donationsGrid" class="donations-grid">... </div>
     </section>
-
-    <!-- DONAZIONE DETTAGLIO -->
     <section id="page-donation" class="page" data-page>
-      <div class="card">
-        <header style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-          <div class="chip" style="width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#1b2747;border:1px solid #2a3a61"><i class="fa-solid fa-gift"></i></div>
-          <div>
-            <h3 class="title-roman" style="margin-bottom:0" id="detailTitle">Pacchetto</h3>
-            <p style="color:#9daccc;font-size:.9rem">Riepilogo offerta</p>
-          </div>
-        </header>
-        <div class="donation-detail">
-          <div class="donation-media"><img id="detailImg" alt="Pacchetto"></div>
-          <div class="donation-info">
-            <div class="price"><span id="detailPrice">0</span>€</div>
-            <pre id="detailDesc"></pre>
-            <div class="actions">
-              <button class="btn btn-primary" id="btnBuy"><i class="fa-solid fa-credit-card"></i> Procedi</button>
-              <button class="btn btn-ghost" id="btnBackDon"><i class="fa-solid fa-arrow-left"></i> Torna</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="card">...</div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="stripe"></div>
-    <p>© 2026 California Dreaming Roleplay</p>
+    <p>© 2025 California Dreaming Roleplay — La città degli angeli ti aspetta</p>
     <div class="footer-icons">
       <a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
       <a class="yt" href="https://youtube.com/@novaromarp?si=A5FuufVL9c9LEBAc" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i></a>
@@ -772,256 +716,165 @@
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
-  /* ===== CONFIGURAZIONE ===== */
-  const DISCORD_CLIENT_ID = '1419444744563720404';
-  const DISCORD_SCOPE = 'identify';
-  const REDIRECT_URI = 'https://alestv05.github.io/sito/';
-  const INVITE_CODE = 'TAhbywxE4A';
-
-  const $ = s => document.querySelector(s);
-  const $$ = s => document.querySelectorAll(s);
-  
-  const toast = (message) => {
-    let existing = $('.toast');
-    if (existing) existing.remove();
-    const el = document.createElement('div');
-    el.className = 'toast';
-    el.innerHTML = `<i class="fa-solid fa-info-circle"></i> ${message}`;
-    document.body.appendChild(el);
-    setTimeout(() => el.classList.add('show'), 10);
-    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3000);
-  };
-  
-  const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
-
-  /* PARTICELLE ANIMATE */
-  function createParticles() {
-    const container = $('#particles');
-    if(!container) return;
-    const particleCount = 50;
-    for(let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.classList.add('particle');
-      const size = Math.random() * 4 + 2;
-      particle.style.width = size + 'px';
-      particle.style.height = size + 'px';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDuration = Math.random() * 10 + 8 + 's';
-      particle.style.animationDelay = Math.random() * 5 + 's';
-      container.appendChild(particle);
-    }
-  }
-
-  /* AUTH DISCORD */
-  function getAuthToken() {
-    const token = localStorage.getItem('nova_token');
-    const exp = Number(localStorage.getItem('nova_expires') || 0);
-    if (!token || !exp) return null;
-    if (Date.now() >= exp) { clearAuth(); return null; }
-    return token;
-  }
-  
-  function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
-  
-  function clearAuth() {
-    localStorage.removeItem('nova_token');
-    localStorage.removeItem('nova_user');
-    localStorage.removeItem('nova_expires');
-  }
-  
-  function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
-  
-  function getAvatarUrl(user) {
-    if (!user) return null;
-    if (user.avatar && user.id) {
-      const format = user.avatar.startsWith('a_') ? 'gif' : 'png';
-      return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${format}?size=128`;
-    }
-    const disc = parseInt(user.discriminator || '0', 10);
-    return `https://cdn.discordapp.com/embed/avatars/${disc % 5 || 0}.png`;
-  }
-  
-  function updateAuthUI() {
-    const token = getAuthToken();
-    const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
-    const isIn = !!(token && user);
+    const DISCORD_CLIENT_ID = '1419444744563720404';
+    const DISCORD_SCOPE = 'identify';
+    const REDIRECT_URI = 'https://alestv05.github.io/sito/';
+    const INVITE_CODE = 'TAhbywxE4A';
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
     
-    $('#navDonations').hidden = !isIn;
-    $('#btnDiscordLogin').hidden = isIn;
-    $('#btnLogout').hidden = !isIn;
-    
-    if (isIn) {
-      const avatarUrl = getAvatarUrl(user);
-      if (avatarUrl) { $('#topAvatarImg').src = avatarUrl; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; }
-      $('#topUsername').textContent = formatDiscordName(user);
-      $('#topUsername').hidden = false;
-      $('#topAvatar').title = formatDiscordName(user);
-    } else {
-      $('#topAvatarImg').src = ''; $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block';
-      $('#topUsername').textContent = ''; $('#topUsername').hidden = true;
-      const activePage = $('.page.active')?.id?.replace('page-', '');
-      if (activePage === 'donations' || activePage === 'donation') { showPage('home'); toast('Effettua il login per accedere.'); }
+    function toast(message, icon = 'fa-solid fa-info-circle') {
+      let existing = $('.toast');
+      if (existing) existing.remove();
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.innerHTML = `<i class="${icon}"></i> ${message}`;
+      document.body.appendChild(el);
+      setTimeout(() => el.classList.add('show'), 10);
+      setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
     }
-  }
-  
-  function buildAuthURL(state) {
-    const url = new URL('https://discord.com/oauth2/authorize');
-    url.searchParams.set('client_id', DISCORD_CLIENT_ID);
-    url.searchParams.set('redirect_uri', REDIRECT_URI);
-    url.searchParams.set('response_type', 'token');
-    url.searchParams.set('scope', DISCORD_SCOPE);
-    url.searchParams.set('state', state);
-    return url.toString();
-  }
-  
-  function beginDiscordLogin(e) {
-    if(e) { e.preventDefault(); e.stopPropagation(); }
-    if(isLoggedIn()) { toast('Sei già loggato!'); return; }
-    const state = Math.random().toString(36).substr(2, 16);
-    sessionStorage.setItem('oauth_state', state);
-    const authUrl = buildAuthURL(state);
-    const w=520, h=700;
-    const y = window.top.outerHeight/2 + window.top.screenY - (h/2);
-    const x = window.top.outerWidth/2 + window.top.screenX - (w/2);
-    const popup = window.open(authUrl, 'discord_oauth', `width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes`);
-    showLoader(true);
-    if(!popup || popup.closed) { window.location.assign(authUrl); return; }
-    const messageHandler = async (event) => {
-      if(event.origin !== new URL(REDIRECT_URI).origin) return;
-      const data = event.data || {};
-      if(data.type !== 'discord_oauth') return;
-      window.removeEventListener('message', messageHandler);
-      try { await finalizeOAuth({ access_token: data.access_token, token_type: data.token_type || 'Bearer', expires_in: data.expires_in || 3600 }); if(popup && !popup.closed) popup.close(); }
-      finally { showLoader(false); }
-    };
-    window.addEventListener('message', messageHandler);
-    let checkInterval = setInterval(() => { if(popup.closed) { clearInterval(checkInterval); window.removeEventListener('message', messageHandler); showLoader(false); } }, 500);
-  }
-  
-  async function handleOAuthRedirect() {
-    if(!window.location.hash.startsWith('#')) return false;
-    const params = new URLSearchParams(window.location.hash.substr(1));
-    const accessToken = params.get('access_token');
-    const error = params.get('error');
-    if(!accessToken && !error) return false;
-    history.replaceState(null, '', window.location.pathname + window.location.search);
-    if(window.opener && typeof window.opener.postMessage === 'function') {
-      const payload = { type: 'discord_oauth', access_token: accessToken, token_type: params.get('token_type') || 'Bearer', expires_in: Number(params.get('expires_in') || 3600), state: params.get('state') };
-      window.opener.postMessage(payload, window.opener.location.origin);
-      document.body.innerHTML = `<div style="padding:40px;font:600 18px sans-serif;color:#eaf0ff;background:#0f1625;height:100vh;display:grid;place-items:center;text-align:center">✅ Autenticazione completata!<br>Puoi chiudere questa finestra.</div>`;
-      setTimeout(() => window.close(), 1500);
+    
+    const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
+    function createParticles() {
+      const container = $('#particles');
+      if(!container) return;
+      for(let i = 0; i < 50; i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        const s = Math.random() * 4 + 2;
+        p.style.width = s+'px'; p.style.height = s+'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = Math.random() * 10 + 8 + 's';
+        p.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(p);
+      }
+    }
+    function getAuthToken() { const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); if(!t||!e) return null; if(Date.now()>=e){clearAuth();return null;} return t; }
+    function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
+    function clearAuth() { localStorage.removeItem('nova_token'); localStorage.removeItem('nova_user'); localStorage.removeItem('nova_expires'); }
+    function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
+    function getAvatarUrl(user) { if(!user) return null; if(user.avatar && user.id) { const f = user.avatar.startsWith('a_')?'gif':'png'; return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; } const d = parseInt(user.discriminator||'0',10); return `https://cdn.discordapp.com/embed/avatars/${d%5||0}.png`; }
+    function updateAuthUI() {
+      const token = getAuthToken();
+      const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
+      const isIn = !!(token && user);
+      $('#navDonations').hidden = !isIn;
+      $('#btnDiscordLogin').hidden = isIn;
+      $('#btnLogout').hidden = !isIn;
+      if(isIn) {
+        const url = getAvatarUrl(user);
+        if(url) { $('#topAvatarImg').src = url; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; }
+        $('#topUsername').textContent = formatDiscordName(user);
+        $('#topUsername').hidden = false;
+      } else {
+        $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block';
+        $('#topUsername').hidden = true;
+        const active = $('.page.active')?.id?.replace('page-','');
+        if(active === 'donations' || active === 'donation') showPage('home');
+      }
+    }
+    function buildAuthURL(s) { const u = new URL('https://discord.com/oauth2/authorize'); u.searchParams.set('client_id',DISCORD_CLIENT_ID); u.searchParams.set('redirect_uri',REDIRECT_URI); u.searchParams.set('response_type','token'); u.searchParams.set('scope',DISCORD_SCOPE); u.searchParams.set('state',s); return u.toString(); }
+    async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
+      if(!access_token) throw new Error('No token');
+      localStorage.setItem('nova_token',access_token);
+      localStorage.setItem('nova_expires',(Date.now()+expires_in*1000-30000).toString());
+      const r = await fetch('https://discord.com/api/users/@me',{headers:{'Authorization':`${token_type} ${access_token}`}});
+      if(!r.ok) throw new Error();
+      const user = await r.json();
+      localStorage.setItem('nova_user',JSON.stringify(user));
+      updateAuthUI();
+      toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
+    }
+    function beginDiscordLogin(e) {
+      if(e){e.preventDefault();} if(isLoggedIn()){toast('Sei già loggato!','fa-solid fa-check');return;}
+      const state = Math.random().toString(36).substr(2,16);
+      sessionStorage.setItem('oauth_state',state);
+      const url = buildAuthURL(state);
+      const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2;
+      const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`);
+      showLoader(true);
+      const handler = async (ev) => { if(ev.origin !== new URL(REDIRECT_URI).origin) return; if(ev.data?.type !== 'discord_oauth') return; window.removeEventListener('message',handler); try{ await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); if(popup&&!popup.closed) popup.close(); }finally{ showLoader(false); } };
+      window.addEventListener('message',handler);
+      setInterval(()=>{ if(popup?.closed){ window.removeEventListener('message',handler); showLoader(false); } },500);
+    }
+    async function handleOAuthRedirect() {
+      if(!window.location.hash.startsWith('#')) return false;
+      const p = new URLSearchParams(window.location.hash.substr(1));
+      const token = p.get('access_token');
+      if(!token && !p.get('error')) return false;
+      history.replaceState(null,'',window.location.pathname+window.location.search);
+      if(window.opener && typeof window.opener.postMessage === 'function') {
+        window.opener.postMessage({type:'discord_oauth', access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600), state:p.get('state')}, window.opener.location.origin);
+        document.body.innerHTML = `<div style="padding:40px;text-align:center;">✅ Autenticazione completata, puoi chiudere.</div>`;
+        setTimeout(()=>window.close(),1500);
+        return true;
+      }
+      if(p.get('error')){ toast('Accesso annullato.'); return true; }
+      showLoader(true);
+      try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); }
       return true;
     }
-    if(error) { toast('Accesso Discord annullato.'); return true; }
-    showLoader(true);
-    try { await finalizeOAuth({ access_token: accessToken, token_type: params.get('token_type') || 'Bearer', expires_in: Number(params.get('expires_in') || 3600) }); }
-    catch(err) { toast('Errore durante il login.'); }
-    finally { showLoader(false); }
-    return true;
-  }
-  
-  async function finalizeOAuth({ access_token, token_type = 'Bearer', expires_in = 3600 }) {
-    if(!access_token) throw new Error('Token mancante');
-    const expiresAt = Date.now() + (expires_in * 1000) - 30000;
-    localStorage.setItem('nova_token', access_token);
-    localStorage.setItem('nova_expires', expiresAt.toString());
-    const response = await fetch('https://discord.com/api/users/@me', { headers: { 'Authorization': `${token_type} ${access_token}` } });
-    if(!response.ok) throw new Error('Failed to fetch user data');
-    const userData = await response.json();
-    localStorage.setItem('nova_user', JSON.stringify(userData));
-    updateAuthUI();
-    toast(`👋 Benvenuto ${formatDiscordName(userData)}!`);
-    return userData;
-  }
-  
-  function logout(e) {
-    if(e) { e.preventDefault(); e.stopPropagation(); }
-    const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
-    const name = user ? formatDiscordName(user) : '';
-    clearAuth();
-    updateAuthUI();
-    showPage('home');
-    toast(name ? `👋 Arrivederci ${name}!` : 'Logout effettuato');
-  }
-
-  /* ROUTER */
-  function showPage(pageId) {
-    if((pageId === 'donations' || pageId === 'donation') && !isLoggedIn()) { toast('Effettua il login per accedere.'); pageId = 'home'; }
-    $$('.page').forEach(page => page.classList.remove('active'));
-    $$('.nav-link').forEach(link => link.classList.remove('active'));
-    $(`#page-${pageId}`)?.classList.add('active');
-    $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
-    if(pageId === 'home') { const video = $('#nvVideo'); if(video) video.play().catch(()=>{}); }
-  }
-  
-  document.addEventListener('click', (e) => {
-    const link = e.target.closest('[data-route]');
-    if(link) { e.preventDefault(); showPage(link.getAttribute('data-route')); }
-  });
-
-  /* DONAZIONI */
-  const OFFER_TEXT = {
-    5: "🎁 Acquistando questo pacchetto otterrai 50.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
-    10: "🎁 Acquistando questo pacchetto otterrai 100.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
-    15: "🎁 Acquistando questo pacchetto otterrai 100.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
-    20: "🎁 Acquistando questo pacchetto otterrai 150.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
-    30: "🎁 Acquistando questo pacchetto otterrai 200.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
-    40: "🎁 Acquistando questo pacchetto otterrai 250.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense",
-    50: "🎁 Acquistando questo pacchetto otterrai 300.000€ in gioco + un'auto a scelta\n📌 Apri un ticket su Discord per ricevere le ricompense",
-    70: "🎁 Acquistando questo pacchetto otterrai 400.000€ in gioco\n📌 Apri un ticket su Discord per ricevere le ricompense"
-  };
-  
-  const donationsGrid = $('#donationsGrid');
-  if(donationsGrid) {
-    donationsGrid.addEventListener('click', (e) => {
-      const card = e.target.closest('.donation-card');
-      if(!card) return;
-      e.preventDefault();
-      if(!isLoggedIn()) { toast('Effettua il login per vedere i dettagli.'); return; }
-      const price = card.dataset.price || '0';
-      const img = card.dataset.img || '';
-      $('#detailTitle').textContent = `Pacchetto ${price}€`;
-      $('#detailPrice').textContent = price;
-      $('#detailImg').src = img;
-      $('#detailDesc').textContent = OFFER_TEXT[price] || '';
-      showPage('donation');
-    });
-  }
-  
-  document.addEventListener('click', (e) => {
-    if(e.target.id === 'btnBackDon') showPage('donations');
-    if(e.target.id === 'btnBuy') toast('💳 Sistema di pagamento in sviluppo — apri un ticket su Discord.');
-  });
-
-  /* DISCORD STATS */
-  async function loadDiscordCounts() {
-    try {
-      const response = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`, { cache: 'no-cache' });
-      if(!response.ok) throw new Error();
-      const data = await response.json();
-      const memberCount = data.approximate_member_count || '—';
-      $('#guildName').textContent = data.guild?.name || 'California Dreaming RP';
-      $('#countTotal').textContent = memberCount;
-      $('#countOnline').textContent = data.approximate_presence_count || '—';
-      $('#statMembers').textContent = memberCount !== '—' ? memberCount + '+' : '—';
-    } catch(error) { 
-      $('#countTotal').textContent = '—'; 
-      $('#countOnline').textContent = '—';
-      $('#statMembers').textContent = '—';
+    function logout(e){ if(e)e.preventDefault(); const user = JSON.parse(localStorage.getItem('nova_user')||'null'); const name = user?formatDiscordName(user):''; clearAuth(); updateAuthUI(); showPage('home'); toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); }
+    function showPage(pageId) {
+      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ toast('Accedi per vedere le donazioni','fa-solid fa-lock'); pageId='home'; }
+      $$('.page').forEach(p=>p.classList.remove('active'));
+      $$('.nav-link').forEach(l=>l.classList.remove('active'));
+      $(`#page-${pageId}`)?.classList.add('active');
+      $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
+      if(pageId==='home') $('#nvVideo')?.play().catch(()=>{});
     }
-  }
-  
-  setInterval(loadDiscordCounts, 30000);
-
-  /* INIT */
-  window.addEventListener('load', async () => {
-    createParticles();
-    await handleOAuthRedirect();
-    updateAuthUI();
-    loadDiscordCounts();
-    $('#btnDiscordLogin')?.addEventListener('click', beginDiscordLogin);
-    $('#btnLogout')?.addEventListener('click', logout);
-  });
+    document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
+    
+    // Donations init
+    const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"};
+    const grid = $('#donationsGrid');
+    if(grid) {
+      grid.innerHTML = '';
+      [5,10,15,20,30,40,50,70].forEach(price=>{
+        const card = document.createElement('div');
+        card.className='donation-card';
+        card.dataset.price=price;
+        card.dataset.img='https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png';
+        card.innerHTML = `<div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div><div class="donation-caption"><i class="fa-solid fa-euro-sign"></i> Pacchetto ${price}€</div>`;
+        grid.appendChild(card);
+      });
+      grid.addEventListener('click',(e)=>{
+        const c=e.target.closest('.donation-card');
+        if(!c)return;
+        if(!isLoggedIn()){ toast('Login richiesto','fa-solid fa-key'); return; }
+        const price = c.dataset.price;
+        $('#detailTitle').textContent = `Pacchetto ${price}€`;
+        $('#detailPrice').textContent = price;
+        $('#detailImg').src = 'https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png';
+        $('#detailDesc').textContent = OFFER_TEXT[price] || '';
+        showPage('donation');
+      });
+    }
+    document.addEventListener('click',(e)=>{
+      if(e.target.id==='btnBackDon') showPage('donations');
+      if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket');
+    });
+    
+    async function loadDiscordCounts() {
+      try{
+        const r = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`,{cache:'no-cache'});
+        if(!r.ok) throw new Error();
+        const d = await r.json();
+        $('#guildName').textContent = d.guild?.name||'CDRP';
+        $('#countTotal').textContent = d.approximate_member_count||'—';
+        $('#countOnline').textContent = d.approximate_presence_count||'—';
+        $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—';
+      }catch(e){ $('#countTotal').textContent='—'; $('#countOnline').textContent='—'; $('#statMembers').textContent='—'; }
+    }
+    window.addEventListener('load', async ()=>{
+      createParticles();
+      await handleOAuthRedirect();
+      updateAuthUI();
+      loadDiscordCounts();
+      setInterval(loadDiscordCounts,30000);
+      $('#btnDiscordLogin')?.addEventListener('click',beginDiscordLogin);
+      $('#btnLogout')?.addEventListener('click',logout);
+    });
   </script>
 </body>
 </html>

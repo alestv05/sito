@@ -62,13 +62,42 @@
 
   /* HERO */
   .hero{position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 16px; overflow:hidden}
-  .logo-container{position:relative; width:var(--logo-size); height:var(--logo-size); margin-bottom:40px; display:flex; align-items:center; justify-content:center}
-  .logo-bg{position:absolute; inset:0; background:url('https://i.postimg.cc/d19KnZQv/LOGO-SERVER-2.png') no-repeat center/contain; opacity:0.24; z-index:2}
-  .logo-glow{position:absolute; inset:0; background:
-    radial-gradient(40% 55% at 50% 50%, rgba(88,166,255,.10), rgba(0,0,0,0) 60%),
-    radial-gradient(100% 100% at 50% 50%, rgba(0,0,0,.45), transparent 55%);
-    filter:blur(10px); animation:float 5.5s ease-in-out infinite alternate; z-index:1 }
-  @keyframes float{from{transform:translateY(-6px)} to{transform:translateY(6px)}}
+  
+  /* LOGO CONTAINER */
+  .logo-container{
+    position:relative; 
+    width:var(--logo-size);
+    height:var(--logo-size); 
+    margin-bottom:40px; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center
+  }
+  
+  /* LOGO BG - NUOVA IMMAGINE */
+  .logo-bg{
+    position:absolute; 
+    inset:0;
+    background:url('https://i.postimg.cc/ZndLcvQH/LOGO-SERVER-copia.png') no-repeat center/contain; 
+    opacity:0.24;
+    z-index:2
+  }
+  
+  .logo-glow{
+    position:absolute; 
+    inset:0; 
+    background:
+      radial-gradient(40% 55% at 50% 50%, rgba(88,166,255,.10), rgba(0,0,0,0) 60%),
+      radial-gradient(100% 100% at 50% 50%, rgba(0,0,0,.45), transparent 55%);
+    filter:blur(10px);
+    animation:float 5.5s ease-in-out infinite alternate;
+    z-index:1
+  }
+  
+  @keyframes float{
+    from{transform:translateY(-6px)} 
+    to{transform:translateY(6px)}
+  }
 
   .under-construction{position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center; width:100%; max-width:900px;}
   .uc-title{font-size:clamp(36px,8vw,90px); font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-shadow:0 2px 10px rgba(0,0,0,.5); line-height:1.05;}

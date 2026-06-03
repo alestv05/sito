@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>California Dreaming Roleplay | Admin Panel</title>
+  <title>California Dreaming Roleplay | Admin Panel Live</title>
 
   <!-- Preconnect Discord -->
   <link rel="preconnect" href="https://discord.com" crossorigin>
@@ -34,7 +34,6 @@
   }
   [hidden]{display:none !important;}
 
-  /* Custom Scrollbar */
   ::-webkit-scrollbar{width:8px}
   ::-webkit-scrollbar-track{background:#0f1625}
   ::-webkit-scrollbar-thumb{background:#58a6ff; border-radius:10px}
@@ -106,7 +105,6 @@
     100%{transform:translateY(-100vh) rotate(360deg); opacity:0;}
   }
   
-  /* LOGO CONTAINER */
   .logo-container{
     position:relative; 
     width:var(--logo-size);
@@ -228,7 +226,6 @@
     color:#58a6ff;
   }
 
-  /* STATS BAR con icone FA */
   .stats-bar{
     position:relative;
     z-index:3;
@@ -274,7 +271,6 @@
     margin-top:5px;
   }
 
-  /* Video */
   .home-video{
     position:relative;
     z-index:3;
@@ -318,7 +314,6 @@
     height:auto
   }
 
-  /* CTA BUTTON */
   .cta-button{
     position:relative;
     z-index:3;
@@ -350,7 +345,6 @@
     font-size:1.3rem;
   }
 
-  /* Discord Stats */
   .discord-counts{
     position:relative;
     z-index:3;
@@ -397,7 +391,6 @@
   }
   .dc-divider{width:1px; height:30px; background:#2a3a61; opacity:.8}
 
-  /* Animazioni fade */
   @keyframes fadeInUp{
     from{
       opacity:0;
@@ -409,11 +402,10 @@
     }
   }
 
-  /* Cards Generiche */
   .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem; font-weight:800}
   .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:20px; padding:28px; box-shadow:var(--shadow)}
 
-  /* STAFF con icone FontAwesome migliorate */
+  /* STAFF */
   .staff-section{max-width:1000px; margin:40px auto}
   .role{
     display:flex; 
@@ -436,11 +428,8 @@
   .member-name{font-weight:700; text-align:center; font-size:1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center;}
   .member-role{font-weight:600; font-size:.85rem; margin-top:-6px; display: flex; align-items: center; justify-content: center; gap: 6px; background: #0f1625; padding: 4px 10px; border-radius: 40px; width: fit-content; margin-left: auto; margin-right: auto;}
   .member-role i { font-size: 0.85rem; }
-  .role-dev{color:#8ecaff}
-  .role-eup{color:#4a90e2}
-  .role-grafico{color:#ff4dd2}
 
-  /* ADMIN PANEL STYLES */
+  /* ADMIN PANEL - LIVE STYLE */
   .admin-panel {
     max-width: 1200px;
     margin: 0 auto;
@@ -450,6 +439,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
     margin-bottom: 30px;
     padding: 20px;
     background: linear-gradient(135deg, #1a2542, #0f1625);
@@ -469,6 +460,7 @@
     display: flex;
     gap: 20px;
     font-size: 1.2rem;
+    align-items: center;
   }
   .admin-stats span {
     color: #58a6ff;
@@ -476,10 +468,24 @@
     font-size: 1.4rem;
     margin-left: 8px;
   }
+  .live-badge {
+    background: #ff4d4f20;
+    border: 1px solid #ff4d4f;
+    padding: 6px 12px;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .live-badge i {
+    color: #ff4d4f;
+    animation: pulse 1.5s infinite;
+  }
   .users-online-grid {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
   .user-online-card {
     background: linear-gradient(135deg, #121a2a, #0f1625);
@@ -549,6 +555,10 @@
     margin-bottom: 16px;
     opacity: 0.5;
   }
+  .admin-current-user {
+    background: #58a6ff10;
+    border: 1px solid #58a6ff;
+  }
 
   /* Donazioni */
   #page-donations{position:relative; padding:40px 20px}
@@ -559,15 +569,12 @@
   .donation-thumb img{width:90%; height:90%; object-fit:contain}
   .donation-caption{font-weight:700; font-size:1rem; padding:6px 12px; border-radius:10px; background:rgba(23,33,55,.85); border:1px solid #2a3a61; text-align:center}
 
-  /* Donation detail */
-  #page-donation{padding:40px 16px}
   .donation-detail{max-width:960px;margin:0 auto;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
   .donation-media{background:#0f1528;border:2px solid #2a3a61;border-radius:20px;overflow:hidden;display:grid;place-items:center;padding:20px}
   .donation-media img{max-width:100%;height:auto;display:block}
   .donation-info .price{font-size:2rem;font-weight:800;margin:6px 0 10px}
   .donation-info pre{white-space:pre-wrap; background:#0f1528; border:1px solid #2a3a61; border-radius:12px; padding:14px; font-family:inherit; color:#cfe0ff; font-size:0.9rem}
 
-  /* Pulsanti */
   .btn{
     padding:12px 28px;
     border-radius:12px;
@@ -603,7 +610,6 @@
   }
   .actions{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; justify-content:center}
 
-  /* Footer */
   .site-footer{text-align:center; padding:40px 20px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
   .stripe{height:4px; width:180px; margin:0 auto 20px; border-radius:4px; background:linear-gradient(90deg,#009246 0 33%, #fff 33% 66%, #ce2b37 66% 100%)}
   .footer-icons{margin-top:15px; display:flex; justify-content:center; align-items:center; gap:20px;}
@@ -615,17 +621,14 @@
   .footer-icons a.tt:hover{background:#25f4ee; color:#000}
   .footer-icons a.dc:hover{background:#5865F2; color:#fff}
 
-  /* Toast e Loader con icone */
   .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow); padding:12px 20px; border-radius:12px; font-weight:600; z-index:1000; opacity:0; transition:all .3s ease; backdrop-filter:blur(10px); display: flex; align-items: center; gap: 12px;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
   .loader{position:fixed; inset:auto 20px 20px auto; background:#0f1625; border:1px solid #58a6ff; padding:10px 18px; border-radius:12px; font-weight:600; z-index:1100; display:none; backdrop-filter:blur(10px);}
   .loader.show{display:flex; align-items:center; gap: 8px;}
 
-  /* Pages */
   .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
   .page.active{display:block}
 
-  /* Responsive */
   @media (max-width:600px){
     .title-roman{font-size:1.8rem}
     .discord-numbers{gap:12px; padding:8px 16px}
@@ -642,13 +645,14 @@
     .stat-item{padding:12px 20px; min-width:100px}
     .stat-number{font-size:1.8rem}
     .stat-number i { font-size: 1.4rem; }
+    .admin-header{flex-direction:column; text-align:center}
+    .users-online-grid{grid-template-columns:1fr}
   }
   </style>
 </head>
 <body>
   <noscript><div style="background:#ffdd57;color:#111;padding:10px;text-align:center">Attiva JavaScript per usare il sito.</div></noscript>
 
-  <!-- NAVBAR -->
   <header class="site-header">
     <nav class="nav" id="mainNav">
       <a class="nav-link active" data-route="home"><i class="fa-solid fa-house"></i> Home</a>
@@ -669,7 +673,6 @@
   </header>
 
   <main id="app">
-    <!-- HOME -->
     <section id="page-home" class="page active" data-page>
       <div class="hero">
         <div class="particles" id="particles"></div>
@@ -701,7 +704,6 @@
           </div>
         </div>
 
-        <!-- STATS BAR CON ICONE FONTAWESOME -->
         <div class="stats-bar">
           <div class="stat-item">
             <div class="stat-number"><i class="fa-regular fa-clock"></i> 24/7</div>
@@ -758,7 +760,6 @@
       </div>
     </section>
 
-    <!-- STAFF -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-crown"></i> Il nostro staff</h2>
 
@@ -807,12 +808,16 @@
       </div>
     </section>
 
-    <!-- ADMIN PANEL - Solo per admin con ID specifico -->
+    <!-- ADMIN PANEL LIVE -->
     <section id="page-admin" class="page" data-page>
       <div class="admin-panel">
         <div class="admin-header">
           <h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2>
           <div class="admin-stats">
+            <div class="live-badge">
+              <i class="fa-solid fa-circle"></i>
+              <span>LIVE</span>
+            </div>
             <i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span>
           </div>
         </div>
@@ -820,7 +825,6 @@
       </div>
     </section>
 
-    <!-- DONAZIONI E DETTAGLIO -->
     <section id="page-donations" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-coins"></i> Sostieni California Dreaming</h2>
       <div id="donationsGrid" class="donations-grid"></div>
@@ -854,158 +858,97 @@
     const DISCORD_SCOPE = 'identify';
     const REDIRECT_URI = 'https://alestv05.github.io/sito/';
     const INVITE_CODE = 'TAhbywxE4A';
-    const ADMIN_DISCORD_ID = '640478852308664360'; // Solo questo ID vede il pannello admin
+    const ADMIN_DISCORD_ID = '640478852308664360';
     
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
     
-    // Store degli utenti collegati (login)
-    let loggedInUsers = [];
+    // Store centrale condiviso via BroadcastChannel
+    let onlineUsersMap = new Map();
+    let currentUser = null;
     
-    function toast(message, icon = 'fa-solid fa-info-circle') {
-      let existing = $('.toast');
-      if (existing) existing.remove();
-      const el = document.createElement('div');
-      el.className = 'toast';
-      el.innerHTML = `<i class="${icon}"></i> ${message}`;
-      document.body.appendChild(el);
-      setTimeout(() => el.classList.add('show'), 10);
-      setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
-    }
+    // BroadcastChannel per comunicare tra finestre/tab
+    const channel = new BroadcastChannel('cdrp_online_users');
     
-    const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
-    
-    function createParticles() {
-      const container = $('#particles');
-      if(!container) return;
-      for(let i = 0; i < 50; i++) {
-        const p = document.createElement('div');
-        p.classList.add('particle');
-        const s = Math.random() * 4 + 2;
-        p.style.width = s+'px'; p.style.height = s+'px';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = Math.random() * 10 + 8 + 's';
-        p.style.animationDelay = Math.random() * 5 + 's';
-        container.appendChild(p);
+    function loadOnlineUsersFromStorage() {
+      const stored = localStorage.getItem('cdrp_online_users_map');
+      if(stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          onlineUsersMap.clear();
+          Object.keys(parsed).forEach(key => {
+            // Verifica che il token non sia scaduto
+            if(parsed[key].expires && Date.now() < parsed[key].expires) {
+              onlineUsersMap.set(key, parsed[key]);
+            }
+          });
+          saveOnlineUsersToStorage();
+        } catch(e) {}
       }
     }
     
-    function getAuthToken() { 
-      const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); 
-      if(!t||!e) return null; 
-      if(Date.now()>=e){clearAuth();return null;} 
-      return t; 
+    function saveOnlineUsersToStorage() {
+      const obj = {};
+      onlineUsersMap.forEach((value, key) => {
+        obj[key] = value;
+      });
+      localStorage.setItem('cdrp_online_users_map', JSON.stringify(obj));
     }
     
-    function getCurrentUser() {
-      const token = getAuthToken();
-      const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
-      if(!token || !user) return null;
-      return user;
-    }
-    
-    function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
-    
-    function isAdmin() {
-      const user = getCurrentUser();
-      return user && user.id === ADMIN_DISCORD_ID;
-    }
-    
-    function clearAuth() { 
-      // Rimuovi utente dalla lista dei collegati prima di fare logout
-      const user = getCurrentUser();
-      if(user) {
-        loggedInUsers = loggedInUsers.filter(u => u.id !== user.id);
-        saveLoggedInUsers();
-      }
-      localStorage.removeItem('nova_token'); 
-      localStorage.removeItem('nova_user'); 
-      localStorage.removeItem('nova_expires'); 
-    }
-    
-    function saveLoggedInUsers() {
-      localStorage.setItem('logged_in_users', JSON.stringify(loggedInUsers));
+    function broadcastUsersUpdate() {
+      const usersArray = Array.from(onlineUsersMap.values());
+      channel.postMessage({ type: 'USERS_UPDATE', users: usersArray });
       updateAdminPanel();
     }
     
-    function loadLoggedInUsers() {
-      const stored = localStorage.getItem('logged_in_users');
-      if(stored) {
-        try {
-          loggedInUsers = JSON.parse(stored);
-          // Rimuovi utenti scaduti (che hanno fatto logout o token scaduto)
-          loggedInUsers = loggedInUsers.filter(u => {
-            const token = u.token;
-            const expires = u.expires;
-            return token && expires && Date.now() < expires;
-          });
-          saveLoggedInUsers();
-        } catch(e) { loggedInUsers = []; }
-      } else {
-        loggedInUsers = [];
-      }
+    function addOnlineUser(userData) {
+      onlineUsersMap.set(userData.id, {
+        ...userData,
+        lastSeen: Date.now()
+      });
+      saveOnlineUsersToStorage();
+      broadcastUsersUpdate();
     }
     
-    function addLoggedInUser(user, token, expires) {
-      // Non aggiungere se già presente
-      if(!loggedInUsers.find(u => u.id === user.id)) {
-        loggedInUsers.push({
-          id: user.id,
-          username: user.username,
-          global_name: user.global_name,
-          avatar: user.avatar,
-          discriminator: user.discriminator,
-          loginTime: new Date().toISOString(),
-          token: token,
-          expires: expires
-        });
-        saveLoggedInUsers();
-      }
-    }
-    
-    function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
-    
-    function getAvatarUrl(user) { 
-      if(!user) return null; 
-      if(user.avatar && user.id) { 
-        const f = user.avatar.startsWith('a_')?'gif':'png'; 
-        return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; 
-      } 
-      const d = parseInt(user.discriminator||'0',10); 
-      return `https://cdn.discordapp.com/embed/avatars/${d%5||0}.png`; 
+    function removeOnlineUser(userId) {
+      onlineUsersMap.delete(userId);
+      saveOnlineUsersToStorage();
+      broadcastUsersUpdate();
     }
     
     function updateAdminPanel() {
       const adminBtn = $('#btnAdmin');
-      const adminPage = $('#page-admin');
+      const isAdminUser = currentUser && currentUser.id === ADMIN_DISCORD_ID;
       
-      if(isAdmin()) {
+      if(isAdminUser) {
         adminBtn.hidden = false;
-        // Aggiorna la lista degli utenti collegati
         const userCount = $('#adminUserCount');
         const usersList = $('#usersOnlineList');
+        const users = Array.from(onlineUsersMap.values());
         
-        if(userCount) userCount.textContent = loggedInUsers.length;
+        if(userCount) userCount.textContent = users.length;
         
         if(usersList) {
-          if(loggedInUsers.length === 0) {
+          if(users.length === 0) {
             usersList.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato al momento</div>`;
           } else {
-            usersList.innerHTML = loggedInUsers.map(user => {
-              const avatarUrl = getAvatarUrl(user);
-              const userName = formatDiscordName(user);
+            usersList.innerHTML = users.map(user => {
+              const avatarUrl = user.avatarUrl || (user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128` : null);
+              const userName = user.global_name || user.username || 'Utente';
               const loginDate = new Date(user.loginTime);
               const formattedTime = loginDate.toLocaleString('it-IT');
+              const isCurrentUser = currentUser && currentUser.id === user.id;
               
               return `
-                <div class="user-online-card">
+                <div class="user-online-card ${isCurrentUser ? 'admin-current-user' : ''}">
                   ${avatarUrl ? 
-                    `<img class="user-avatar" src="${avatarUrl}" alt="${userName}" crossorigin="anonymous">` : 
+                    `<img class="user-avatar" src="${avatarUrl}" alt="${userName}" crossorigin="anonymous" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : 
                     `<div class="user-avatar-placeholder"><i class="fa-solid fa-circle-user"></i></div>`
                   }
                   <div class="user-info">
                     <div class="user-name">
                       <i class="fa-brands fa-discord"></i> ${escapeHtml(userName)}
+                      ${isCurrentUser ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}
                     </div>
                     <div class="user-id">ID: ${user.id}</div>
                     <div class="user-login-time">
@@ -1032,10 +975,132 @@
       });
     }
     
+    // Ascolta i messaggi da altre finestre/tab
+    channel.onmessage = (event) => {
+      if(event.data.type === 'USERS_UPDATE') {
+        const newMap = new Map();
+        event.data.users.forEach(user => {
+          if(user.expires && Date.now() < user.expires) {
+            newMap.set(user.id, user);
+          }
+        });
+        onlineUsersMap = newMap;
+        saveOnlineUsersToStorage();
+        updateAdminPanel();
+      } else if(event.data.type === 'USER_LOGIN') {
+        if(event.data.user && event.data.user.id !== currentUser?.id) {
+          addOnlineUser(event.data.user);
+        }
+      } else if(event.data.type === 'USER_LOGOUT') {
+        if(event.data.userId !== currentUser?.id) {
+          removeOnlineUser(event.data.userId);
+        }
+      } else if(event.data.type === 'HEARTBEAT') {
+        // Aggiorna lastSeen dell'utente
+        if(onlineUsersMap.has(event.data.userId)) {
+          const user = onlineUsersMap.get(event.data.userId);
+          user.lastSeen = Date.now();
+          onlineUsersMap.set(event.data.userId, user);
+          saveOnlineUsersToStorage();
+        }
+      }
+    };
+    
+    // Heartbeat per mantenere l'utente attivo
+    let heartbeatInterval = null;
+    function startHeartbeat() {
+      if(heartbeatInterval) clearInterval(heartbeatInterval);
+      heartbeatInterval = setInterval(() => {
+        if(currentUser) {
+          // Aggiorna lastSeen nel localStorage
+          if(onlineUsersMap.has(currentUser.id)) {
+            const user = onlineUsersMap.get(currentUser.id);
+            user.lastSeen = Date.now();
+            onlineUsersMap.set(currentUser.id, user);
+            saveOnlineUsersToStorage();
+          }
+          // Invia heartbeat ad altre finestre
+          channel.postMessage({ type: 'HEARTBEAT', userId: currentUser.id });
+        }
+      }, 30000); // Ogni 30 secondi
+    }
+    
+    function stopHeartbeat() {
+      if(heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+    }
+    
+    // Pulizia utenti inattivi (nessun heartbeat da 2 minuti)
+    setInterval(() => {
+      const now = Date.now();
+      let changed = false;
+      onlineUsersMap.forEach((user, id) => {
+        if(user.lastSeen && (now - user.lastSeen) > 120000) { // 2 minuti di inattività
+          onlineUsersMap.delete(id);
+          changed = true;
+        }
+        if(user.expires && now > user.expires) {
+          onlineUsersMap.delete(id);
+          changed = true;
+        }
+      });
+      if(changed) {
+        saveOnlineUsersToStorage();
+        broadcastUsersUpdate();
+      }
+    }, 60000);
+    
+    function getAuthToken() { 
+      const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); 
+      if(!t||!e) return null; 
+      if(Date.now()>=e){clearAuth();return null;} 
+      return t; 
+    }
+    
+    function getCurrentUserFromStorage() {
+      const token = getAuthToken();
+      const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
+      if(!token || !user) return null;
+      return user;
+    }
+    
+    function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
+    
+    function isAdmin() {
+      const user = getCurrentUserFromStorage();
+      return user && user.id === ADMIN_DISCORD_ID;
+    }
+    
+    function clearAuth() { 
+      if(currentUser) {
+        removeOnlineUser(currentUser.id);
+        channel.postMessage({ type: 'USER_LOGOUT', userId: currentUser.id });
+        stopHeartbeat();
+      }
+      localStorage.removeItem('nova_token'); 
+      localStorage.removeItem('nova_user'); 
+      localStorage.removeItem('nova_expires'); 
+      currentUser = null;
+    }
+    
+    function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
+    
+    function getAvatarUrl(user) { 
+      if(!user) return null; 
+      if(user.avatar && user.id) { 
+        const f = user.avatar.startsWith('a_')?'gif':'png'; 
+        return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; 
+      } 
+      return null;
+    }
+    
     function updateAuthUI() {
       const token = getAuthToken();
-      const user = getCurrentUser();
+      const user = getCurrentUserFromStorage();
       const isIn = !!(token && user);
+      currentUser = user;
       
       $('#navDonations').hidden = !isIn;
       $('#btnDiscordLogin').hidden = isIn;
@@ -1047,11 +1112,29 @@
         if(url) { $('#topAvatarImg').src = url; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; }
         $('#topUsername').textContent = formatDiscordName(user);
         $('#topUsername').hidden = false;
+        
+        // Aggiungi alla lista online se non già presente
+        if(!onlineUsersMap.has(user.id)) {
+          const userData = {
+            id: user.id,
+            username: user.username,
+            global_name: user.global_name,
+            avatar: user.avatar,
+            loginTime: new Date().toISOString(),
+            expires: Number(localStorage.getItem('nova_expires') || 0),
+            lastSeen: Date.now(),
+            avatarUrl: getAvatarUrl(user)
+          };
+          addOnlineUser(userData);
+          channel.postMessage({ type: 'USER_LOGIN', user: userData });
+          startHeartbeat();
+        }
       } else {
         $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block';
         $('#topUsername').hidden = true;
         const active = $('.page.active')?.id?.replace('page-','');
         if(active === 'donations' || active === 'donation' || active === 'admin') showPage('home');
+        stopHeartbeat();
       }
       
       updateAdminPanel();
@@ -1070,15 +1153,28 @@
     async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
       if(!access_token) throw new Error('No token');
       localStorage.setItem('nova_token',access_token);
-      localStorage.setItem('nova_expires',(Date.now()+expires_in*1000-30000).toString());
+      const expiresAt = Date.now() + expires_in * 1000;
+      localStorage.setItem('nova_expires', expiresAt.toString());
       const r = await fetch('https://discord.com/api/users/@me',{headers:{'Authorization':`${token_type} ${access_token}`}});
       if(!r.ok) throw new Error();
       const user = await r.json();
       localStorage.setItem('nova_user',JSON.stringify(user));
       
-      // Aggiungi alla lista degli utenti collegati
-      const expiresTime = Date.now() + expires_in * 1000;
-      addLoggedInUser(user, access_token, expiresTime);
+      currentUser = user;
+      
+      const userData = {
+        id: user.id,
+        username: user.username,
+        global_name: user.global_name,
+        avatar: user.avatar,
+        loginTime: new Date().toISOString(),
+        expires: expiresAt,
+        lastSeen: Date.now(),
+        avatarUrl: getAvatarUrl(user)
+      };
+      addOnlineUser(userData);
+      channel.postMessage({ type: 'USER_LOGIN', user: userData });
+      startHeartbeat();
       
       updateAuthUI();
       toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
@@ -1126,8 +1222,12 @@
     
     function logout(e){ 
       if(e) e.preventDefault(); 
-      const user = getCurrentUser(); 
-      const name = user ? formatDiscordName(user) : ''; 
+      const name = currentUser ? formatDiscordName(currentUser) : ''; 
+      if(currentUser) {
+        removeOnlineUser(currentUser.id);
+        channel.postMessage({ type: 'USER_LOGOUT', userId: currentUser.id });
+        stopHeartbeat();
+      }
       clearAuth(); 
       updateAuthUI(); 
       showPage('home'); 
@@ -1159,7 +1259,34 @@
       } 
     });
     
-    // Donations init
+    function toast(message, icon = 'fa-solid fa-info-circle') {
+      let existing = $('.toast');
+      if (existing) existing.remove();
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.innerHTML = `<i class="${icon}"></i> ${message}`;
+      document.body.appendChild(el);
+      setTimeout(() => el.classList.add('show'), 10);
+      setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
+    }
+    
+    const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
+    
+    function createParticles() {
+      const container = $('#particles');
+      if(!container) return;
+      for(let i = 0; i < 50; i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        const s = Math.random() * 4 + 2;
+        p.style.width = s+'px'; p.style.height = s+'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = Math.random() * 10 + 8 + 's';
+        p.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(p);
+      }
+    }
+    
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"};
     const grid = $('#donationsGrid');
     if(grid) {
@@ -1211,27 +1338,20 @@
       }catch(e){ $('#countTotal').textContent='—'; $('#countOnline').textContent='—'; $('#statMembers').textContent='—'; }
     }
     
-    // Controllo periodico della validità dei token per rimuovere utenti scaduti
-    setInterval(() => {
-      const oldLength = loggedInUsers.length;
-      loggedInUsers = loggedInUsers.filter(u => {
-        return u.expires && Date.now() < u.expires;
-      });
-      if(oldLength !== loggedInUsers.length) {
-        saveLoggedInUsers();
-      }
-      updateAdminPanel();
-    }, 60000); // Ogni minuto
-    
     window.addEventListener('load', async ()=>{
       createParticles();
-      loadLoggedInUsers();
+      loadOnlineUsersFromStorage();
       await handleOAuthRedirect();
       updateAuthUI();
       loadDiscordCounts();
       setInterval(loadDiscordCounts,30000);
       $('#btnDiscordLogin')?.addEventListener('click',beginDiscordLogin);
       $('#btnLogout')?.addEventListener('click',logout);
+      
+      // Richiedi stato iniziale
+      setTimeout(() => {
+        broadcastUsersUpdate();
+      }, 1000);
     });
   </script>
 </body>

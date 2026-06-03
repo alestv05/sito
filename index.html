@@ -1021,7 +1021,7 @@
     };
     
     let database = null;
-    let sessionsRef = null;      // Nodo per le sessioni (chiave = sessionId univoco)
+    let sessionsRef = null;
     let countdownsRef = null;
     let currentCountdowns = [];
     let currentUser = null;
@@ -1033,7 +1033,7 @@
     try {
       const app = firebase.initializeApp(firebaseConfig);
       database = firebase.database();
-      sessionsRef = database.ref('online_sessions');  // Ogni sessione è un nodo separato
+      sessionsRef = database.ref('online_sessions');
       countdownsRef = database.ref('countdowns');
       console.log("Firebase connesso - multi-sessione attivo");
     } catch(e) { console.error("Firebase errore", e); }
@@ -1087,7 +1087,7 @@
       const device = detectDeviceType();
       const sessionRecord = {
         sessionId: currentSessionId,
-        type: userData.type,   // 'guest' o 'discord'
+        type: userData.type,
         name: userData.name,
         device: device,
         loginTime: new Date().toISOString(),
@@ -1124,7 +1124,7 @@
     // ------------------- SESSIONE ANONIMA -------------------
     function initAnonymousSession() {
       currentSessionId = getOrCreateSessionId();
-      const expiresAt = Date.now() + 3600000; // 1 ora
+      const expiresAt = Date.now() + 3600000;
       registerSession({ type: 'guest', name: 'Visitatore anonimo' }, expiresAt)
         .then(() => startHeartbeat())
         .catch(err => console.warn("Sessione anonima non registrata", err));
@@ -1267,13 +1267,12 @@
     
     function showLoader(show) { const l = $('#loginLoader'); if(l) l.classList.toggle('show', show); }
     
-    // ------------------- LISTA SESSIONI ONLINE (ADMIN) -------------------
+    // ------------------- LISTA SESSIONI ONLINE (ADMIN) - NASCONDI "ARRIVATO" PER ANONIMI -------------------
     function listenForSessions() {
       if (!sessionsRef) return;
       sessionsRef.on('value', (snapshot) => {
         const sessions = snapshot.val();
         const now = Date.now();
-        // Filtra sessioni non scadute e con lastSeen recente (max 2 minuti)
         const sessionList = sessions ? Object.values(sessions).filter(s => s.expires > now && (now - (s.lastSeen || s.expires)) < 120000) : [];
         let desktop=0, phone=0, tablet=0;
         sessionList.forEach(s => { const d = s.device || 'desktop'; if(d==='desktop') desktop++; else if(d==='phone') phone++; else tablet++; });
@@ -1299,11 +1298,12 @@
               else { devIcon = '<i class="fa-solid fa-tablet-alt"></i>'; devClass = 'tablet'; }
               const guestBadge = !isDiscord ? '<span class="guest-badge"><i class="fa-regular fa-eye"></i> Anonimo</span>' : '';
               const avatarHtml = isDiscord && s.avatarUrl ? `<img class="user-avatar" src="${s.avatarUrl}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : `<div class="user-avatar-placeholder"><i class="fa-solid ${isDiscord ? 'fa-brands fa-discord' : 'fa-user'}"></i></div>`;
-              // Mostra l'ID solo per sessioni Discord (anonimi non hanno ID)
               const userIdDisplay = isDiscord ? `<div class="user-id">Discord ID: ${escapeHtml(s.discordId)}</div>` : '';
+              // Mostra la riga "Arrivato:" solo se l'utente è loggato (Discord)
+              const loginTimeDisplay = isDiscord ? `<div class="user-login-time"><i class="fa-regular fa-clock"></i> Arrivato: ${loginTime}</div>` : '';
               return `<div class="user-online-card ${isCurrentSession ? 'admin-current-user' : ''}">
                 ${avatarHtml}
-                <div class="user-info"><div class="user-name"><i class="fa-solid fa-user"></i> ${escapeHtml(name)} ${guestBadge} ${isCurrentSession ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div>${userIdDisplay}<div class="user-login-time"><i class="fa-regular fa-clock"></i> Connesso dal: ${loginTime}</div></div></div>`;
+                <div class="user-info"><div class="user-name"><i class="fa-solid fa-user"></i> ${escapeHtml(name)} ${guestBadge} ${isCurrentSession ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div>${userIdDisplay}${loginTimeDisplay}</div></div>`;
             }).join('');
           }
         }
@@ -1569,7 +1569,7 @@
       loadDiscordCounts(); 
       setInterval(loadDiscordCounts,30000); 
       loadCountdownsFromFirebase(); 
-      listenForSessions();   // Ascolta le sessioni (multi-sessione)
+      listenForSessions(); 
       const loginBtn = $('#btnDiscordLogin'); 
       const logoutBtn = $('#btnLogout'); 
       const saveBtn = $('#btnSaveCountdown'); 

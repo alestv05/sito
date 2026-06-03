@@ -930,9 +930,7 @@
           <!-- Lista countdown esistenti -->
           <div class="countdowns-list">
             <h4><i class="fa-solid fa-list"></i> Countdown Configurati</h4>
-            <div id="countdownsListContainer">
-              <div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-solid fa-spinner fa-pulse"></i> Caricamento...</div>
-            </div>
+            <div id="countdownsListContainer"></div>
           </div>
         </div>
         
@@ -1075,34 +1073,39 @@
       const noCountdownDiv = $('#noCountdownHome');
       
       if (!activeCountdownData || !activeCountdownData.targetTime || activeCountdownData.targetTime <= Date.now()) {
-        banner.style.display = 'none';
-        noCountdownDiv.style.display = 'block';
+        if (banner) banner.style.display = 'none';
+        if (noCountdownDiv) noCountdownDiv.style.display = 'block';
         if (countdownInterval) clearInterval(countdownInterval);
         return;
       }
       
-      banner.style.display = 'block';
-      noCountdownDiv.style.display = 'none';
-      $('#countdownTitle').textContent = activeCountdownData.title || 'Evento Speciale';
-      $('#countdownMessage').textContent = activeCountdownData.message || '';
+      if (banner) banner.style.display = 'block';
+      if (noCountdownDiv) noCountdownDiv.style.display = 'none';
+      
+      const titleSpan = $('#countdownTitle');
+      const messageSpan = $('#countdownMessage');
+      if (titleSpan) titleSpan.textContent = activeCountdownData.title || 'Evento Speciale';
+      if (messageSpan) messageSpan.textContent = activeCountdownData.message || '';
       
       function updateTimer() {
         const now = Date.now();
         const diff = activeCountdownData.targetTime - now;
         
         if (diff <= 0) {
-          // Countdown scaduto
           if (countdownInterval) clearInterval(countdownInterval);
-          $('#countdownDays').textContent = '00';
-          $('#countdownHours').textContent = '00';
-          $('#countdownMinutes').textContent = '00';
-          $('#countdownSeconds').textContent = '00';
-          $('#countdownMessage').textContent = activeCountdownData.message || 'Evento iniziato!';
-          // Rimuovi countdown attivo dopo scadenza
+          const daysSpan = $('#countdownDays');
+          const hoursSpan = $('#countdownHours');
+          const minutesSpan = $('#countdownMinutes');
+          const secondsSpan = $('#countdownSeconds');
+          if (daysSpan) daysSpan.textContent = '00';
+          if (hoursSpan) hoursSpan.textContent = '00';
+          if (minutesSpan) minutesSpan.textContent = '00';
+          if (secondsSpan) secondsSpan.textContent = '00';
+          if (messageSpan) messageSpan.textContent = activeCountdownData.message || 'Evento iniziato!';
           activeCountdownData = null;
           setTimeout(() => {
-            banner.style.display = 'none';
-            noCountdownDiv.style.display = 'block';
+            if (banner) banner.style.display = 'none';
+            if (noCountdownDiv) noCountdownDiv.style.display = 'block';
           }, 1000);
           return;
         }
@@ -1112,10 +1115,14 @@
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         
-        $('#countdownDays').textContent = days.toString().padStart(2, '0');
-        $('#countdownHours').textContent = hours.toString().padStart(2, '0');
-        $('#countdownMinutes').textContent = minutes.toString().padStart(2, '0');
-        $('#countdownSeconds').textContent = seconds.toString().padStart(2, '0');
+        const daysSpan = $('#countdownDays');
+        const hoursSpan = $('#countdownHours');
+        const minutesSpan = $('#countdownMinutes');
+        const secondsSpan = $('#countdownSeconds');
+        if (daysSpan) daysSpan.textContent = days.toString().padStart(2, '0');
+        if (hoursSpan) hoursSpan.textContent = hours.toString().padStart(2, '0');
+        if (minutesSpan) minutesSpan.textContent = minutes.toString().padStart(2, '0');
+        if (secondsSpan) secondsSpan.textContent = seconds.toString().padStart(2, '0');
       }
       
       if (countdownInterval) clearInterval(countdownInterval);
@@ -1133,7 +1140,6 @@
         }
         
         const now = Date.now();
-        let active = null;
         let closestFuture = null;
         
         Object.values(countdowns).forEach(cd => {
@@ -1144,18 +1150,23 @@
           }
         });
         
-        active = closestFuture;
-        activeCountdownData = active;
+        activeCountdownData = closestFuture;
+        updateHomeCountdownDisplay();
+      }).catch(err => {
+        console.error("Errore caricamento countdown:", err);
+        activeCountdownData = null;
         updateHomeCountdownDisplay();
       });
     }
 
     function loadCountdownsListForAdmin() {
-      if (!isAdmin()) return;
+      const container = $('#countdownsListContainer');
+      if (!container) return;
+      
+      container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-solid fa-spinner fa-pulse"></i> Caricamento countdown...</div>';
+      
       countdownsRef.once('value', (snapshot) => {
         const countdowns = snapshot.val();
-        const container = $('#countdownsListContainer');
-        if (!container) return;
         
         if (!countdowns || Object.keys(countdowns).length === 0) {
           container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-regular fa-calendar-xmark"></i> Nessun countdown configurato</div>';
@@ -1163,7 +1174,9 @@
         }
         
         container.innerHTML = '';
-        Object.entries(countdowns).forEach(([id, cd]) => {
+        const sortedEntries = Object.entries(countdowns).sort((a, b) => a[1].targetTime - b[1].targetTime);
+        
+        sortedEntries.forEach(([id, cd]) => {
           const targetDate = new Date(cd.targetTime);
           const isExpired = cd.targetTime <= Date.now();
           const item = document.createElement('div');
@@ -1178,12 +1191,15 @@
               ${cd.message ? `<div class="countdown-item-msg"><i class="fa-solid fa-message"></i> ${escapeHtml(cd.message)}</div>` : ''}
             </div>
             <div class="countdown-item-actions">
-              <button class="btn btn-sm btn-warning" onclick="editCountdown('${id}', '${escapeHtml(cd.title || '')}', '${cd.targetTime}', '${escapeHtml(cd.message || '')}')"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn btn-sm btn-danger" onclick="deleteCountdown('${id}')"><i class="fa-solid fa-trash"></i></button>
+              <button class="btn btn-sm btn-warning" onclick="window.editCountdown('${id}', '${escapeHtml(cd.title || '').replace(/'/g, "\\'")}', '${cd.targetTime}', '${escapeHtml(cd.message || '').replace(/'/g, "\\'")}')"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn btn-sm btn-danger" onclick="window.deleteCountdown('${id}')"><i class="fa-solid fa-trash"></i></button>
             </div>
           `;
           container.appendChild(item);
         });
+      }).catch(err => {
+        console.error("Errore caricamento lista countdown:", err);
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #ff4d4f;"><i class="fa-solid fa-exclamation-triangle"></i> Errore caricamento countdown</div>';
       });
     }
 
@@ -1203,14 +1219,12 @@
           loadCountdownsListForAdmin();
           loadActiveCountdown();
           if ($('#editCountdownId').value === id) {
-            $('#editCountdownId').value = '';
-            $('#countdownTitleInput').value = '';
-            $('#countdownDateTime').value = '';
-            $('#countdownMessageInput').value = '';
-            $('#formTitle').innerHTML = '<i class="fa-regular fa-calendar-plus"></i> Nuovo Countdown';
-            $('#btnCancelEdit').style.display = 'none';
+            resetForm();
           }
-        }).catch(err => toast('Errore eliminazione', 'fa-solid fa-exclamation-triangle'));
+        }).catch(err => {
+          console.error(err);
+          toast('Errore eliminazione', 'fa-solid fa-exclamation-triangle');
+        });
       }
     };
 
@@ -1258,7 +1272,10 @@
         resetForm();
         loadCountdownsListForAdmin();
         loadActiveCountdown();
-      }).catch(err => toast('Errore salvataggio', 'fa-solid fa-exclamation-triangle'));
+      }).catch(err => {
+        console.error(err);
+        toast('Errore salvataggio', 'fa-solid fa-exclamation-triangle');
+      });
     }
 
     // ==================== ONLINE USERS ====================
@@ -1270,10 +1287,15 @@
         let desktop=0, phone=0, tablet=0;
         userList.forEach(u => { const d = u.device || 'desktop'; if(d==='desktop') desktop++; else if(d==='phone') phone++; else tablet++; });
         if(currentUser && currentUser.id === ADMIN_DISCORD_ID) {
-          $('#adminUserCount').textContent = userList.length;
-          $('#desktopCount').textContent = desktop;
-          $('#phoneCount').textContent = phone;
-          $('#tabletCount').textContent = tablet;
+          const userCountSpan = $('#adminUserCount');
+          const desktopSpan = $('#desktopCount');
+          const phoneSpan = $('#phoneCount');
+          const tabletSpan = $('#tabletCount');
+          if (userCountSpan) userCountSpan.textContent = userList.length;
+          if (desktopSpan) desktopSpan.textContent = desktop;
+          if (phoneSpan) phoneSpan.textContent = phone;
+          if (tabletSpan) tabletSpan.textContent = tablet;
+          
           const container = $('#usersOnlineList');
           if(container) {
             if(userList.length === 0) container.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato</div>`;
@@ -1358,8 +1380,10 @@
       if(pageId==='admin' && !isAdmin()) { toast('Accesso negato. Area riservata agli amministratori.','fa-solid fa-shield-haltered'); pageId='home'; }
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
       document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-      $(`#page-${pageId}`)?.classList.add('active');
-      $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
+      const targetPage = $(`#page-${pageId}`);
+      if (targetPage) targetPage.classList.add('active');
+      const targetNav = $(`.nav-link[data-route="${pageId}"]`);
+      if (targetNav) targetNav.classList.add('active');
       if(pageId==='home') { const v = $('#nvVideo'); if(v) v.play().catch(()=>{}); loadActiveCountdown(); }
       if(pageId==='admin' && isAdmin()) { loadCountdownsListForAdmin(); }
     }
@@ -1390,11 +1414,22 @@
         const r = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`,{cache:'no-cache'});
         if(!r.ok) throw new Error();
         const d = await r.json();
-        $('#guildName').textContent = d.guild?.name||'CDRP';
-        $('#countTotal').textContent = d.approximate_member_count||'—';
-        $('#countOnline').textContent = d.approximate_presence_count||'—';
-        $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—';
-      }catch(e){ $('#countTotal').textContent='—'; $('#countOnline').textContent='—'; $('#statMembers').textContent='—'; }
+        const guildNameSpan = $('#guildName');
+        const countTotalSpan = $('#countTotal');
+        const countOnlineSpan = $('#countOnline');
+        const statMembersSpan = $('#statMembers');
+        if (guildNameSpan) guildNameSpan.textContent = d.guild?.name||'CDRP';
+        if (countTotalSpan) countTotalSpan.textContent = d.approximate_member_count||'—';
+        if (countOnlineSpan) countOnlineSpan.textContent = d.approximate_presence_count||'—';
+        if (statMembersSpan) statMembersSpan.textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—';
+      }catch(e){ 
+        const countTotalSpan = $('#countTotal');
+        const countOnlineSpan = $('#countOnline');
+        const statMembersSpan = $('#statMembers');
+        if (countTotalSpan) countTotalSpan.textContent='—'; 
+        if (countOnlineSpan) countOnlineSpan.textContent='—'; 
+        if (statMembersSpan) statMembersSpan.textContent='—'; 
+      }
     }
 
     window.addEventListener('load', async ()=>{
@@ -1406,10 +1441,14 @@
       setInterval(loadDiscordCounts,30000);
       loadActiveCountdown();
       setInterval(() => loadActiveCountdown(), 60000);
-      $('#btnDiscordLogin')?.addEventListener('click',beginDiscordLogin);
-      $('#btnLogout')?.addEventListener('click',logout);
-      $('#btnSaveCountdown')?.addEventListener('click', saveCountdown);
-      $('#btnCancelEdit')?.addEventListener('click', resetForm);
+      const loginBtn = $('#btnDiscordLogin');
+      const logoutBtn = $('#btnLogout');
+      const saveBtn = $('#btnSaveCountdown');
+      const cancelBtn = $('#btnCancelEdit');
+      if (loginBtn) loginBtn.addEventListener('click', beginDiscordLogin);
+      if (logoutBtn) logoutBtn.addEventListener('click', logout);
+      if (saveBtn) saveBtn.addEventListener('click', saveCountdown);
+      if (cancelBtn) cancelBtn.addEventListener('click', resetForm);
     });
     
     function createParticles() {

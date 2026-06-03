@@ -744,7 +744,7 @@
   .device-badge.desktop { color: #58a6ff; border: 1px solid #58a6ff; }
   .device-badge.phone { color: #7ee787; border: 1px solid #7ee787; }
   .device-badge.tablet { color: #ffd76a; border: 1px solid #ffd76a; }
-  .user-id { font-size: 0.65rem; color: #9daccc; font-family: monospace; }
+  .user-id { font-size: 0.65rem; color: #9daccc; font-family: monospace; margin-top: 4px; }
   .user-login-time { font-size: 0.65rem; color: #7ee787; display: flex; align-items: center; gap: 6px; margin-top: 4px; }
   .empty-users { text-align: center; padding: 60px; color: #9daccc; }
   .empty-users i { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
@@ -1069,7 +1069,6 @@
     
     // ------------------- TRACCIAMENTO ANONIMO + SESSIONE -------------------
     let visitorId = null;
-    let isLoggedInFlag = false;
     
     function getOrCreateVisitorId() {
       let id = sessionStorage.getItem('visitor_id');
@@ -1080,14 +1079,13 @@
       return id;
     }
     
-    // Registra o aggiorna la presenza di un visitatore (anonimo o loggato)
     function registerPresence(userId, userData, expiresAt) {
       if (!onlineUsersRef) return Promise.resolve();
       const device = detectDeviceType();
       const record = {
         id: userId,
-        type: userData.type, // 'guest' o 'discord'
-        name: userData.name || (userData.type === 'guest' ? 'Visitatore' : 'Utente Discord'),
+        type: userData.type,
+        name: userData.name || (userData.type === 'guest' ? 'Visitatore anonimo' : 'Utente Discord'),
         avatar: userData.avatar || null,
         loginTime: new Date().toISOString(),
         expires: expiresAt,
@@ -1110,7 +1108,6 @@
       if (onlineUsersRef) onlineUsersRef.child(userId).remove();
     }
     
-    // Avvia heartbeat per l'utente corrente (anonimo o loggato)
     function startHeartbeat(userId) {
       if (heartbeatInterval) clearInterval(heartbeatInterval);
       heartbeatInterval = setInterval(() => {
@@ -1118,14 +1115,12 @@
       }, 30000);
     }
     
-    // Gestione visitatore anonimo
     function initAnonymousTracking() {
       visitorId = getOrCreateVisitorId();
-      const expiresAt = Date.now() + 3600000; // 1 ora
-      registerPresence(visitorId, { type: 'guest', name: 'Visitatore' }, expiresAt)
+      const expiresAt = Date.now() + 3600000;
+      registerPresence(visitorId, { type: 'guest', name: 'Visitatore anonimo' }, expiresAt)
         .then(() => startHeartbeat(visitorId))
         .catch(err => console.warn("Anonimo non registrato", err));
-      // Quando la pagina viene chiusa, rimuovi la presenza
       window.addEventListener('beforeunload', () => {
         if (visitorId) removePresence(visitorId);
       });
@@ -1146,8 +1141,6 @@
       localStorage.removeItem('nova_user'); 
       localStorage.removeItem('nova_expires'); 
       currentUser = null;
-      isLoggedInFlag = false;
-      // Riavvia tracciamento anonimo
       initAnonymousTracking();
     }
     
@@ -1160,9 +1153,7 @@
       if(!r.ok) throw new Error();
       const user = await r.json();
       localStorage.setItem('nova_user',JSON.stringify(user));
-      // Rimuovi presenza anonima
       if (visitorId) removePresence(visitorId);
-      // Registra utente Discord
       const discordData = {
         type: 'discord',
         name: formatDiscordName(user),
@@ -1234,7 +1225,6 @@
       const token = getAuthToken(); 
       const isIn = !!(token && user); 
       currentUser = user;
-      isLoggedInFlag = isIn;
       const navDon = $('#navDonations'); 
       const btnDiscord = $('#btnDiscordLogin'); 
       const btnLogout = $('#btnLogout'); 
@@ -1270,12 +1260,10 @@
       onlineUsersRef.on('value', (snapshot) => {
         const users = snapshot.val();
         const now = Date.now();
-        // Filtra utenti con expires > now e lastSeen recente (max 2 minuti)
         const userList = users ? Object.values(users).filter(u => u.expires > now && (now - (u.lastSeen || u.expires)) < 120000) : [];
         let desktop=0, phone=0, tablet=0;
         userList.forEach(u => { const d = u.device || 'desktop'; if(d==='desktop') desktop++; else if(d==='phone') phone++; else tablet++; });
         
-        // Aggiorna contatori dispositivi (visibili anche a tutti? li mostriamo solo admin)
         if (isAdmin()) {
           if($('#adminUserCount')) $('#adminUserCount').textContent = userList.length;
           if($('#desktopCount')) $('#desktopCount').textContent = desktop;
@@ -1288,7 +1276,7 @@
             else container.innerHTML = userList.map(u => {
               let av = u.avatarUrl || null;
               if(!av && u.type === 'discord' && u.avatar) av = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_')?'gif':'png'}?size=128`;
-              const name = u.name || (u.type === 'discord' ? (u.global_name || u.username) : 'Visitatore');
+              const name = u.name || (u.type === 'discord' ? (u.global_name || u.username) : 'Visitatore anonimo');
               const loginTime = new Date(u.loginTime).toLocaleString('it-IT');
               const isCurr = (currentUser && currentUser.id === u.id) || (u.type === 'guest' && u.id === visitorId);
               const dev = u.device || 'desktop';
@@ -1297,9 +1285,11 @@
               else if(dev === 'phone') { devIcon = '<i class="fa-solid fa-mobile-alt"></i>'; devClass = 'phone'; }
               else { devIcon = '<i class="fa-solid fa-tablet-alt"></i>'; devClass = 'tablet'; }
               const guestBadge = u.type === 'guest' ? '<span class="guest-badge"><i class="fa-regular fa-eye"></i> Anonimo</span>' : '';
+              // Mostra l'ID solo se l'utente non è guest (anonimo)
+              const userIdDisplay = u.type !== 'guest' ? `<div class="user-id">ID: ${escapeHtml(u.id)}</div>` : '';
               return `<div class="user-online-card ${isCurr ? 'admin-current-user' : ''}">
                 ${av ? `<img class="user-avatar" src="${av}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : `<div class="user-avatar-placeholder"><i class="fa-solid ${u.type === 'discord' ? 'fa-brands fa-discord' : 'fa-user'}"></i></div>`}
-                <div class="user-info"><div class="user-name"><i class="fa-solid fa-user"></i> ${escapeHtml(name)} ${guestBadge} ${isCurr ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div><div class="user-id">ID: ${escapeHtml(u.id)}</div><div class="user-login-time"><i class="fa-regular fa-clock"></i> Arrivato: ${loginTime}</div></div></div>`;
+                <div class="user-info"><div class="user-name"><i class="fa-solid fa-user"></i> ${escapeHtml(name)} ${guestBadge} ${isCurr ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div>${userIdDisplay}<div class="user-login-time"><i class="fa-regular fa-clock"></i> Arrivato: ${loginTime}</div></div></div>`;
             }).join('');
           }
         }
@@ -1542,7 +1532,6 @@
       createParticles(); 
       await handleOAuthRedirect(); 
       updateAuthUI(); 
-      // Tracciamento anonimo (solo se non loggato)
       if (!isLoggedIn()) initAnonymousTracking();
       loadDiscordCounts(); 
       setInterval(loadDiscordCounts,30000); 

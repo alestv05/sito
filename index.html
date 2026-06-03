@@ -465,9 +465,158 @@
     font-style: italic;
   }
 
-  /* ADMIN PANEL - NUOVO LAYOUT A COLONNE */
+  /* ADMIN COUNTDOWN SECTION */
+  .admin-countdown-section {
+    background: linear-gradient(135deg, #121a2a, #0f1625);
+    border-radius: 20px;
+    padding: 25px;
+    margin-top: 30px;
+    border: 1px solid #2a3a61;
+  }
+  .admin-countdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .admin-countdown-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #58a6ff;
+  }
+  .form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    background: #0f1625;
+    border: 1px solid #2a3a61;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #58a6ff;
+  }
+  .countdowns-list {
+    margin-top: 30px;
+  }
+  .countdown-item {
+    background: #0f1625;
+    border: 1px solid #2a3a61;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .countdown-item-info {
+    flex: 1;
+  }
+  .countdown-item-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .countdown-item-date {
+    font-size: 0.8rem;
+    color: #7ee787;
+    margin-top: 5px;
+  }
+  .countdown-item-msg {
+    font-size: 0.85rem;
+    color: #9daccc;
+    margin-top: 5px;
+  }
+  .countdown-item-status {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #2a3a61;
+  }
+  .countdown-item-status.active {
+    background: #7ee78720;
+    color: #7ee787;
+    border: 1px solid #7ee787;
+  }
+  .countdown-item-status.expired {
+    background: #ff4d4f20;
+    color: #ff4d4f;
+    border: 1px solid #ff4d4f;
+  }
+  .countdown-item-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .btn-danger {
+    background: #ff4d4f20;
+    border: 1px solid #ff4d4f;
+    color: #ff4d4f;
+    cursor: pointer;
+  }
+  .btn-danger:hover {
+    background: #ff4d4f;
+    color: #fff;
+  }
+  .btn-warning {
+    background: #ffd76a20;
+    border: 1px solid #ffd76a;
+    color: #ffd76a;
+    cursor: pointer;
+  }
+  .btn-warning:hover {
+    background: #ffd76a;
+    color: #000;
+  }
+
+  .staff-section{max-width:1000px; margin:40px auto}
+  .role{
+    display:flex; 
+    align-items:center; 
+    gap:12px; 
+    margin:0 0 20px; 
+    font-weight:800; 
+    font-size:1.5rem;
+    border-left: 4px solid #58a6ff;
+    padding-left: 15px;
+  }
+  .role i { font-size: 1.8rem; color: #58a6ff; width: 40px; text-align: center; }
+  .staff-grid{display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+  .member{background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:20px; display:grid; justify-items:center; gap:12px; transition:transform .3s ease}
+  .member:hover{transform:translateY(-5px); border-color:#58a6ff}
+  .avatar{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:#0f1528; overflow:hidden}
+  .avatar img{width:100%; height:100%; object-fit:cover}
+  .ring{border:2px solid #2a3a61}.ring-gold{border-color:#ffd76a}.ring-silver{border-color:#cfd7ff}
+  .ring-red{border-color:#ff4d4f}.ring-green{border-color:#7ee787}.ring-purple{border-color:#a78bfa}
+  .member-name{font-weight:700; text-align:center; font-size:1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center;}
+  .member-role{font-weight:600; font-size:.85rem; margin-top:-6px; display: flex; align-items: center; justify-content: center; gap: 6px; background: #0f1625; padding: 4px 10px; border-radius: 40px; width: fit-content; margin-left: auto; margin-right: auto;}
+  .member-role i { font-size: 0.85rem; }
+
+  /* ADMIN PANEL */
   .admin-panel {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
   }
@@ -478,7 +627,7 @@
     flex-wrap: wrap;
     gap: 20px;
     margin-bottom: 30px;
-    padding: 20px 25px;
+    padding: 20px;
     background: linear-gradient(135deg, #1a2542, #0f1625);
     border-radius: 20px;
     border: 1px solid #58a6ff;
@@ -512,210 +661,104 @@
     align-items: center;
     gap: 8px;
   }
-  .live-badge i { color: #ff4d4f; animation: pulse 1.5s infinite; }
-
-  /* Griglia principale a 2 colonne */
-  .admin-dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-bottom: 30px;
+  .live-badge i {
+    color: #ff4d4f;
+    animation: pulse 1.5s infinite;
   }
-  
-  /* Card generiche */
-  .admin-card {
+
+  .device-stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .device-card {
     background: linear-gradient(135deg, #121a2a, #0f1625);
-    border-radius: 20px;
     border: 1px solid #2a3a61;
-    overflow: hidden;
+    border-radius: 24px;
+    padding: 25px 35px;
+    text-align: center;
+    min-width: 160px;
     transition: all 0.3s ease;
   }
-  .admin-card:hover { border-color: #58a6ff40; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-  .card-header {
-    padding: 18px 22px;
-    background: rgba(10, 15, 26, 0.8);
-    border-bottom: 1px solid #2a3a61;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.3rem;
-    font-weight: 700;
-  }
-  .card-header i { color: #58a6ff; font-size: 1.4rem; }
-  .card-body { padding: 22px; }
-
-  /* Form countdown */
-  .form-group {
-    margin-bottom: 20px;
-  }
-  .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #58a6ff;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .form-group input, .form-group textarea {
-    width: 100%;
-    padding: 12px 15px;
-    background: #0a0f1a;
-    border: 1px solid #2a3a61;
-    border-radius: 14px;
-    color: #fff;
-    font-size: 1rem;
-    transition: all 0.2s;
-  }
-  .form-group input:focus, .form-group textarea:focus {
-    outline: none;
+  .device-card:hover {
+    transform: translateY(-5px);
     border-color: #58a6ff;
-    box-shadow: 0 0 0 2px rgba(88,166,255,0.2);
+    box-shadow: 0 15px 35px rgba(88,166,255,0.2);
   }
+  .device-icon { font-size: 48px; margin-bottom: 12px; }
+  .device-card.desktop .device-icon { color: #58a6ff; }
+  .device-card.phone .device-icon { color: #7ee787; }
+  .device-card.tablet .device-icon { color: #ffd76a; }
+  .device-count { font-size: 48px; font-weight: 900; line-height: 1; margin: 10px 0; }
+  .device-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: #9daccc; font-weight: 600; }
+  .device-sub { font-size: 0.7rem; color: #6a7a9e; margin-top: 8px; }
 
-  /* Lista countdown */
-  .countdowns-list-container {
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 5px;
+  .users-online-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    margin-top: 20px;
   }
-  .countdown-item {
-    background: #0a0f1a;
+  .user-online-card {
+    background: linear-gradient(135deg, #121a2a, #0f1625);
     border: 1px solid #2a3a61;
     border-radius: 16px;
     padding: 16px;
-    margin-bottom: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    transition: all 0.2s;
-  }
-  .countdown-item:hover { background: #0f1625; border-color: #58a6ff; }
-  .countdown-item-info { flex: 1; }
-  .countdown-item-title {
-    font-weight: 700;
-    font-size: 1.05rem;
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 16px;
+    transition: all 0.3s ease;
   }
-  .countdown-item-date {
-    font-size: 0.75rem;
-    color: #7ee787;
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  .user-online-card:hover {
+    transform: translateY(-3px);
+    border-color: #58a6ff;
   }
-  .countdown-item-msg {
-    font-size: 0.8rem;
-    color: #9daccc;
-    margin-top: 4px;
+  .user-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #58a6ff;
   }
-  .countdown-item-status {
-    font-size: 0.65rem;
-    padding: 3px 10px;
-    border-radius: 30px;
+  .user-avatar-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
     background: #2a3a61;
-  }
-  .countdown-item-status.active { background: #7ee78720; color: #7ee787; border: 1px solid #7ee787; }
-  .countdown-item-status.expired { background: #ff4d4f20; color: #ff4d4f; border: 1px solid #ff4d4f; }
-  .countdown-item-actions { display: flex; gap: 8px; }
-  .btn-sm {
-    padding: 6px 14px;
-    font-size: 0.75rem;
-    border-radius: 30px;
-  }
-
-  /* Statistiche dispositivi */
-  .device-stats-grid {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 25px;
-  }
-  .device-stat-card {
-    background: #0a0f1a;
-    border-radius: 20px;
-    padding: 20px;
-    text-align: center;
-    flex: 1;
-    min-width: 120px;
-    border: 1px solid #2a3a61;
-    transition: all 0.2s;
-  }
-  .device-stat-card:hover { transform: translateY(-3px); border-color: #58a6ff; }
-  .device-icon { font-size: 40px; margin-bottom: 10px; }
-  .device-stat-card.desktop .device-icon { color: #58a6ff; }
-  .device-stat-card.phone .device-icon { color: #7ee787; }
-  .device-stat-card.tablet .device-icon { color: #ffd76a; }
-  .device-count-num { font-size: 36px; font-weight: 800; line-height: 1; margin: 8px 0; }
-  .device-label-sm { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #9daccc; }
-
-  /* Lista utenti online */
-  .users-online-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 5px;
-  }
-  .user-online-card {
-    background: #0a0f1a;
-    border-radius: 16px;
-    padding: 14px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    border: 1px solid #2a3a61;
-    transition: all 0.2s;
+    justify-content: center;
+    font-size: 28px;
+    color: #58a6ff;
   }
-  .user-online-card:hover { background: #0f1625; border-color: #58a6ff; }
-  .user-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #58a6ff; }
-  .user-avatar-placeholder { width: 48px; height: 48px; border-radius: 50%; background: #2a3a61; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #58a6ff; }
   .user-info { flex: 1; }
-  .user-name { font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .device-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 30px; background: #0f1625; display: inline-flex; align-items: center; gap: 4px; }
+  .user-name {
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .device-badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #0f1625;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
   .device-badge.desktop { color: #58a6ff; border: 1px solid #58a6ff; }
   .device-badge.phone { color: #7ee787; border: 1px solid #7ee787; }
   .device-badge.tablet { color: #ffd76a; border: 1px solid #ffd76a; }
-  .user-id { font-size: 0.6rem; color: #9daccc; font-family: monospace; margin-top: 4px; }
-  .user-login-time { font-size: 0.6rem; color: #7ee787; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
-
-  .empty-users, .empty-countdowns {
-    text-align: center;
-    padding: 40px 20px;
-    color: #9daccc;
-  }
-  .empty-users i, .empty-countdowns i { font-size: 48px; margin-bottom: 12px; opacity: 0.5; display: block; }
-
-  .staff-section{max-width:1000px; margin:40px auto}
-  .role{
-    display:flex; 
-    align-items:center; 
-    gap:12px; 
-    margin:0 0 20px; 
-    font-weight:800; 
-    font-size:1.5rem;
-    border-left: 4px solid #58a6ff;
-    padding-left: 15px;
-  }
-  .role i { font-size: 1.8rem; color: #58a6ff; width: 40px; text-align: center; }
-  .staff-grid{display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
-  .member{background:#162137; border:1px solid #2a3a61; border-radius:16px; padding:20px; display:grid; justify-items:center; gap:12px; transition:transform .3s ease}
-  .member:hover{transform:translateY(-5px); border-color:#58a6ff}
-  .avatar{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:#0f1528; overflow:hidden}
-  .avatar img{width:100%; height:100%; object-fit:cover}
-  .ring{border:2px solid #2a3a61}.ring-gold{border-color:#ffd76a}.ring-silver{border-color:#cfd7ff}
-  .ring-red{border-color:#ff4d4f}.ring-green{border-color:#7ee787}.ring-purple{border-color:#a78bfa}
-  .member-name{font-weight:700; text-align:center; font-size:1.1rem; display: flex; align-items: center; gap: 8px; justify-content: center;}
-  .member-role{font-weight:600; font-size:.85rem; margin-top:-6px; display: flex; align-items: center; justify-content: center; gap: 6px; background: #0f1625; padding: 4px 10px; border-radius: 40px; width: fit-content; margin-left: auto; margin-right: auto;}
-  .member-role i { font-size: 0.85rem; }
+  .user-id { font-size: 0.65rem; color: #9daccc; font-family: monospace; }
+  .user-login-time { font-size: 0.65rem; color: #7ee787; display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .empty-users { text-align: center; padding: 60px; color: #9daccc; }
+  .empty-users i { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+  .admin-current-user { border-color: #58a6ff; background: linear-gradient(135deg, #1a2542, #121a2a); }
 
   .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; max-width:920px; margin:0 auto}
   .donation-card{text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:12px; transition:transform .3s ease; cursor:pointer}
@@ -764,9 +807,6 @@
   .page{min-height:calc(100vh - 100px); padding:40px 16px; display:none}
   .page.active{display:block}
 
-  @media (max-width: 900px) {
-    .admin-dashboard-grid { grid-template-columns: 1fr; gap: 25px; }
-  }
   @media (max-width:600px){
     .title-roman{font-size:1.8rem}
     .discord-numbers{gap:12px; padding:8px 16px}
@@ -784,10 +824,10 @@
     .stat-number{font-size:1.8rem}
     .stat-number i { font-size: 1.4rem; }
     .admin-header{flex-direction:column; text-align:center}
-    .device-stats-grid { gap: 12px; }
-    .device-stat-card { padding: 12px; }
-    .device-count-num { font-size: 28px; }
-    .device-icon { font-size: 32px; }
+    .device-card{min-width:100px; padding:15px 20px;}
+    .device-count{font-size:32px;}
+    .device-icon{font-size:32px;}
+    .users-online-grid{grid-template-columns:1fr}
     .countdown-timer{gap:10px}
     .countdown-block{min-width:60px; padding:10px}
     .countdown-number{font-size:1.5rem}
@@ -814,11 +854,12 @@
   </header>
 
   <main id="app">
-    <!-- HOME PAGE (invariata) -->
     <section id="page-home" class="page active" data-page>
       <div class="hero">
         <div class="particles" id="particles"></div>
         <div class="logo-container"><div class="logo-bg"></div><div class="logo-glow"></div></div>
+        
+        <!-- COUNTDOWN BANNER -->
         <div id="homeCountdownBanner" class="countdown-banner" style="display: none;">
           <div class="countdown-title"><i class="fa-regular fa-clock"></i> <span id="countdownTitle">Evento Speciale</span></div>
           <div class="countdown-timer">
@@ -832,114 +873,638 @@
         <div id="noCountdownHome" class="no-countdown" style="display: block;">
           <i class="fa-regular fa-calendar-xmark"></i> Nessun evento programmato al momento
         </div>
-        <div class="welcome-section">...</div>
-        <div class="stats-bar">...</div>
-        <div class="home-video">...</div>
-        <div class="cta-button">...</div>
-        <div class="discord-counts">...</div>
+
+        <div class="welcome-section">
+          <div class="welcome-badge"><i class="fa-solid fa-crown"></i><span>Nuovo Server RP Italiano</span></div>
+          <h1 class="welcome-title">Benvenuto su California Dreaming!</h1>
+          <p class="welcome-description">Siamo un nuovo server roleplay <span class="welcome-highlight">FiveM Italiano</span> ambientato negli Stati Uniti, precisamente a <span class="welcome-highlight">Los Angeles</span>. Se cerchi <span class="welcome-highlight">innovazione, divertimento e realismo</span>, sei nel posto giusto. <strong>Ti aspettiamo!</strong></p>
+          <div class="welcome-tags"><span class="welcome-tag"><i class="fa-solid fa-gamepad"></i> FiveM</span><span class="welcome-tag"><i class="fa-solid fa-city"></i> Los Angeles</span><span class="welcome-tag"><i class="fa-solid fa-star"></i> Realismo</span><span class="welcome-tag"><i class="fa-solid fa-users"></i> Community Italiana</span><span class="welcome-tag"><i class="fa-solid fa-rocket"></i> Innovazione</span><span class="welcome-tag"><i class="fa-solid fa-shield"></i> Anti-Cheat</span><span class="welcome-tag"><i class="fa-solid fa-car"></i> Veicoli Personalizzati</span></div>
+        </div>
+        <div class="stats-bar"><div class="stat-item"><div class="stat-number"><i class="fa-regular fa-clock"></i> 24/7</div><div class="stat-label">Server Online</div></div><div class="stat-item"><div class="stat-number"><i class="fa-solid fa-users"></i> <span id="statMembers">—</span></div><div class="stat-label">Membri Discord</div></div><div class="stat-item"><div class="stat-number"><i class="fa-solid fa-briefcase"></i> 50+</div><div class="stat-label">Lavori Disponibili</div></div><div class="stat-item"><div class="stat-number"><i class="fa-solid fa-car-side"></i> 100+</div><div class="stat-label">Veicoli</div></div></div>
+        <div class="home-video"><div class="home-video-head"><i class="fa-solid fa-film"></i><span>Trailer ufficiale</span></div><div class="home-video-frame"><video id="nvVideo" src="https://files.catbox.moe/vq53u8.mp4" muted autoplay loop playsinline webkit-playsinline preload="auto"></video></div></div>
+        <div class="cta-button"><a href="https://discord.gg/TAhbywxE4A" target="_blank" class="btn-join"><i class="fa-brands fa-discord"></i> Unisciti al Discord <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="discord-counts" id="discordCountsCard"><div class="discord-chip"><i class="fa-brands fa-discord"></i><span id="guildName">California Dreaming RP</span></div><div class="discord-numbers"><div class="discord-num"><span class="dc-label"><i class="fa-regular fa-user"></i> Membri</span><span class="dc-value" id="countTotal">—</span></div><div class="dc-divider"></div><div class="discord-num"><span class="dc-label"><i class="fa-solid fa-circle-nodes"></i> Online Ora</span><span class="dc-value online" id="countOnline">—</span></div></div></div>
       </div>
     </section>
 
-    <!-- STAFF PAGE (invariata) -->
-    <section id="page-staff" class="page" data-page>...</section>
+    <section id="page-staff" class="page" data-page>
+      <h2 class="title-roman"><i class="fa-solid fa-crown"></i> Il nostro staff</h2>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-crown"></i> Owner</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-gold"><img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio"></div><div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-star"></i> Founder</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto"></div><div class="member-name">Anto</div></div><div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony"></div><div class="member-name">Mony</div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-handshake"></i> Co-Founder</div><div class="staff-grid"><div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo"></div><div class="member-name">Gabbo</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div><div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez"></div><div class="member-name">Rodriguez</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div><div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss"></div><div class="member-name">Th3b00ss</div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-shield-haltered"></i> Admin</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo"></div><div class="member-name">Alexo</div><div class="member-role role-eup"><i class="fa-solid fa-shirt"></i> Eup Creator</div></div><div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri"></div><div class="member-name">Chri</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div><div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide"></div><div class="member-name">Il Davide</div><div class="member-role role-eup"><i class="fa-solid fa-shirt"></i> Eup Creator</div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-gavel"></i> Moderatore</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales"></div><div class="member-name">Ales</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze"></div><div class="member-name">Blaze</div><div class="member-role role-grafico"><i class="fa-solid fa-palette"></i> Grafico</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco"></div><div class="member-name">Franco</div><div class="member-role role-grafico"><i class="fa-solid fa-palette"></i> Grafico</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio"></div><div class="member-name">Glaudio</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca"></div><div class="member-name">Luca</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger"></div><div class="member-name">Mattiger</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight"></div><div class="member-name">Voight</div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-hand-peace"></i> Helper</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre"></div><div class="member-name">Andre</div></div><div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco"></div><div class="member-name">Falco</div></div></div></div>
+    </section>
 
-    <!-- ADMIN PANEL - NUOVO LAYOUT ORGANIZZATO -->
+    <!-- ADMIN PANEL -->
     <section id="page-admin" class="page" data-page>
       <div class="admin-panel">
-        <div class="admin-header">
-          <h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2>
-          <div class="admin-stats">
-            <div class="live-badge"><i class="fa-solid fa-circle"></i><span>LIVE</span></div>
-            <i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span>
+        <div class="admin-header"><h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2><div class="admin-stats"><div class="live-badge"><i class="fa-solid fa-circle"></i><span>LIVE</span></div><i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span></div></div>
+        
+        <!-- COUNTDOWN MANAGER SECTION -->
+        <div class="admin-countdown-section">
+          <div class="admin-countdown-header">
+            <h3><i class="fa-regular fa-hourglass-half"></i> Gestione Countdown Eventi</h3>
+          </div>
+          
+          <div style="background: #0a0f1a; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
+            <h4 style="margin-bottom: 15px;"><i class="fa-regular fa-calendar-plus"></i> <span id="formTitle">Nuovo Countdown</span></h4>
+            <input type="hidden" id="editCountdownId" value="">
+            <div class="form-group">
+              <label><i class="fa-solid fa-heading"></i> Titolo evento</label>
+              <input type="text" id="countdownTitleInput" placeholder="Es: Lancio del Server, Evento di Natale...">
+            </div>
+            <div class="form-group">
+              <label><i class="fa-regular fa-calendar"></i> Data e ora evento</label>
+              <input type="datetime-local" id="countdownDateTime">
+            </div>
+            <div class="form-group">
+              <label><i class="fa-solid fa-message"></i> Messaggio finale (opzionale)</label>
+              <textarea id="countdownMessageInput" rows="2" placeholder="Messaggio che apparirà quando il countdown scade..."></textarea>
+            </div>
+            <div class="actions" style="justify-content: flex-start;">
+              <button id="btnSaveCountdown" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Salva</button>
+              <button id="btnCancelEdit" class="btn btn-ghost" style="display: none;"><i class="fa-solid fa-xmark"></i> Annulla</button>
+            </div>
+          </div>
+          
+          <div class="countdowns-list">
+            <h4><i class="fa-solid fa-list"></i> Countdown Configurati</h4>
+            <div id="countdownsListContainer"></div>
           </div>
         </div>
-
-        <!-- Griglia 2 colonne -->
-        <div class="admin-dashboard-grid">
-          <!-- COLONNA SINISTRA: GESTIONE COUNTDOWN -->
-          <div class="admin-card">
-            <div class="card-header">
-              <i class="fa-regular fa-hourglass-half"></i> Gestione Countdown
-            </div>
-            <div class="card-body">
-              <!-- Form -->
-              <div style="margin-bottom: 30px;">
-                <h4 style="margin-bottom: 15px;"><span id="formTitle">Nuovo Countdown</span></h4>
-                <input type="hidden" id="editCountdownId" value="">
-                <div class="form-group">
-                  <label><i class="fa-solid fa-heading"></i> Titolo evento</label>
-                  <input type="text" id="countdownTitleInput" placeholder="Es: Lancio del Server, Evento di Natale...">
-                </div>
-                <div class="form-group">
-                  <label><i class="fa-regular fa-calendar"></i> Data e ora evento</label>
-                  <input type="datetime-local" id="countdownDateTime">
-                </div>
-                <div class="form-group">
-                  <label><i class="fa-solid fa-message"></i> Messaggio finale (opzionale)</label>
-                  <textarea id="countdownMessageInput" rows="2" placeholder="Messaggio che apparirà quando il countdown scade..."></textarea>
-                </div>
-                <div class="actions" style="justify-content: flex-start; margin-top: 10px;">
-                  <button id="btnSaveCountdown" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Salva</button>
-                  <button id="btnCancelEdit" class="btn btn-ghost" style="display: none;"><i class="fa-solid fa-xmark"></i> Annulla</button>
-                </div>
-              </div>
-              
-              <!-- Lista countdown -->
-              <div>
-                <h4 style="margin-bottom: 15px;"><i class="fa-solid fa-list"></i> Countdown Configurati</h4>
-                <div id="countdownsListContainer" class="countdowns-list-container"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- COLONNA DESTRA: STATISTICHE + UTENTI -->
-          <div class="admin-card">
-            <div class="card-header">
-              <i class="fa-solid fa-chart-line"></i> Statistiche & Utenti Online
-            </div>
-            <div class="card-body">
-              <!-- Dispositivi -->
-              <div style="margin-bottom: 25px;">
-                <h4 style="margin-bottom: 15px;"><i class="fa-solid fa-device"></i> Dispositivi connessi</h4>
-                <div class="device-stats-grid">
-                  <div class="device-stat-card desktop"><div class="device-icon"><i class="fa-solid fa-desktop"></i></div><div class="device-count-num" id="desktopCount">0</div><div class="device-label-sm">Desktop</div></div>
-                  <div class="device-stat-card phone"><div class="device-icon"><i class="fa-solid fa-mobile-alt"></i></div><div class="device-count-num" id="phoneCount">0</div><div class="device-label-sm">Telefono</div></div>
-                  <div class="device-stat-card tablet"><div class="device-icon"><i class="fa-solid fa-tablet-alt"></i></div><div class="device-count-num" id="tabletCount">0</div><div class="device-label-sm">Tablet</div></div>
-                </div>
-              </div>
-              
-              <!-- Lista utenti online -->
-              <div>
-                <h4 style="margin-bottom: 15px;"><i class="fa-solid fa-users"></i> Dettaglio Utenti Online</h4>
-                <div id="usersOnlineList" class="users-online-grid"></div>
-              </div>
-            </div>
-          </div>
+        
+        <div class="device-stats-container">
+          <div class="device-card desktop"><div class="device-icon"><i class="fa-solid fa-desktop"></i></div><div class="device-count" id="desktopCount">0</div><div class="device-label">Desktop</div><div class="device-sub">PC / Laptop</div></div>
+          <div class="device-card phone"><div class="device-icon"><i class="fa-solid fa-mobile-alt"></i></div><div class="device-count" id="phoneCount">0</div><div class="device-label">Telefono</div><div class="device-sub">Mobile / Smartphone</div></div>
+          <div class="device-card tablet"><div class="device-icon"><i class="fa-solid fa-tablet-alt"></i></div><div class="device-count" id="tabletCount">0</div><div class="device-label">Tablet</div><div class="device-sub">iPad / Android Tab</div></div>
         </div>
+        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-list"></i> Dettaglio Utenti Online</h3>
+        <div id="usersOnlineList" class="users-online-grid"></div>
       </div>
     </section>
 
-    <section id="page-donations" class="page" data-page>...</section>
-    <section id="page-donation" class="page" data-page>...</section>
+    <section id="page-donations" class="page" data-page><h2 class="title-roman"><i class="fa-solid fa-coins"></i> Sostieni California Dreaming</h2><div id="donationsGrid" class="donations-grid"></div></section>
+    <section id="page-donation" class="page" data-page><div class="card"><div id="donationDetail"></div><div class="actions"><button id="btnBackDon" class="btn btn-ghost"><i class="fa-solid fa-arrow-left"></i> Indietro</button><button id="btnBuy" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Acquista</button></div></div></section>
   </main>
 
-  <footer class="site-footer">...</footer>
+  <footer class="site-footer"><div class="stripe"></div><p>© 2025 California Dreaming Roleplay — La città degli angeli ti aspetta</p><div class="footer-icons"><a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a><a class="yt" href="https://youtube.com/@novaromarp?si=A5FuufVL9c9LEBAc" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i></a><a class="tt" href="https://www.tiktok.com/@novaromarp?_t=ZN-8xEfyEObCFi&_r=1" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a><a class="dc" href="https://discord.gg/TAhbywxE4A" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i></a></div></footer>
+
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
-    // ==================== CODICE COMPLETO (stesso funzionamento precedente) ====================
-    // Mantengo tutte le funzioni già testate, ma aggiorno il layout tramite HTML/CSS.
-    // Per brevità, qui replico il JS già funzionante della versione con localStorage.
-    // (Inserisco lo script completo dalla versione funzionante precedente)
+    // CONFIGURAZIONE COUNTDOWN LOCALE (NON USA FIREBASE PER I COUNTDOWN)
+    let localCountdowns = [];
+    let countdownInterval = null;
+    let activeCountdownData = null;
     
-    // ATTENZIONE: IL CODICE JS È IDENTICO ALL'ULTIMA VERSIONE FUNZIONANTE CON LOCALSTORAGE.
-    // Lo riporto per completezza, ma per risparmiare spazio assumo sia già presente.
-    // Dato che la richiesta è "copia e incolla tutto completo", fornisco lo script completo.
+    // Firebase solo per utenti online
+    const firebaseConfig = {
+      apiKey: "AIzaSyCggEkxfIHsBIH6lJhcB63KLvdgNw-OUfk",
+      authDomain: "cdrp-site.firebaseapp.com",
+      databaseURL: "https://cdrp-site-default-rtdb.firebaseio.com",
+      projectId: "cdrp-site",
+      storageBucket: "cdrp-site.firebasestorage.app",
+      messagingSenderId: "385667634977",
+      appId: "1:385667634977:web:c26c3c4dc5c833adcf5060"
+    };
     
-    // (Qui andrebbe l'intero JavaScript della versione locale, ma per evitare troncamenti lo includo in modo compatto)
+    let database = null;
+    let onlineUsersRef = null;
     
-    // In pratica, lo script è lo stesso dell'ultima risposta corretta. Lo incollo qui.
-    // ... (JS già testato, lo includo per intero)
+    try {
+      const app = firebase.initializeApp(firebaseConfig);
+      database = firebase.database();
+      onlineUsersRef = database.ref('online_users');
+      console.log("Firebase connesso per utenti online");
+    } catch(e) {
+      console.error("Firebase non disponibile, solo modalità offline", e);
+    }
+
+    const DISCORD_CLIENT_ID = '1419444744563720404';
+    const DISCORD_SCOPE = 'identify';
+    const REDIRECT_URI = window.location.href.split('#')[0];
+    const INVITE_CODE = 'TAhbywxE4A';
+    const ADMIN_DISCORD_ID = '640478852308664360';
+    
+    const $ = s => document.querySelector(s);
+    let currentUser = null;
+    let heartbeatInterval = null;
+
+    // CARICAMENTO COUNTDOWN DAL LOCALSTORAGE
+    function loadCountdownsFromStorage() {
+      const saved = localStorage.getItem('cdrp_countdowns');
+      if (saved) {
+        try {
+          localCountdowns = JSON.parse(saved);
+        } catch(e) { localCountdowns = []; }
+      } else {
+        localCountdowns = [];
+      }
+    }
+    
+    function saveCountdownsToStorage() {
+      localStorage.setItem('cdrp_countdowns', JSON.stringify(localCountdowns));
+    }
+    
+    function getActiveCountdown() {
+      const now = Date.now();
+      const active = localCountdowns.filter(cd => cd.targetTime > now).sort((a,b) => a.targetTime - b.targetTime);
+      return active.length > 0 ? active[0] : null;
+    }
+    
+    function updateHomeCountdownDisplay() {
+      const banner = $('#homeCountdownBanner');
+      const noCountdownDiv = $('#noCountdownHome');
+      
+      activeCountdownData = getActiveCountdown();
+      
+      if (!activeCountdownData) {
+        if (banner) banner.style.display = 'none';
+        if (noCountdownDiv) noCountdownDiv.style.display = 'block';
+        if (countdownInterval) clearInterval(countdownInterval);
+        return;
+      }
+      
+      if (banner) banner.style.display = 'block';
+      if (noCountdownDiv) noCountdownDiv.style.display = 'none';
+      
+      const titleSpan = $('#countdownTitle');
+      const messageSpan = $('#countdownMessage');
+      if (titleSpan) titleSpan.textContent = activeCountdownData.title || 'Evento Speciale';
+      if (messageSpan) messageSpan.textContent = activeCountdownData.message || '';
+      
+      function updateTimer() {
+        const now = Date.now();
+        const diff = activeCountdownData.targetTime - now;
+        
+        if (diff <= 0) {
+          if (countdownInterval) clearInterval(countdownInterval);
+          const daysSpan = $('#countdownDays');
+          const hoursSpan = $('#countdownHours');
+          const minutesSpan = $('#countdownMinutes');
+          const secondsSpan = $('#countdownSeconds');
+          if (daysSpan) daysSpan.textContent = '00';
+          if (hoursSpan) hoursSpan.textContent = '00';
+          if (minutesSpan) minutesSpan.textContent = '00';
+          if (secondsSpan) secondsSpan.textContent = '00';
+          if (messageSpan) messageSpan.textContent = activeCountdownData.message || 'Evento iniziato!';
+          setTimeout(() => {
+            loadCountdownsFromStorage();
+            activeCountdownData = getActiveCountdown();
+            if (!activeCountdownData) {
+              if (banner) banner.style.display = 'none';
+              if (noCountdownDiv) noCountdownDiv.style.display = 'block';
+            }
+          }, 1000);
+          return;
+        }
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        const daysSpan = $('#countdownDays');
+        const hoursSpan = $('#countdownHours');
+        const minutesSpan = $('#countdownMinutes');
+        const secondsSpan = $('#countdownSeconds');
+        if (daysSpan) daysSpan.textContent = days.toString().padStart(2, '0');
+        if (hoursSpan) hoursSpan.textContent = hours.toString().padStart(2, '0');
+        if (minutesSpan) minutesSpan.textContent = minutes.toString().padStart(2, '0');
+        if (secondsSpan) secondsSpan.textContent = seconds.toString().padStart(2, '0');
+      }
+      
+      if (countdownInterval) clearInterval(countdownInterval);
+      updateTimer();
+      countdownInterval = setInterval(updateTimer, 1000);
+    }
+    
+    function loadCountdownsListForAdmin() {
+      const container = $('#countdownsListContainer');
+      if (!container) return;
+      
+      loadCountdownsFromStorage();
+      
+      if (localCountdowns.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-regular fa-calendar-xmark"></i> Nessun countdown configurato</div>';
+        return;
+      }
+      
+      container.innerHTML = '';
+      const sorted = [...localCountdowns].sort((a,b) => a.targetTime - b.targetTime);
+      
+      sorted.forEach((cd, index) => {
+        const targetDate = new Date(cd.targetTime);
+        const isExpired = cd.targetTime <= Date.now();
+        const item = document.createElement('div');
+        item.className = 'countdown-item';
+        item.innerHTML = `
+          <div class="countdown-item-info">
+            <div class="countdown-item-title">
+              <i class="fa-regular fa-hourglass-half"></i> ${escapeHtml(cd.title)}
+              <span class="countdown-item-status ${isExpired ? 'expired' : 'active'}">${isExpired ? 'Scaduto' : 'Attivo'}</span>
+            </div>
+            <div class="countdown-item-date"><i class="fa-regular fa-calendar"></i> ${targetDate.toLocaleString('it-IT')}</div>
+            ${cd.message ? `<div class="countdown-item-msg"><i class="fa-solid fa-message"></i> ${escapeHtml(cd.message)}</div>` : ''}
+          </div>
+          <div class="countdown-item-actions">
+            <button class="btn btn-sm btn-warning" onclick="window.editCountdown(${index})"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-sm btn-danger" onclick="window.deleteCountdown(${index})"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+    
+    window.editCountdown = function(index) {
+      const cd = localCountdowns[index];
+      if (!cd) return;
+      
+      $('#editCountdownId').value = index;
+      $('#countdownTitleInput').value = cd.title;
+      const date = new Date(cd.targetTime);
+      $('#countdownDateTime').value = date.toISOString().slice(0, 16);
+      $('#countdownMessageInput').value = cd.message || '';
+      $('#formTitle').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Modifica Countdown';
+      $('#btnCancelEdit').style.display = 'inline-flex';
+    };
+    
+    window.deleteCountdown = function(index) {
+      if (confirm('Sei sicuro di voler eliminare questo countdown?')) {
+        localCountdowns.splice(index, 1);
+        saveCountdownsToStorage();
+        toast('Countdown eliminato', 'fa-solid fa-trash');
+        loadCountdownsListForAdmin();
+        updateHomeCountdownDisplay();
+        const editId = $('#editCountdownId');
+        if (editId && parseInt(editId.value) === index) {
+          resetForm();
+        }
+      }
+    };
+    
+    function resetForm() {
+      $('#editCountdownId').value = '';
+      $('#countdownTitleInput').value = '';
+      $('#countdownDateTime').value = '';
+      $('#countdownMessageInput').value = '';
+      $('#formTitle').innerHTML = '<i class="fa-regular fa-calendar-plus"></i> Nuovo Countdown';
+      $('#btnCancelEdit').style.display = 'none';
+    }
+    
+    function saveCountdown() {
+      const editIndex = $('#editCountdownId').value;
+      const title = $('#countdownTitleInput').value.trim();
+      const dateTime = $('#countdownDateTime').value;
+      const message = $('#countdownMessageInput').value.trim();
+      
+      if (!title) {
+        toast('Inserisci un titolo', 'fa-solid fa-exclamation-triangle');
+        return;
+      }
+      if (!dateTime) {
+        toast('Seleziona data e ora', 'fa-solid fa-exclamation-triangle');
+        return;
+      }
+      
+      const targetTime = new Date(dateTime).getTime();
+      if (isNaN(targetTime)) {
+        toast('Data non valida', 'fa-solid fa-exclamation-triangle');
+        return;
+      }
+      
+      loadCountdownsFromStorage();
+      
+      const countdownData = {
+        title: title,
+        targetTime: targetTime,
+        message: message || '',
+        createdAt: Date.now()
+      };
+      
+      if (editIndex !== '') {
+        localCountdowns[parseInt(editIndex)] = countdownData;
+        toast('Countdown aggiornato', 'fa-solid fa-check');
+      } else {
+        localCountdowns.push(countdownData);
+        toast('Countdown creato', 'fa-solid fa-check');
+      }
+      
+      saveCountdownsToStorage();
+      resetForm();
+      loadCountdownsListForAdmin();
+      updateHomeCountdownDisplay();
+    }
+
+    function detectDeviceType() {
+      try {
+        const parser = new UAParser();
+        const device = parser.getDevice();
+        if (device.type === 'tablet') return 'tablet';
+        if (device.type === 'mobile') return 'phone';
+      } catch(e) {}
+      return 'desktop';
+    }
+
+    function toast(msg, icon = 'fa-solid fa-info-circle') {
+      let existing = $('.toast');
+      if (existing) existing.remove();
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.innerHTML = `<i class="${icon}"></i> ${msg}`;
+      document.body.appendChild(el);
+      setTimeout(() => el.classList.add('show'), 10);
+      setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
+    }
+
+    function showLoader(show) { const l = $('#loginLoader'); if(l) l.classList.toggle('show', show); }
+
+    function getAuthToken() { 
+      const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); 
+      if(!t||!e) return null; 
+      if(Date.now()>=e){ clearAuth(); return null; } 
+      return t; 
+    }
+    function getCurrentUserFromStorage() {
+      const token = getAuthToken();
+      const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
+      if(!token || !user) return null;
+      return user;
+    }
+    function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
+    function isAdmin() { const u = getCurrentUserFromStorage(); return u && u.id === ADMIN_DISCORD_ID; }
+    function formatDiscordName(u) { return u?.global_name || u?.username || 'Utente'; }
+    function getAvatarUrl(u) { 
+      if(!u || !u.avatar || !u.id) return null; 
+      const f = u.avatar.startsWith('a_')?'gif':'png'; 
+      return `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${f}?size=128`; 
+    }
+
+    function addUserToFirebase(user, expiresAt) {
+      if (!onlineUsersRef) return Promise.resolve();
+      const device = detectDeviceType();
+      return onlineUsersRef.child(user.id).set({
+        id: user.id, username: user.username, global_name: user.global_name || user.username,
+        avatar: user.avatar, loginTime: new Date().toISOString(), expires: expiresAt,
+        lastSeen: Date.now(), avatarUrl: getAvatarUrl(user), device: device
+      });
+    }
+    function removeUserFromFirebase(userId) { if(onlineUsersRef) return onlineUsersRef.child(userId).remove(); return Promise.resolve(); }
+    function updateLastSeen(userId) { if(onlineUsersRef) onlineUsersRef.child(userId).update({ lastSeen: Date.now() }); }
+
+    function clearAuth() { 
+      if(currentUser) { removeUserFromFirebase(currentUser.id); if(heartbeatInterval) clearInterval(heartbeatInterval); }
+      localStorage.removeItem('nova_token'); localStorage.removeItem('nova_user'); localStorage.removeItem('nova_expires'); 
+      currentUser = null;
+    }
+
+    function updateAuthUI() {
+      const token = getAuthToken();
+      const user = getCurrentUserFromStorage();
+      const isIn = !!(token && user);
+      currentUser = user;
+      const navDonations = $('#navDonations');
+      const btnDiscord = $('#btnDiscordLogin');
+      const btnLogout = $('#btnLogout');
+      const btnAdmin = $('#btnAdmin');
+      if(navDonations) navDonations.hidden = !isIn;
+      if(btnDiscord) btnDiscord.hidden = isIn;
+      if(btnLogout) btnLogout.hidden = !isIn;
+      if(btnAdmin) btnAdmin.hidden = !isAdmin();
+      if(isIn) {
+        const url = getAvatarUrl(user);
+        const topAvatarImg = $('#topAvatarImg');
+        const topAvatarIcon = $('#topAvatarIcon');
+        const topUsername = $('#topUsername');
+        if(url && topAvatarImg) { topAvatarImg.src = url; topAvatarImg.style.display = 'block'; if(topAvatarIcon) topAvatarIcon.style.display = 'none'; } 
+        else if(topAvatarImg) { topAvatarImg.style.display = 'none'; if(topAvatarIcon) topAvatarIcon.style.display = 'block'; }
+        if(topUsername) { topUsername.textContent = formatDiscordName(user); topUsername.hidden = false; }
+        const expiresAt = Number(localStorage.getItem('nova_expires') || 0);
+        addUserToFirebase(user, expiresAt).then(() => {
+          if(heartbeatInterval) clearInterval(heartbeatInterval);
+          heartbeatInterval = setInterval(() => { if(currentUser) updateLastSeen(currentUser.id); }, 30000);
+        }).catch(console.error);
+      } else {
+        const topAvatarImg = $('#topAvatarImg');
+        const topAvatarIcon = $('#topAvatarIcon');
+        const topUsername = $('#topUsername');
+        if(topAvatarImg) topAvatarImg.style.display = 'none';
+        if(topAvatarIcon) topAvatarIcon.style.display = 'block';
+        if(topUsername) topUsername.hidden = true;
+        if(heartbeatInterval) clearInterval(heartbeatInterval);
+      }
+    }
+
+    function listenForOnlineUsers() {
+      if(!onlineUsersRef) return;
+      onlineUsersRef.on('value', (snapshot) => {
+        const users = snapshot.val();
+        const now = Date.now();
+        const userList = users ? Object.values(users).filter(u => u.expires > now && (now - (u.lastSeen || u.expires)) < 120000) : [];
+        let desktop=0, phone=0, tablet=0;
+        userList.forEach(u => { const d = u.device || 'desktop'; if(d==='desktop') desktop++; else if(d==='phone') phone++; else tablet++; });
+        if(currentUser && currentUser.id === ADMIN_DISCORD_ID) {
+          const userCountSpan = $('#adminUserCount');
+          const desktopSpan = $('#desktopCount');
+          const phoneSpan = $('#phoneCount');
+          const tabletSpan = $('#tabletCount');
+          if (userCountSpan) userCountSpan.textContent = userList.length;
+          if (desktopSpan) desktopSpan.textContent = desktop;
+          if (phoneSpan) phoneSpan.textContent = phone;
+          if (tabletSpan) tabletSpan.textContent = tablet;
+          
+          const container = $('#usersOnlineList');
+          if(container) {
+            if(userList.length === 0) container.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato</div>`;
+            else container.innerHTML = userList.map(u => {
+              let av = u.avatarUrl;
+              if(!av && u.avatar) av = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_')?'gif':'png'}?size=128`;
+              const name = u.global_name || u.username || 'Utente';
+              const loginTime = new Date(u.loginTime).toLocaleString('it-IT');
+              const isCurr = currentUser && currentUser.id === u.id;
+              const dev = u.device || 'desktop';
+              let devIcon = '', devClass = '';
+              if(dev === 'desktop') { devIcon = '<i class="fa-solid fa-desktop"></i>'; devClass = 'desktop'; }
+              else if(dev === 'phone') { devIcon = '<i class="fa-solid fa-mobile-alt"></i>'; devClass = 'phone'; }
+              else { devIcon = '<i class="fa-solid fa-tablet-alt"></i>'; devClass = 'tablet'; }
+              return `<div class="user-online-card ${isCurr ? 'admin-current-user' : ''}">
+                ${av ? `<img class="user-avatar" src="${av}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : `<div class="user-avatar-placeholder"><i class="fa-solid fa-circle-user"></i></div>`}
+                <div class="user-info"><div class="user-name"><i class="fa-brands fa-discord"></i> ${escapeHtml(name)} ${isCurr ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div><div class="user-id">ID: ${escapeHtml(u.id)}</div><div class="user-login-time"><i class="fa-regular fa-clock"></i> Login: ${loginTime}</div></div></div>`;
+            }).join('');
+          }
+        }
+      }, (err) => { console.error(err); });
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+    function buildAuthURL(s) { 
+      const u = new URL('https://discord.com/oauth2/authorize'); 
+      u.searchParams.set('client_id',DISCORD_CLIENT_ID); 
+      u.searchParams.set('redirect_uri',REDIRECT_URI); 
+      u.searchParams.set('response_type','token'); 
+      u.searchParams.set('scope',DISCORD_SCOPE); 
+      u.searchParams.set('state',s); 
+      return u.toString(); 
+    }
+
+    async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
+      if(!access_token) throw new Error('No token');
+      localStorage.setItem('nova_token',access_token);
+      const expiresAt = Date.now() + expires_in * 1000;
+      localStorage.setItem('nova_expires', expiresAt.toString());
+      const r = await fetch('https://discord.com/api/users/@me',{headers:{'Authorization':`${token_type} ${access_token}`}});
+      if(!r.ok) throw new Error();
+      const user = await r.json();
+      localStorage.setItem('nova_user',JSON.stringify(user));
+      updateAuthUI();
+      toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
+    }
+
+    function beginDiscordLogin(e) {
+      if(e) e.preventDefault();
+      if(isLoggedIn()) { toast('Sei già loggato!','fa-solid fa-check'); return; }
+      const state = Math.random().toString(36).substr(2,16);
+      sessionStorage.setItem('oauth_state',state);
+      const url = buildAuthURL(state);
+      const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2;
+      const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`);
+      showLoader(true);
+      const handler = async (ev) => { 
+        if(ev.origin !== window.location.origin) return;
+        if(ev.data?.type !== 'discord_oauth') return;
+        window.removeEventListener('message',handler);
+        try { await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); if(popup && !popup.closed) popup.close(); } 
+        finally { showLoader(false); }
+      };
+      window.addEventListener('message',handler);
+      const checkClosed = setInterval(()=>{ if(popup?.closed){ window.removeEventListener('message',handler); showLoader(false); clearInterval(checkClosed); } },500);
+    }
+
+    async function handleOAuthRedirect() {
+      if(!window.location.hash.startsWith('#')) return false;
+      const p = new URLSearchParams(window.location.hash.substr(1));
+      const token = p.get('access_token');
+      if(!token && !p.get('error')) return false;
+      history.replaceState(null,'',window.location.pathname+window.location.search);
+      if(window.opener && typeof window.opener.postMessage === 'function') {
+        window.opener.postMessage({type:'discord_oauth', access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600), state:p.get('state')}, window.opener.location.origin);
+        window.close();
+        return true;
+      }
+      if(p.get('error')){ toast('Accesso annullato.'); return true; }
+      showLoader(true);
+      try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); }
+      return true;
+    }
+
+    function logout(e) { 
+      if(e) e.preventDefault(); 
+      const name = currentUser ? formatDiscordName(currentUser) : ''; 
+      clearAuth(); 
+      updateAuthUI(); 
+      showPage('home'); 
+      toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); 
+    }
+
+    function showPage(pageId) {
+      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ toast('Accedi per vedere le donazioni','fa-solid fa-lock'); pageId='home'; }
+      if(pageId==='admin' && !isAdmin()) { toast('Accesso negato. Area riservata agli amministratori.','fa-solid fa-shield-haltered'); pageId='home'; }
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+      const targetPage = $(`#page-${pageId}`);
+      if (targetPage) targetPage.classList.add('active');
+      const targetNav = $(`.nav-link[data-route="${pageId}"]`);
+      if (targetNav) targetNav.classList.add('active');
+      if(pageId==='home') { const v = $('#nvVideo'); if(v) v.play().catch(()=>{}); updateHomeCountdownDisplay(); }
+      if(pageId==='admin' && isAdmin()) { loadCountdownsListForAdmin(); }
+    }
+
+    document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
+    
+    const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"};
+    const grid = $('#donationsGrid');
+    if(grid) {
+      grid.innerHTML = '';
+      [5,10,15,20,30,40,50,70].forEach(price=>{
+        const card = document.createElement('div'); card.className='donation-card'; card.dataset.price=price;
+        card.innerHTML = `<div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div><div class="donation-caption"><i class="fa-solid fa-euro-sign"></i> Pacchetto ${price}€</div>`;
+        grid.appendChild(card);
+      });
+      grid.addEventListener('click',(e)=>{
+        const c=e.target.closest('.donation-card'); if(!c) return;
+        if(!isLoggedIn()){ toast('Login richiesto','fa-solid fa-key'); return; }
+        const price = c.dataset.price;
+        const detailDiv = $('#donationDetail');
+        if(detailDiv) detailDiv.innerHTML = `<div class="donation-detail"><div class="donation-media"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt="Pacchetto"></div><div class="donation-info"><h2>Pacchetto ${price}€</h2><div class="price">${price}€</div><p>${OFFER_TEXT[price] || ''}</p></div></div>`;
+        showPage('donation');
+      });
+    }
+    
+    document.addEventListener('click',(e)=>{ 
+      if(e.target.id==='btnBackDon') showPage('donations'); 
+      if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket'); 
+    });
+
+    async function loadDiscordCounts() {
+      try{
+        const r = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`,{cache:'no-cache'});
+        if(!r.ok) throw new Error();
+        const d = await r.json();
+        const guildNameSpan = $('#guildName');
+        const countTotalSpan = $('#countTotal');
+        const countOnlineSpan = $('#countOnline');
+        const statMembersSpan = $('#statMembers');
+        if (guildNameSpan) guildNameSpan.textContent = d.guild?.name||'CDRP';
+        if (countTotalSpan) countTotalSpan.textContent = d.approximate_member_count||'—';
+        if (countOnlineSpan) countOnlineSpan.textContent = d.approximate_presence_count||'—';
+        if (statMembersSpan) statMembersSpan.textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—';
+      }catch(e){ 
+        const countTotalSpan = $('#countTotal');
+        const countOnlineSpan = $('#countOnline');
+        const statMembersSpan = $('#statMembers');
+        if (countTotalSpan) countTotalSpan.textContent='—'; 
+        if (countOnlineSpan) countOnlineSpan.textContent='—'; 
+        if (statMembersSpan) statMembersSpan.textContent='—'; 
+      }
+    }
+
+    window.addEventListener('load', async ()=>{
+      createParticles();
+      listenForOnlineUsers();
+      await handleOAuthRedirect();
+      updateAuthUI();
+      loadDiscordCounts();
+      setInterval(loadDiscordCounts,30000);
+      loadCountdownsFromStorage();
+      updateHomeCountdownDisplay();
+      
+      const loginBtn = $('#btnDiscordLogin');
+      const logoutBtn = $('#btnLogout');
+      const saveBtn = $('#btnSaveCountdown');
+      const cancelBtn = $('#btnCancelEdit');
+      if (loginBtn) loginBtn.addEventListener('click', beginDiscordLogin);
+      if (logoutBtn) logoutBtn.addEventListener('click', logout);
+      if (saveBtn) saveBtn.addEventListener('click', saveCountdown);
+      if (cancelBtn) cancelBtn.addEventListener('click', resetForm);
+    });
+    
+    function createParticles() {
+      const container = $('#particles');
+      if(!container) return;
+      for(let i=0;i<50;i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        const s = Math.random()*4+2;
+        p.style.width = s+'px'; p.style.height = s+'px';
+        p.style.left = Math.random()*100+'%';
+        p.style.animationDuration = Math.random()*10+8+'s';
+        p.style.animationDelay = Math.random()*5+'s';
+        container.appendChild(p);
+      }
+    }
   </script>
 </body>
 </html>

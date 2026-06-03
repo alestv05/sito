@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>California Dreaming Roleplay | Admin Panel - Countdown Manager</title>
+  <title>California Dreaming Roleplay | Admin Panel - Countdown Manager (Globale)</title>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -1010,7 +1010,7 @@
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
-    // Configurazione Firebase (stessa del progetto)
+    // Configurazione Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCggEkxfIHsBIH6lJhcB63KLvdgNw-OUfk",
       authDomain: "cdrp-site.firebaseapp.com",
@@ -1023,15 +1023,23 @@
     
     let database = null;
     let onlineUsersRef = null;
-    let countdownsRef = null;   // Riferimento per i countdown globali
-    let currentCountdowns = [];  // Array locale dei countdown (sincronizzato)
+    let countdownsRef = null;
+    let currentCountdowns = [];
     
     try {
       const app = firebase.initializeApp(firebaseConfig);
       database = firebase.database();
       onlineUsersRef = database.ref('online_users');
-      countdownsRef = database.ref('countdowns');  // Nuovo nodo per i countdown globali
-    } catch(e) { console.error("Firebase non disponibile", e); }
+      countdownsRef = database.ref('countdowns');
+      // Test permessi di scrittura (solo per debug)
+      countdownsRef.child('test_permission').set({test: true}).then(() => {
+        console.log("Permessi di scrittura OK");
+        countdownsRef.child('test_permission').remove();
+      }).catch(err => {
+        console.warn("ATTENZIONE: Nessun permesso di scrittura su /countdowns. Imposta le regole Firebase: { 'countdowns': { '.read': true, '.write': true } }");
+        toast("⚠️ Firebase: permessi di scrittura insufficienti. Contatta l'amministratore e imposta regole di scrittura su /countdowns.", "fa-solid fa-database");
+      });
+    } catch(e) { console.error("Firebase non inizializzato", e); toast("Firebase non disponibile. I countdown non saranno salvati globalmente.", "fa-solid fa-database"); }
 
     const DISCORD_CLIENT_ID = '1419444744563720404';
     const DISCORD_SCOPE = 'identify';
@@ -1045,7 +1053,7 @@
     let countdownInterval = null;
     let futureEventsInterval = null;
 
-    // ------------------- COUNTDOWN GLOBALI (Firebase) -------------------
+    // ------------------- COUNTDOWN GLOBALI -------------------
     function loadCountdownsFromFirebase() {
       if (!countdownsRef) return;
       countdownsRef.on('value', (snapshot) => {
@@ -1055,12 +1063,11 @@
         } else {
           currentCountdowns = [];
         }
-        // Aggiorna UI home e admin
         updateHomeCountdownDisplay();
         if (isAdmin() && document.getElementById('page-admin').classList.contains('active')) {
           loadCountdownsListForAdmin();
         }
-      }, (err) => { console.error("Errore lettura countdown", err); });
+      }, (err) => { console.error("Errore lettura countdown", err); toast("Errore nel caricamento dei countdown", "fa-solid fa-exclamation-triangle"); });
     }
 
     function saveCountdownToFirebase(countdownData, idToEdit = null) {
@@ -1103,7 +1110,6 @@
       const futureCountdowns = getAllFutureCountdowns();
       const activeCd = getActiveCountdown();
       
-      // Banner principale (evento più vicino)
       if (activeCd) {
         if(banner) banner.style.display = 'block';
         if(noCountdownDiv) noCountdownDiv.style.display = 'none';
@@ -1138,7 +1144,6 @@
         if(countdownInterval) clearInterval(countdownInterval);
       }
       
-      // Lista tutti i futuri (escluso il primo se vogliamo evitare duplicati? mostriamoli tutti per completezza)
       if(futureCountdowns.length > 0) {
         futureContainer.style.display = 'block';
         const renderFutureList = () => {
@@ -1180,7 +1185,6 @@
       }
     }
     
-    // Per l'admin: lista modificabile
     function loadCountdownsListForAdmin() {
       const container = $('#countdownsListContainer'); if(!container) return;
       if(currentCountdowns.length === 0) {
@@ -1213,7 +1217,7 @@
       if(confirm('Eliminare questo countdown? L\'operazione è globale.')) {
         deleteCountdownFromFirebase(id).then(() => {
           toast('Countdown eliminato (globale)', 'fa-solid fa-trash');
-        }).catch(err => toast('Errore eliminazione', 'fa-solid fa-exclamation-triangle'));
+        }).catch(err => { console.error(err); toast('Errore eliminazione: verifica i permessi Firebase', 'fa-solid fa-exclamation-triangle'); });
       }
     };
     
@@ -1233,18 +1237,22 @@
       const message = $('#countdownMessageInput').value.trim();
       if(!title || !dateTime) { toast('Titolo e data richiesti','fa-solid fa-exclamation-triangle'); return; }
       const targetTime = new Date(dateTime).getTime();
-      if(isNaN(targetTime)) return;
+      if(isNaN(targetTime)) { toast('Data non valida','fa-solid fa-exclamation-triangle'); return; }
       const cdData = { title, targetTime, message };
-      if(editId) {
-        saveCountdownToFirebase(cdData, editId).then(() => { toast('Countdown aggiornato (globale)','fa-solid fa-check'); resetForm(); }).catch(() => toast('Errore salvataggio','fa-solid fa-exclamation-triangle'));
-      } else {
-        saveCountdownToFirebase(cdData).then(() => { toast('Countdown creato (globale)','fa-solid fa-check'); resetForm(); }).catch(() => toast('Errore salvataggio','fa-solid fa-exclamation-triangle'));
-      }
+      
+      const action = editId ? saveCountdownToFirebase(cdData, editId) : saveCountdownToFirebase(cdData);
+      action.then(() => {
+        toast(editId ? 'Countdown aggiornato (globale)' : 'Countdown creato (globale)', 'fa-solid fa-check');
+        resetForm();
+      }).catch((err) => {
+        console.error("Errore salvataggio:", err);
+        toast("Errore di salvataggio: verifica i permessi di scrittura su Firebase (nodo 'countdowns')", "fa-solid fa-exclamation-triangle");
+      });
     }
     
-    // ------------------- GESTIONE UTENTI ONLINE (Firebase) -------------------
+    // ------------------- GESTIONE UTENTI ONLINE -------------------
     function detectDeviceType() { try { const parser = new UAParser(); const device = parser.getDevice(); if(device.type === 'tablet') return 'tablet'; if(device.type === 'mobile') return 'phone'; } catch(e) {} return 'desktop'; }
-    function toast(msg, icon = 'fa-solid fa-info-circle') { let existing = $('.toast'); if(existing) existing.remove(); const el = document.createElement('div'); el.className = 'toast'; el.innerHTML = `<i class="${icon}"></i> ${msg}`; document.body.appendChild(el); setTimeout(() => el.classList.add('show'), 10); setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500); }
+    function toast(msg, icon = 'fa-solid fa-info-circle') { let existing = $('.toast'); if(existing) existing.remove(); const el = document.createElement('div'); el.className = 'toast'; el.innerHTML = `<i class="${icon}"></i> ${msg}`; document.body.appendChild(el); setTimeout(() => el.classList.add('show'), 10); setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 5000); }
     function showLoader(show) { const l = $('#loginLoader'); if(l) l.classList.toggle('show', show); }
     function getAuthToken() { const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); if(!t||!e||Date.now()>=e){ clearAuth(); return null; } return t; }
     function getCurrentUserFromStorage() { const token = getAuthToken(); const user = JSON.parse(localStorage.getItem('nova_user') || 'null'); if(!token || !user) return null; return user; }

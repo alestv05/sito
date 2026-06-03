@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>California Dreaming Roleplay | Admin Panel Live</title>
 
+  <!-- Firebase SDK (versione compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <!-- Preconnect Discord -->
   <link rel="preconnect" href="https://discord.com" crossorigin>
   <link rel="dns-prefetch" href="//discord.com">
@@ -39,7 +43,6 @@
   ::-webkit-scrollbar-thumb{background:#58a6ff; border-radius:10px}
   ::-webkit-scrollbar-thumb:hover{background:#7ee787}
 
-  /* NAVBAR */
   .site-header{
     position:sticky; top:0; z-index:100;
     background:#0f1625dd; backdrop-filter:saturate(140%) blur(12px);
@@ -69,7 +72,6 @@
   #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none; border:2px solid #58a6ff}
   #topUsername{font-weight:600; letter-spacing:.04em; color:#cfe0ff; font-size:0.9rem}
 
-  /* HERO */
   .hero{
     position:relative; 
     min-height:100vh; 
@@ -405,7 +407,6 @@
   .title-roman{text-transform:uppercase; letter-spacing:.06em; text-align:center; margin-bottom:30px; font-size:2.2rem; font-weight:800}
   .card{max-width:760px; margin:30px auto; background:#162137; border:1px solid #2a3a61; border-radius:20px; padding:28px; box-shadow:var(--shadow)}
 
-  /* STAFF */
   .staff-section{max-width:1000px; margin:40px auto}
   .role{
     display:flex; 
@@ -429,7 +430,7 @@
   .member-role{font-weight:600; font-size:.85rem; margin-top:-6px; display: flex; align-items: center; justify-content: center; gap: 6px; background: #0f1625; padding: 4px 10px; border-radius: 40px; width: fit-content; margin-left: auto; margin-right: auto;}
   .member-role i { font-size: 0.85rem; }
 
-  /* ADMIN PANEL - LIVE STYLE */
+  /* ADMIN PANEL */
   .admin-panel {
     max-width: 1200px;
     margin: 0 auto;
@@ -531,6 +532,7 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 6px;
+    flex-wrap: wrap;
   }
   .user-id {
     font-size: 0.7rem;
@@ -556,11 +558,10 @@
     opacity: 0.5;
   }
   .admin-current-user {
-    background: #58a6ff10;
-    border: 1px solid #58a6ff;
+    border-color: #58a6ff;
+    background: linear-gradient(135deg, #1a2542, #121a2a);
   }
 
-  /* Donazioni */
   #page-donations{position:relative; padding:40px 20px}
   .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; max-width:920px; margin:0 auto}
   .donation-card{text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:12px; transition:transform .3s ease; cursor:pointer}
@@ -808,7 +809,7 @@
       </div>
     </section>
 
-    <!-- ADMIN PANEL LIVE -->
+    <!-- ADMIN PANEL -->
     <section id="page-admin" class="page" data-page>
       <div class="admin-panel">
         <div class="admin-header">
@@ -854,6 +855,22 @@
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
+    // 🔧 CONFIGURAZIONE FIREBASE (GIA' INSERITA)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCggEkxfIHsBIH6lJhcB63KLvdgNw-OUfk",
+      authDomain: "cdrp-site.firebaseapp.com",
+      databaseURL: "https://cdrp-site-default-rtdb.firebaseio.com",
+      projectId: "cdrp-site",
+      storageBucket: "cdrp-site.firebasestorage.app",
+      messagingSenderId: "385667634977",
+      appId: "1:385667634977:web:c26c3c4dc5c833adcf5060"
+    };
+
+    // Inizializza Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const onlineUsersRef = database.ref('online_users');
+
     const DISCORD_CLIENT_ID = '1419444744563720404';
     const DISCORD_SCOPE = 'identify';
     const REDIRECT_URI = 'https://alestv05.github.io/sito/';
@@ -863,401 +880,8 @@
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
     
-    // Store centrale condiviso via BroadcastChannel
-    let onlineUsersMap = new Map();
     let currentUser = null;
-    
-    // BroadcastChannel per comunicare tra finestre/tab
-    const channel = new BroadcastChannel('cdrp_online_users');
-    
-    function loadOnlineUsersFromStorage() {
-      const stored = localStorage.getItem('cdrp_online_users_map');
-      if(stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          onlineUsersMap.clear();
-          Object.keys(parsed).forEach(key => {
-            // Verifica che il token non sia scaduto
-            if(parsed[key].expires && Date.now() < parsed[key].expires) {
-              onlineUsersMap.set(key, parsed[key]);
-            }
-          });
-          saveOnlineUsersToStorage();
-        } catch(e) {}
-      }
-    }
-    
-    function saveOnlineUsersToStorage() {
-      const obj = {};
-      onlineUsersMap.forEach((value, key) => {
-        obj[key] = value;
-      });
-      localStorage.setItem('cdrp_online_users_map', JSON.stringify(obj));
-    }
-    
-    function broadcastUsersUpdate() {
-      const usersArray = Array.from(onlineUsersMap.values());
-      channel.postMessage({ type: 'USERS_UPDATE', users: usersArray });
-      updateAdminPanel();
-    }
-    
-    function addOnlineUser(userData) {
-      onlineUsersMap.set(userData.id, {
-        ...userData,
-        lastSeen: Date.now()
-      });
-      saveOnlineUsersToStorage();
-      broadcastUsersUpdate();
-    }
-    
-    function removeOnlineUser(userId) {
-      onlineUsersMap.delete(userId);
-      saveOnlineUsersToStorage();
-      broadcastUsersUpdate();
-    }
-    
-    function updateAdminPanel() {
-      const adminBtn = $('#btnAdmin');
-      const isAdminUser = currentUser && currentUser.id === ADMIN_DISCORD_ID;
-      
-      if(isAdminUser) {
-        adminBtn.hidden = false;
-        const userCount = $('#adminUserCount');
-        const usersList = $('#usersOnlineList');
-        const users = Array.from(onlineUsersMap.values());
-        
-        if(userCount) userCount.textContent = users.length;
-        
-        if(usersList) {
-          if(users.length === 0) {
-            usersList.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato al momento</div>`;
-          } else {
-            usersList.innerHTML = users.map(user => {
-              const avatarUrl = user.avatarUrl || (user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128` : null);
-              const userName = user.global_name || user.username || 'Utente';
-              const loginDate = new Date(user.loginTime);
-              const formattedTime = loginDate.toLocaleString('it-IT');
-              const isCurrentUser = currentUser && currentUser.id === user.id;
-              
-              return `
-                <div class="user-online-card ${isCurrentUser ? 'admin-current-user' : ''}">
-                  ${avatarUrl ? 
-                    `<img class="user-avatar" src="${avatarUrl}" alt="${userName}" crossorigin="anonymous" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : 
-                    `<div class="user-avatar-placeholder"><i class="fa-solid fa-circle-user"></i></div>`
-                  }
-                  <div class="user-info">
-                    <div class="user-name">
-                      <i class="fa-brands fa-discord"></i> ${escapeHtml(userName)}
-                      ${isCurrentUser ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}
-                    </div>
-                    <div class="user-id">ID: ${user.id}</div>
-                    <div class="user-login-time">
-                      <i class="fa-regular fa-clock"></i> Login: ${formattedTime}
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('');
-          }
-        }
-      } else {
-        adminBtn.hidden = true;
-      }
-    }
-    
-    function escapeHtml(str) {
-      if(!str) return '';
-      return str.replace(/[&<>]/g, function(m) {
-        if(m === '&') return '&amp;';
-        if(m === '<') return '&lt;';
-        if(m === '>') return '&gt;';
-        return m;
-      });
-    }
-    
-    // Ascolta i messaggi da altre finestre/tab
-    channel.onmessage = (event) => {
-      if(event.data.type === 'USERS_UPDATE') {
-        const newMap = new Map();
-        event.data.users.forEach(user => {
-          if(user.expires && Date.now() < user.expires) {
-            newMap.set(user.id, user);
-          }
-        });
-        onlineUsersMap = newMap;
-        saveOnlineUsersToStorage();
-        updateAdminPanel();
-      } else if(event.data.type === 'USER_LOGIN') {
-        if(event.data.user && event.data.user.id !== currentUser?.id) {
-          addOnlineUser(event.data.user);
-        }
-      } else if(event.data.type === 'USER_LOGOUT') {
-        if(event.data.userId !== currentUser?.id) {
-          removeOnlineUser(event.data.userId);
-        }
-      } else if(event.data.type === 'HEARTBEAT') {
-        // Aggiorna lastSeen dell'utente
-        if(onlineUsersMap.has(event.data.userId)) {
-          const user = onlineUsersMap.get(event.data.userId);
-          user.lastSeen = Date.now();
-          onlineUsersMap.set(event.data.userId, user);
-          saveOnlineUsersToStorage();
-        }
-      }
-    };
-    
-    // Heartbeat per mantenere l'utente attivo
     let heartbeatInterval = null;
-    function startHeartbeat() {
-      if(heartbeatInterval) clearInterval(heartbeatInterval);
-      heartbeatInterval = setInterval(() => {
-        if(currentUser) {
-          // Aggiorna lastSeen nel localStorage
-          if(onlineUsersMap.has(currentUser.id)) {
-            const user = onlineUsersMap.get(currentUser.id);
-            user.lastSeen = Date.now();
-            onlineUsersMap.set(currentUser.id, user);
-            saveOnlineUsersToStorage();
-          }
-          // Invia heartbeat ad altre finestre
-          channel.postMessage({ type: 'HEARTBEAT', userId: currentUser.id });
-        }
-      }, 30000); // Ogni 30 secondi
-    }
-    
-    function stopHeartbeat() {
-      if(heartbeatInterval) {
-        clearInterval(heartbeatInterval);
-        heartbeatInterval = null;
-      }
-    }
-    
-    // Pulizia utenti inattivi (nessun heartbeat da 2 minuti)
-    setInterval(() => {
-      const now = Date.now();
-      let changed = false;
-      onlineUsersMap.forEach((user, id) => {
-        if(user.lastSeen && (now - user.lastSeen) > 120000) { // 2 minuti di inattività
-          onlineUsersMap.delete(id);
-          changed = true;
-        }
-        if(user.expires && now > user.expires) {
-          onlineUsersMap.delete(id);
-          changed = true;
-        }
-      });
-      if(changed) {
-        saveOnlineUsersToStorage();
-        broadcastUsersUpdate();
-      }
-    }, 60000);
-    
-    function getAuthToken() { 
-      const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); 
-      if(!t||!e) return null; 
-      if(Date.now()>=e){clearAuth();return null;} 
-      return t; 
-    }
-    
-    function getCurrentUserFromStorage() {
-      const token = getAuthToken();
-      const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
-      if(!token || !user) return null;
-      return user;
-    }
-    
-    function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
-    
-    function isAdmin() {
-      const user = getCurrentUserFromStorage();
-      return user && user.id === ADMIN_DISCORD_ID;
-    }
-    
-    function clearAuth() { 
-      if(currentUser) {
-        removeOnlineUser(currentUser.id);
-        channel.postMessage({ type: 'USER_LOGOUT', userId: currentUser.id });
-        stopHeartbeat();
-      }
-      localStorage.removeItem('nova_token'); 
-      localStorage.removeItem('nova_user'); 
-      localStorage.removeItem('nova_expires'); 
-      currentUser = null;
-    }
-    
-    function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
-    
-    function getAvatarUrl(user) { 
-      if(!user) return null; 
-      if(user.avatar && user.id) { 
-        const f = user.avatar.startsWith('a_')?'gif':'png'; 
-        return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; 
-      } 
-      return null;
-    }
-    
-    function updateAuthUI() {
-      const token = getAuthToken();
-      const user = getCurrentUserFromStorage();
-      const isIn = !!(token && user);
-      currentUser = user;
-      
-      $('#navDonations').hidden = !isIn;
-      $('#btnDiscordLogin').hidden = isIn;
-      $('#btnLogout').hidden = !isIn;
-      $('#btnAdmin').hidden = !isAdmin();
-      
-      if(isIn) {
-        const url = getAvatarUrl(user);
-        if(url) { $('#topAvatarImg').src = url; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; }
-        $('#topUsername').textContent = formatDiscordName(user);
-        $('#topUsername').hidden = false;
-        
-        // Aggiungi alla lista online se non già presente
-        if(!onlineUsersMap.has(user.id)) {
-          const userData = {
-            id: user.id,
-            username: user.username,
-            global_name: user.global_name,
-            avatar: user.avatar,
-            loginTime: new Date().toISOString(),
-            expires: Number(localStorage.getItem('nova_expires') || 0),
-            lastSeen: Date.now(),
-            avatarUrl: getAvatarUrl(user)
-          };
-          addOnlineUser(userData);
-          channel.postMessage({ type: 'USER_LOGIN', user: userData });
-          startHeartbeat();
-        }
-      } else {
-        $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block';
-        $('#topUsername').hidden = true;
-        const active = $('.page.active')?.id?.replace('page-','');
-        if(active === 'donations' || active === 'donation' || active === 'admin') showPage('home');
-        stopHeartbeat();
-      }
-      
-      updateAdminPanel();
-    }
-    
-    function buildAuthURL(s) { 
-      const u = new URL('https://discord.com/oauth2/authorize'); 
-      u.searchParams.set('client_id',DISCORD_CLIENT_ID); 
-      u.searchParams.set('redirect_uri',REDIRECT_URI); 
-      u.searchParams.set('response_type','token'); 
-      u.searchParams.set('scope',DISCORD_SCOPE); 
-      u.searchParams.set('state',s); 
-      return u.toString(); 
-    }
-    
-    async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
-      if(!access_token) throw new Error('No token');
-      localStorage.setItem('nova_token',access_token);
-      const expiresAt = Date.now() + expires_in * 1000;
-      localStorage.setItem('nova_expires', expiresAt.toString());
-      const r = await fetch('https://discord.com/api/users/@me',{headers:{'Authorization':`${token_type} ${access_token}`}});
-      if(!r.ok) throw new Error();
-      const user = await r.json();
-      localStorage.setItem('nova_user',JSON.stringify(user));
-      
-      currentUser = user;
-      
-      const userData = {
-        id: user.id,
-        username: user.username,
-        global_name: user.global_name,
-        avatar: user.avatar,
-        loginTime: new Date().toISOString(),
-        expires: expiresAt,
-        lastSeen: Date.now(),
-        avatarUrl: getAvatarUrl(user)
-      };
-      addOnlineUser(userData);
-      channel.postMessage({ type: 'USER_LOGIN', user: userData });
-      startHeartbeat();
-      
-      updateAuthUI();
-      toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
-    }
-    
-    function beginDiscordLogin(e) {
-      if(e){e.preventDefault();} 
-      if(isLoggedIn()){toast('Sei già loggato!','fa-solid fa-check');return;}
-      const state = Math.random().toString(36).substr(2,16);
-      sessionStorage.setItem('oauth_state',state);
-      const url = buildAuthURL(state);
-      const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2;
-      const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`);
-      showLoader(true);
-      const handler = async (ev) => { 
-        if(ev.origin !== new URL(REDIRECT_URI).origin) return; 
-        if(ev.data?.type !== 'discord_oauth') return; 
-        window.removeEventListener('message',handler); 
-        try{ 
-          await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); 
-          if(popup&&!popup.closed) popup.close(); 
-        }finally{ showLoader(false); } 
-      };
-      window.addEventListener('message',handler);
-      setInterval(()=>{ if(popup?.closed){ window.removeEventListener('message',handler); showLoader(false); } },500);
-    }
-    
-    async function handleOAuthRedirect() {
-      if(!window.location.hash.startsWith('#')) return false;
-      const p = new URLSearchParams(window.location.hash.substr(1));
-      const token = p.get('access_token');
-      if(!token && !p.get('error')) return false;
-      history.replaceState(null,'',window.location.pathname+window.location.search);
-      if(window.opener && typeof window.opener.postMessage === 'function') {
-        window.opener.postMessage({type:'discord_oauth', access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600), state:p.get('state')}, window.opener.location.origin);
-        document.body.innerHTML = `<div style="padding:40px;text-align:center;">✅ Autenticazione completata, puoi chiudere.</div>`;
-        setTimeout(()=>window.close(),1500);
-        return true;
-      }
-      if(p.get('error')){ toast('Accesso annullato.'); return true; }
-      showLoader(true);
-      try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); }
-      return true;
-    }
-    
-    function logout(e){ 
-      if(e) e.preventDefault(); 
-      const name = currentUser ? formatDiscordName(currentUser) : ''; 
-      if(currentUser) {
-        removeOnlineUser(currentUser.id);
-        channel.postMessage({ type: 'USER_LOGOUT', userId: currentUser.id });
-        stopHeartbeat();
-      }
-      clearAuth(); 
-      updateAuthUI(); 
-      showPage('home'); 
-      toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); 
-    }
-    
-    function showPage(pageId) {
-      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ 
-        toast('Accedi per vedere le donazioni','fa-solid fa-lock'); 
-        pageId='home'; 
-      }
-      if(pageId==='admin' && !isAdmin()) {
-        toast('Accesso negato. Area riservata agli amministratori.','fa-solid fa-shield-haltered');
-        pageId='home';
-      }
-      $$('.page').forEach(p=>p.classList.remove('active'));
-      $$('.nav-link').forEach(l=>l.classList.remove('active'));
-      $(`#page-${pageId}`)?.classList.add('active');
-      $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
-      if(pageId==='home') $('#nvVideo')?.play().catch(()=>{});
-      if(pageId==='admin') updateAdminPanel();
-    }
-    
-    document.addEventListener('click',(e)=>{ 
-      const l=e.target.closest('[data-route]'); 
-      if(l){ 
-        e.preventDefault(); 
-        showPage(l.getAttribute('data-route')); 
-      } 
-    });
     
     function toast(message, icon = 'fa-solid fa-info-circle') {
       let existing = $('.toast');
@@ -1287,6 +911,289 @@
       }
     }
     
+    function getAuthToken() { 
+      const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); 
+      if(!t||!e) return null; 
+      if(Date.now()>=e){clearAuth();return null;} 
+      return t; 
+    }
+    
+    function getCurrentUserFromStorage() {
+      const token = getAuthToken();
+      const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
+      if(!token || !user) return null;
+      return user;
+    }
+    
+    function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
+    
+    function isAdmin() {
+      const user = getCurrentUserFromStorage();
+      return user && user.id === ADMIN_DISCORD_ID;
+    }
+    
+    function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
+    
+    function getAvatarUrl(user) { 
+      if(!user) return null; 
+      if(user.avatar && user.id) { 
+        const f = user.avatar.startsWith('a_')?'gif':'png'; 
+        return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; 
+      } 
+      return null;
+    }
+    
+    // Aggiungi/rimuovi utente su Firebase
+    function addUserToFirebase(user, expiresAt) {
+      const userData = {
+        id: user.id,
+        username: user.username,
+        global_name: user.global_name || user.username,
+        avatar: user.avatar,
+        loginTime: new Date().toISOString(),
+        expires: expiresAt,
+        lastSeen: Date.now(),
+        avatarUrl: getAvatarUrl(user)
+      };
+      return onlineUsersRef.child(user.id).set(userData);
+    }
+    
+    function removeUserFromFirebase(userId) {
+      return onlineUsersRef.child(userId).remove();
+    }
+    
+    function updateLastSeen(userId) {
+      onlineUsersRef.child(userId).update({ lastSeen: Date.now() });
+    }
+    
+    function clearAuth() { 
+      if(currentUser) {
+        removeUserFromFirebase(currentUser.id);
+        if(heartbeatInterval) clearInterval(heartbeatInterval);
+      }
+      localStorage.removeItem('nova_token'); 
+      localStorage.removeItem('nova_user'); 
+      localStorage.removeItem('nova_expires'); 
+      currentUser = null;
+    }
+    
+    function updateAuthUI() {
+      const token = getAuthToken();
+      const user = getCurrentUserFromStorage();
+      const isIn = !!(token && user);
+      currentUser = user;
+      
+      $('#navDonations').hidden = !isIn;
+      $('#btnDiscordLogin').hidden = isIn;
+      $('#btnLogout').hidden = !isIn;
+      $('#btnAdmin').hidden = !isAdmin();
+      
+      if(isIn) {
+        const url = getAvatarUrl(user);
+        if(url) { 
+          $('#topAvatarImg').src = url; 
+          $('#topAvatarImg').style.display = 'block'; 
+          $('#topAvatarIcon').style.display = 'none'; 
+        } else {
+          $('#topAvatarImg').style.display = 'none'; 
+          $('#topAvatarIcon').style.display = 'block';
+        }
+        $('#topUsername').textContent = formatDiscordName(user);
+        $('#topUsername').hidden = false;
+        
+        const expiresAt = Number(localStorage.getItem('nova_expires') || 0);
+        addUserToFirebase(user, expiresAt).then(() => {
+          if(heartbeatInterval) clearInterval(heartbeatInterval);
+          heartbeatInterval = setInterval(() => {
+            if(currentUser) {
+              updateLastSeen(currentUser.id);
+            }
+          }, 30000);
+        }).catch(err => console.error("Firebase add user error:", err));
+      } else {
+        $('#topAvatarImg').style.display = 'none'; 
+        $('#topAvatarIcon').style.display = 'block';
+        $('#topUsername').hidden = true;
+        if(heartbeatInterval) clearInterval(heartbeatInterval);
+        const active = $('.page.active')?.id?.replace('page-','');
+        if(active === 'donations' || active === 'donation' || active === 'admin') showPage('home');
+      }
+    }
+    
+    // Ascolta i cambiamenti in tempo reale da Firebase
+    function listenForOnlineUsers() {
+      onlineUsersRef.on('value', (snapshot) => {
+        const users = snapshot.val();
+        const now = Date.now();
+        const userList = users ? Object.values(users).filter(u => u.expires > now && (now - (u.lastSeen || u.expires)) < 120000) : [];
+        
+        const isAdminUser = currentUser && currentUser.id === ADMIN_DISCORD_ID;
+        
+        if(isAdminUser) {
+          const userCount = $('#adminUserCount');
+          const usersList = $('#usersOnlineList');
+          
+          if(userCount) userCount.textContent = userList.length;
+          
+          if(usersList) {
+            if(userList.length === 0) {
+              usersList.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato al momento</div>`;
+            } else {
+              usersList.innerHTML = userList.map(user => {
+                let avatarUrl = user.avatarUrl;
+                if(!avatarUrl && user.avatar) {
+                  const f = user.avatar.startsWith('a_') ? 'gif' : 'png';
+                  avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`;
+                }
+                const userName = user.global_name || user.username || 'Utente';
+                const loginDate = new Date(user.loginTime);
+                const formattedTime = loginDate.toLocaleString('it-IT');
+                const isCurrentUser = currentUser && currentUser.id === user.id;
+                
+                return `
+                  <div class="user-online-card ${isCurrentUser ? 'admin-current-user' : ''}">
+                    ${avatarUrl ? 
+                      `<img class="user-avatar" src="${avatarUrl}" alt="${escapeHtml(userName)}" crossorigin="anonymous" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : 
+                      `<div class="user-avatar-placeholder"><i class="fa-solid fa-circle-user"></i></div>`
+                    }
+                    <div class="user-info">
+                      <div class="user-name">
+                        <i class="fa-brands fa-discord"></i> ${escapeHtml(userName)}
+                        ${isCurrentUser ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}
+                      </div>
+                      <div class="user-id">ID: ${escapeHtml(user.id)}</div>
+                      <div class="user-login-time">
+                        <i class="fa-regular fa-clock"></i> Login: ${formattedTime}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('');
+            }
+          }
+        }
+      }, (error) => {
+        console.error("Firebase read error:", error);
+        toast("Errore connessione database", "fa-solid fa-exclamation-triangle");
+      });
+    }
+    
+    function escapeHtml(str) {
+      if(!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if(m === '&') return '&amp;';
+        if(m === '<') return '&lt;';
+        if(m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    function buildAuthURL(s) { 
+      const u = new URL('https://discord.com/oauth2/authorize'); 
+      u.searchParams.set('client_id',DISCORD_CLIENT_ID); 
+      u.searchParams.set('redirect_uri',REDIRECT_URI); 
+      u.searchParams.set('response_type','token'); 
+      u.searchParams.set('scope',DISCORD_SCOPE); 
+      u.searchParams.set('state',s); 
+      return u.toString(); 
+    }
+    
+    async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
+      if(!access_token) throw new Error('No token');
+      localStorage.setItem('nova_token',access_token);
+      const expiresAt = Date.now() + expires_in * 1000;
+      localStorage.setItem('nova_expires', expiresAt.toString());
+      const r = await fetch('https://discord.com/api/users/@me',{headers:{'Authorization':`${token_type} ${access_token}`}});
+      if(!r.ok) throw new Error();
+      const user = await r.json();
+      localStorage.setItem('nova_user',JSON.stringify(user));
+      
+      updateAuthUI();
+      toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
+    }
+    
+    function beginDiscordLogin(e) {
+      if(e){e.preventDefault();} 
+      if(isLoggedIn()){toast('Sei già loggato!','fa-solid fa-check');return;}
+      const state = Math.random().toString(36).substr(2,16);
+      sessionStorage.setItem('oauth_state',state);
+      const url = buildAuthURL(state);
+      const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2;
+      const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`);
+      showLoader(true);
+      const handler = async (ev) => { 
+        if(ev.origin !== new URL(REDIRECT_URI).origin) return; 
+        if(ev.data?.type !== 'discord_oauth') return; 
+        window.removeEventListener('message',handler); 
+        try{ 
+          await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); 
+          if(popup&&!popup.closed) popup.close(); 
+        }finally{ showLoader(false); } 
+      };
+      window.addEventListener('message',handler);
+      const checkClosed = setInterval(()=>{ 
+        if(popup?.closed){ 
+          window.removeEventListener('message',handler); 
+          showLoader(false);
+          clearInterval(checkClosed);
+        } 
+      },500);
+    }
+    
+    async function handleOAuthRedirect() {
+      if(!window.location.hash.startsWith('#')) return false;
+      const p = new URLSearchParams(window.location.hash.substr(1));
+      const token = p.get('access_token');
+      if(!token && !p.get('error')) return false;
+      history.replaceState(null,'',window.location.pathname+window.location.search);
+      if(window.opener && typeof window.opener.postMessage === 'function') {
+        window.opener.postMessage({type:'discord_oauth', access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600), state:p.get('state')}, window.opener.location.origin);
+        document.body.innerHTML = `<div style="padding:40px;text-align:center;">✅ Autenticazione completata, puoi chiudere.</div>`;
+        setTimeout(()=>window.close(),1500);
+        return true;
+      }
+      if(p.get('error')){ toast('Accesso annullato.'); return true; }
+      showLoader(true);
+      try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); }
+      return true;
+    }
+    
+    function logout(e){ 
+      if(e) e.preventDefault(); 
+      const name = currentUser ? formatDiscordName(currentUser) : ''; 
+      clearAuth(); 
+      updateAuthUI(); 
+      showPage('home'); 
+      toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); 
+    }
+    
+    function showPage(pageId) {
+      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ 
+        toast('Accedi per vedere le donazioni','fa-solid fa-lock'); 
+        pageId='home'; 
+      }
+      if(pageId==='admin' && !isAdmin()) {
+        toast('Accesso negato. Area riservata agli amministratori.','fa-solid fa-shield-haltered');
+        pageId='home';
+      }
+      $$('.page').forEach(p=>p.classList.remove('active'));
+      $$('.nav-link').forEach(l=>l.classList.remove('active'));
+      $(`#page-${pageId}`)?.classList.add('active');
+      $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
+      if(pageId==='home') {
+        const video = $('#nvVideo');
+        if(video) video.play().catch(()=>{});
+      }
+    }
+    
+    document.addEventListener('click',(e)=>{ 
+      const l=e.target.closest('[data-route]'); 
+      if(l){ 
+        e.preventDefault(); 
+        showPage(l.getAttribute('data-route')); 
+      } 
+    });
+    
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"};
     const grid = $('#donationsGrid');
     if(grid) {
@@ -1295,7 +1202,6 @@
         const card = document.createElement('div');
         card.className='donation-card';
         card.dataset.price=price;
-        card.dataset.img='https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png';
         card.innerHTML = `<div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div><div class="donation-caption"><i class="fa-solid fa-euro-sign"></i> Pacchetto ${price}€</div>`;
         grid.appendChild(card);
       });
@@ -1335,23 +1241,22 @@
         $('#countTotal').textContent = d.approximate_member_count||'—';
         $('#countOnline').textContent = d.approximate_presence_count||'—';
         $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—';
-      }catch(e){ $('#countTotal').textContent='—'; $('#countOnline').textContent='—'; $('#statMembers').textContent='—'; }
+      }catch(e){ 
+        $('#countTotal').textContent='—'; 
+        $('#countOnline').textContent='—'; 
+        $('#statMembers').textContent='—'; 
+      }
     }
     
     window.addEventListener('load', async ()=>{
       createParticles();
-      loadOnlineUsersFromStorage();
+      listenForOnlineUsers();
       await handleOAuthRedirect();
       updateAuthUI();
       loadDiscordCounts();
       setInterval(loadDiscordCounts,30000);
       $('#btnDiscordLogin')?.addEventListener('click',beginDiscordLogin);
       $('#btnLogout')?.addEventListener('click',logout);
-      
-      // Richiedi stato iniziale
-      setTimeout(() => {
-        broadcastUsersUpdate();
-      }, 1000);
     });
   </script>
 </body>

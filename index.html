@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- UA Parser per device detection -->
+  <!-- UA Parser -->
   <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.37/dist/ua-parser.min.js"></script>
 
   <!-- Font & Icons -->
@@ -573,6 +573,7 @@
     background: #ff4d4f20;
     border: 1px solid #ff4d4f;
     color: #ff4d4f;
+    cursor: pointer;
   }
   .btn-danger:hover {
     background: #ff4d4f;
@@ -582,6 +583,7 @@
     background: #ffd76a20;
     border: 1px solid #ffd76a;
     color: #ffd76a;
+    cursor: pointer;
   }
   .btn-warning:hover {
     background: #ffd76a;
@@ -611,7 +613,7 @@
   .member-role{font-weight:600; font-size:.85rem; margin-top:-6px; display: flex; align-items: center; justify-content: center; gap: 6px; background: #0f1625; padding: 4px 10px; border-radius: 40px; width: fit-content; margin-left: auto; margin-right: auto;}
   .member-role i { font-size: 0.85rem; }
 
-  /* ADMIN PANEL - Device Stats */
+  /* ADMIN PANEL */
   .admin-panel {
     max-width: 1200px;
     margin: 0 auto;
@@ -779,9 +781,9 @@
     font-family:inherit;
     font-size:0.85rem;
   }
-  .btn-primary{ background:linear-gradient(135deg, #58a6ff, #0b6dd6); color:#fff; }
+  .btn-primary{ background:linear-gradient(135deg, #58a6ff, #0b6dd6); color:#fff; cursor:pointer; }
   .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(88,166,255,0.3); }
-  .btn-ghost{ background:transparent; border:2px solid #2a3a61; color:#eaf0ff; }
+  .btn-ghost{ background:transparent; border:2px solid #2a3a61; color:#eaf0ff; cursor:pointer; }
   .btn-ghost:hover{ border-color:#58a6ff; transform:translateY(-2px); }
   .actions{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; justify-content:center}
 
@@ -867,7 +869,7 @@
           </div>
           <div class="countdown-message" id="countdownMessage"></div>
         </div>
-        <div id="noCountdownHome" class="no-countdown" style="display: none;">
+        <div id="noCountdownHome" class="no-countdown" style="display: block;">
           <i class="fa-regular fa-calendar-xmark"></i> Nessun evento programmato al momento
         </div>
 
@@ -905,13 +907,12 @@
             <h3><i class="fa-regular fa-hourglass-half"></i> Gestione Countdown Eventi</h3>
           </div>
           
-          <!-- Form per creare/modificare countdown -->
           <div style="background: #0a0f1a; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
             <h4 style="margin-bottom: 15px;"><i class="fa-regular fa-calendar-plus"></i> <span id="formTitle">Nuovo Countdown</span></h4>
             <input type="hidden" id="editCountdownId" value="">
             <div class="form-group">
               <label><i class="fa-solid fa-heading"></i> Titolo evento</label>
-              <input type="text" id="countdownTitleInput" placeholder="Es: Lancio del Server, Evento di Natale..." maxlength="100">
+              <input type="text" id="countdownTitleInput" placeholder="Es: Lancio del Server, Evento di Natale...">
             </div>
             <div class="form-group">
               <label><i class="fa-regular fa-calendar"></i> Data e ora evento</label>
@@ -927,7 +928,6 @@
             </div>
           </div>
           
-          <!-- Lista countdown esistenti -->
           <div class="countdowns-list">
             <h4><i class="fa-solid fa-list"></i> Countdown Configurati</h4>
             <div id="countdownsListContainer"></div>
@@ -962,14 +962,25 @@
       messagingSenderId: "385667634977",
       appId: "1:385667634977:web:c26c3c4dc5c833adcf5060"
     };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const onlineUsersRef = database.ref('online_users');
-    const countdownsRef = database.ref('countdowns');
+    
+    let app;
+    let database;
+    let onlineUsersRef;
+    let countdownsRef;
+    
+    try {
+      app = firebase.initializeApp(firebaseConfig);
+      database = firebase.database();
+      onlineUsersRef = database.ref('online_users');
+      countdownsRef = database.ref('countdowns');
+      console.log("Firebase connesso con successo");
+    } catch(e) {
+      console.error("Errore Firebase:", e);
+    }
 
     const DISCORD_CLIENT_ID = '1419444744563720404';
     const DISCORD_SCOPE = 'identify';
-    const REDIRECT_URI = 'https://alestv05.github.io/sito/';
+    const REDIRECT_URI = window.location.href.split('#')[0];
     const INVITE_CODE = 'TAhbywxE4A';
     const ADMIN_DISCORD_ID = '640478852308664360';
     
@@ -980,10 +991,12 @@
     let activeCountdownData = null;
 
     function detectDeviceType() {
-      const parser = new UAParser();
-      const device = parser.getDevice();
-      if (device.type === 'tablet') return 'tablet';
-      if (device.type === 'mobile') return 'phone';
+      try {
+        const parser = new UAParser();
+        const device = parser.getDevice();
+        if (device.type === 'tablet') return 'tablet';
+        if (device.type === 'mobile') return 'phone';
+      } catch(e) {}
       return 'desktop';
     }
 
@@ -1022,6 +1035,7 @@
     }
 
     function addUserToFirebase(user, expiresAt) {
+      if (!onlineUsersRef) return Promise.resolve();
       const device = detectDeviceType();
       return onlineUsersRef.child(user.id).set({
         id: user.id, username: user.username, global_name: user.global_name || user.username,
@@ -1029,8 +1043,8 @@
         lastSeen: Date.now(), avatarUrl: getAvatarUrl(user), device: device
       });
     }
-    function removeUserFromFirebase(userId) { return onlineUsersRef.child(userId).remove(); }
-    function updateLastSeen(userId) { onlineUsersRef.child(userId).update({ lastSeen: Date.now() }); }
+    function removeUserFromFirebase(userId) { if(onlineUsersRef) return onlineUsersRef.child(userId).remove(); return Promise.resolve(); }
+    function updateLastSeen(userId) { if(onlineUsersRef) onlineUsersRef.child(userId).update({ lastSeen: Date.now() }); }
 
     function clearAuth() { 
       if(currentUser) { removeUserFromFirebase(currentUser.id); if(heartbeatInterval) clearInterval(heartbeatInterval); }
@@ -1043,31 +1057,40 @@
       const user = getCurrentUserFromStorage();
       const isIn = !!(token && user);
       currentUser = user;
-      $('#navDonations').hidden = !isIn;
-      $('#btnDiscordLogin').hidden = isIn;
-      $('#btnLogout').hidden = !isIn;
-      $('#btnAdmin').hidden = !isAdmin();
+      const navDonations = $('#navDonations');
+      const btnDiscord = $('#btnDiscordLogin');
+      const btnLogout = $('#btnLogout');
+      const btnAdmin = $('#btnAdmin');
+      if(navDonations) navDonations.hidden = !isIn;
+      if(btnDiscord) btnDiscord.hidden = isIn;
+      if(btnLogout) btnLogout.hidden = !isIn;
+      if(btnAdmin) btnAdmin.hidden = !isAdmin();
       if(isIn) {
         const url = getAvatarUrl(user);
-        if(url) { $('#topAvatarImg').src = url; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; } 
-        else { $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block'; }
-        $('#topUsername').textContent = formatDiscordName(user);
-        $('#topUsername').hidden = false;
+        const topAvatarImg = $('#topAvatarImg');
+        const topAvatarIcon = $('#topAvatarIcon');
+        const topUsername = $('#topUsername');
+        if(url && topAvatarImg) { topAvatarImg.src = url; topAvatarImg.style.display = 'block'; if(topAvatarIcon) topAvatarIcon.style.display = 'none'; } 
+        else if(topAvatarImg) { topAvatarImg.style.display = 'none'; if(topAvatarIcon) topAvatarIcon.style.display = 'block'; }
+        if(topUsername) { topUsername.textContent = formatDiscordName(user); topUsername.hidden = false; }
         const expiresAt = Number(localStorage.getItem('nova_expires') || 0);
         addUserToFirebase(user, expiresAt).then(() => {
           if(heartbeatInterval) clearInterval(heartbeatInterval);
           heartbeatInterval = setInterval(() => { if(currentUser) updateLastSeen(currentUser.id); }, 30000);
         }).catch(console.error);
       } else {
-        $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block';
-        $('#topUsername').hidden = true;
+        const topAvatarImg = $('#topAvatarImg');
+        const topAvatarIcon = $('#topAvatarIcon');
+        const topUsername = $('#topUsername');
+        if(topAvatarImg) topAvatarImg.style.display = 'none';
+        if(topAvatarIcon) topAvatarIcon.style.display = 'block';
+        if(topUsername) topUsername.hidden = true;
         if(heartbeatInterval) clearInterval(heartbeatInterval);
         const active = $('.page.active')?.id?.replace('page-','');
         if(active === 'donations' || active === 'donation' || active === 'admin') showPage('home');
       }
     }
 
-    // ==================== COUNTDOWN FUNCTIONS ====================
     function updateHomeCountdownDisplay() {
       const banner = $('#homeCountdownBanner');
       const noCountdownDiv = $('#noCountdownHome');
@@ -1131,6 +1154,10 @@
     }
 
     function loadActiveCountdown() {
+      if (!countdownsRef) {
+        console.warn("countdownsRef non disponibile");
+        return;
+      }
       countdownsRef.orderByChild('targetTime').once('value', (snapshot) => {
         const countdowns = snapshot.val();
         if (!countdowns) {
@@ -1162,6 +1189,11 @@
     function loadCountdownsListForAdmin() {
       const container = $('#countdownsListContainer');
       if (!container) return;
+      
+      if (!countdownsRef) {
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #ff4d4f;"><i class="fa-solid fa-exclamation-triangle"></i> Firebase non disponibile</div>';
+        return;
+      }
       
       container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-solid fa-spinner fa-pulse"></i> Caricamento countdown...</div>';
       
@@ -1204,21 +1236,33 @@
     }
 
     window.editCountdown = function(id, title, targetTime, message) {
-      $('#editCountdownId').value = id;
-      $('#countdownTitleInput').value = title;
-      $('#countdownDateTime').value = new Date(Number(targetTime)).toISOString().slice(0, 16);
-      $('#countdownMessageInput').value = message;
-      $('#formTitle').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Modifica Countdown';
-      $('#btnCancelEdit').style.display = 'inline-flex';
+      const editId = $('#editCountdownId');
+      const titleInput = $('#countdownTitleInput');
+      const dateInput = $('#countdownDateTime');
+      const msgInput = $('#countdownMessageInput');
+      const formTitle = $('#formTitle');
+      const cancelBtn = $('#btnCancelEdit');
+      
+      if(editId) editId.value = id;
+      if(titleInput) titleInput.value = title;
+      if(dateInput) {
+        const date = new Date(Number(targetTime));
+        dateInput.value = date.toISOString().slice(0, 16);
+      }
+      if(msgInput) msgInput.value = message;
+      if(formTitle) formTitle.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Modifica Countdown';
+      if(cancelBtn) cancelBtn.style.display = 'inline-flex';
     };
 
     window.deleteCountdown = function(id) {
       if (confirm('Sei sicuro di voler eliminare questo countdown?')) {
+        if(!countdownsRef) return;
         countdownsRef.child(id).remove().then(() => {
           toast('Countdown eliminato', 'fa-solid fa-trash');
           loadCountdownsListForAdmin();
           loadActiveCountdown();
-          if ($('#editCountdownId').value === id) {
+          const editId = $('#editCountdownId');
+          if (editId && editId.value === id) {
             resetForm();
           }
         }).catch(err => {
@@ -1229,19 +1273,26 @@
     };
 
     function resetForm() {
-      $('#editCountdownId').value = '';
-      $('#countdownTitleInput').value = '';
-      $('#countdownDateTime').value = '';
-      $('#countdownMessageInput').value = '';
-      $('#formTitle').innerHTML = '<i class="fa-regular fa-calendar-plus"></i> Nuovo Countdown';
-      $('#btnCancelEdit').style.display = 'none';
+      const editId = $('#editCountdownId');
+      const titleInput = $('#countdownTitleInput');
+      const dateInput = $('#countdownDateTime');
+      const msgInput = $('#countdownMessageInput');
+      const formTitle = $('#formTitle');
+      const cancelBtn = $('#btnCancelEdit');
+      
+      if(editId) editId.value = '';
+      if(titleInput) titleInput.value = '';
+      if(dateInput) dateInput.value = '';
+      if(msgInput) msgInput.value = '';
+      if(formTitle) formTitle.innerHTML = '<i class="fa-regular fa-calendar-plus"></i> Nuovo Countdown';
+      if(cancelBtn) cancelBtn.style.display = 'none';
     }
 
     function saveCountdown() {
-      const id = $('#editCountdownId').value;
-      const title = $('#countdownTitleInput').value.trim();
-      const dateTime = $('#countdownDateTime').value;
-      const message = $('#countdownMessageInput').value.trim();
+      const id = $('#editCountdownId')?.value;
+      const title = $('#countdownTitleInput')?.value.trim();
+      const dateTime = $('#countdownDateTime')?.value;
+      const message = $('#countdownMessageInput')?.value.trim();
       
       if (!title) {
         toast('Inserisci un titolo', 'fa-solid fa-exclamation-triangle');
@@ -1255,6 +1306,11 @@
       const targetTime = new Date(dateTime).getTime();
       if (isNaN(targetTime)) {
         toast('Data non valida', 'fa-solid fa-exclamation-triangle');
+        return;
+      }
+      
+      if(!countdownsRef) {
+        toast('Database non disponibile', 'fa-solid fa-exclamation-triangle');
         return;
       }
       
@@ -1278,8 +1334,8 @@
       });
     }
 
-    // ==================== ONLINE USERS ====================
     function listenForOnlineUsers() {
+      if(!onlineUsersRef) return;
       onlineUsersRef.on('value', (snapshot) => {
         const users = snapshot.val();
         const now = Date.now();
@@ -1316,12 +1372,20 @@
             }).join('');
           }
         }
-      }, (err) => { console.error(err); toast("Errore connessione database", "fa-solid fa-exclamation-triangle"); });
+      }, (err) => { console.error(err); });
     }
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
-    function buildAuthURL(s) { const u = new URL('https://discord.com/oauth2/authorize'); u.searchParams.set('client_id',DISCORD_CLIENT_ID); u.searchParams.set('redirect_uri',REDIRECT_URI); u.searchParams.set('response_type','token'); u.searchParams.set('scope',DISCORD_SCOPE); u.searchParams.set('state',s); return u.toString(); }
+    function buildAuthURL(s) { 
+      const u = new URL('https://discord.com/oauth2/authorize'); 
+      u.searchParams.set('client_id',DISCORD_CLIENT_ID); 
+      u.searchParams.set('redirect_uri',REDIRECT_URI); 
+      u.searchParams.set('response_type','token'); 
+      u.searchParams.set('scope',DISCORD_SCOPE); 
+      u.searchParams.set('state',s); 
+      return u.toString(); 
+    }
 
     async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
       if(!access_token) throw new Error('No token');
@@ -1346,7 +1410,7 @@
       const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`);
       showLoader(true);
       const handler = async (ev) => { 
-        if(ev.origin !== new URL(REDIRECT_URI).origin) return;
+        if(ev.origin !== window.location.origin) return;
         if(ev.data?.type !== 'discord_oauth') return;
         window.removeEventListener('message',handler);
         try { await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); if(popup && !popup.closed) popup.close(); } 
@@ -1373,7 +1437,14 @@
       return true;
     }
 
-    function logout(e) { if(e) e.preventDefault(); const name = currentUser ? formatDiscordName(currentUser) : ''; clearAuth(); updateAuthUI(); showPage('home'); toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); }
+    function logout(e) { 
+      if(e) e.preventDefault(); 
+      const name = currentUser ? formatDiscordName(currentUser) : ''; 
+      clearAuth(); 
+      updateAuthUI(); 
+      showPage('home'); 
+      toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); 
+    }
 
     function showPage(pageId) {
       if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ toast('Accedi per vedere le donazioni','fa-solid fa-lock'); pageId='home'; }
@@ -1389,6 +1460,7 @@
     }
 
     document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
+    
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"};
     const grid = $('#donationsGrid');
     if(grid) {
@@ -1407,7 +1479,11 @@
         showPage('donation');
       });
     }
-    document.addEventListener('click',(e)=>{ if(e.target.id==='btnBackDon') showPage('donations'); if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket'); });
+    
+    document.addEventListener('click',(e)=>{ 
+      if(e.target.id==='btnBackDon') showPage('donations'); 
+      if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket'); 
+    });
 
     async function loadDiscordCounts() {
       try{

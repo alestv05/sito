@@ -568,6 +568,7 @@
   .btn-sm {
     padding: 8px 16px;
     font-size: 0.8rem;
+    cursor: pointer;
   }
   .btn-danger {
     background: #ff4d4f20;
@@ -858,10 +859,10 @@
         <div class="particles" id="particles"></div>
         <div class="logo-container"><div class="logo-bg"></div><div class="logo-glow"></div></div>
         
-        <!-- COUNTDOWN BANNER - VISIBLE ON HOME -->
+        <!-- COUNTDOWN BANNER -->
         <div id="homeCountdownBanner" class="countdown-banner" style="display: none;">
           <div class="countdown-title"><i class="fa-regular fa-clock"></i> <span id="countdownTitle">Evento Speciale</span></div>
-          <div class="countdown-timer" id="countdownTimer">
+          <div class="countdown-timer">
             <div class="countdown-block"><div class="countdown-number" id="countdownDays">00</div><div class="countdown-label">Giorni</div></div>
             <div class="countdown-block"><div class="countdown-number" id="countdownHours">00</div><div class="countdown-label">Ore</div></div>
             <div class="countdown-block"><div class="countdown-number" id="countdownMinutes">00</div><div class="countdown-label">Minuti</div></div>
@@ -896,7 +897,7 @@
       <div class="staff-section"><div class="role"><i class="fa-solid fa-hand-peace"></i> Helper</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre"></div><div class="member-name">Andre</div></div><div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco"></div><div class="member-name">Falco</div></div></div></div>
     </section>
 
-    <!-- ADMIN PANEL WITH COUNTDOWN MANAGER -->
+    <!-- ADMIN PANEL -->
     <section id="page-admin" class="page" data-page>
       <div class="admin-panel">
         <div class="admin-header"><h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2><div class="admin-stats"><div class="live-badge"><i class="fa-solid fa-circle"></i><span>LIVE</span></div><i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span></div></div>
@@ -953,6 +954,12 @@
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
+    // CONFIGURAZIONE COUNTDOWN LOCALE (NON USA FIREBASE PER I COUNTDOWN)
+    let localCountdowns = [];
+    let countdownInterval = null;
+    let activeCountdownData = null;
+    
+    // Firebase solo per utenti online
     const firebaseConfig = {
       apiKey: "AIzaSyCggEkxfIHsBIH6lJhcB63KLvdgNw-OUfk",
       authDomain: "cdrp-site.firebaseapp.com",
@@ -963,19 +970,16 @@
       appId: "1:385667634977:web:c26c3c4dc5c833adcf5060"
     };
     
-    let app;
-    let database;
-    let onlineUsersRef;
-    let countdownsRef;
+    let database = null;
+    let onlineUsersRef = null;
     
     try {
-      app = firebase.initializeApp(firebaseConfig);
+      const app = firebase.initializeApp(firebaseConfig);
       database = firebase.database();
       onlineUsersRef = database.ref('online_users');
-      countdownsRef = database.ref('countdowns');
-      console.log("Firebase connesso con successo");
+      console.log("Firebase connesso per utenti online");
     } catch(e) {
-      console.error("Errore Firebase:", e);
+      console.error("Firebase non disponibile, solo modalità offline", e);
     }
 
     const DISCORD_CLIENT_ID = '1419444744563720404';
@@ -987,8 +991,212 @@
     const $ = s => document.querySelector(s);
     let currentUser = null;
     let heartbeatInterval = null;
-    let countdownInterval = null;
-    let activeCountdownData = null;
+
+    // CARICAMENTO COUNTDOWN DAL LOCALSTORAGE
+    function loadCountdownsFromStorage() {
+      const saved = localStorage.getItem('cdrp_countdowns');
+      if (saved) {
+        try {
+          localCountdowns = JSON.parse(saved);
+        } catch(e) { localCountdowns = []; }
+      } else {
+        localCountdowns = [];
+      }
+    }
+    
+    function saveCountdownsToStorage() {
+      localStorage.setItem('cdrp_countdowns', JSON.stringify(localCountdowns));
+    }
+    
+    function getActiveCountdown() {
+      const now = Date.now();
+      const active = localCountdowns.filter(cd => cd.targetTime > now).sort((a,b) => a.targetTime - b.targetTime);
+      return active.length > 0 ? active[0] : null;
+    }
+    
+    function updateHomeCountdownDisplay() {
+      const banner = $('#homeCountdownBanner');
+      const noCountdownDiv = $('#noCountdownHome');
+      
+      activeCountdownData = getActiveCountdown();
+      
+      if (!activeCountdownData) {
+        if (banner) banner.style.display = 'none';
+        if (noCountdownDiv) noCountdownDiv.style.display = 'block';
+        if (countdownInterval) clearInterval(countdownInterval);
+        return;
+      }
+      
+      if (banner) banner.style.display = 'block';
+      if (noCountdownDiv) noCountdownDiv.style.display = 'none';
+      
+      const titleSpan = $('#countdownTitle');
+      const messageSpan = $('#countdownMessage');
+      if (titleSpan) titleSpan.textContent = activeCountdownData.title || 'Evento Speciale';
+      if (messageSpan) messageSpan.textContent = activeCountdownData.message || '';
+      
+      function updateTimer() {
+        const now = Date.now();
+        const diff = activeCountdownData.targetTime - now;
+        
+        if (diff <= 0) {
+          if (countdownInterval) clearInterval(countdownInterval);
+          const daysSpan = $('#countdownDays');
+          const hoursSpan = $('#countdownHours');
+          const minutesSpan = $('#countdownMinutes');
+          const secondsSpan = $('#countdownSeconds');
+          if (daysSpan) daysSpan.textContent = '00';
+          if (hoursSpan) hoursSpan.textContent = '00';
+          if (minutesSpan) minutesSpan.textContent = '00';
+          if (secondsSpan) secondsSpan.textContent = '00';
+          if (messageSpan) messageSpan.textContent = activeCountdownData.message || 'Evento iniziato!';
+          setTimeout(() => {
+            loadCountdownsFromStorage();
+            activeCountdownData = getActiveCountdown();
+            if (!activeCountdownData) {
+              if (banner) banner.style.display = 'none';
+              if (noCountdownDiv) noCountdownDiv.style.display = 'block';
+            }
+          }, 1000);
+          return;
+        }
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        const daysSpan = $('#countdownDays');
+        const hoursSpan = $('#countdownHours');
+        const minutesSpan = $('#countdownMinutes');
+        const secondsSpan = $('#countdownSeconds');
+        if (daysSpan) daysSpan.textContent = days.toString().padStart(2, '0');
+        if (hoursSpan) hoursSpan.textContent = hours.toString().padStart(2, '0');
+        if (minutesSpan) minutesSpan.textContent = minutes.toString().padStart(2, '0');
+        if (secondsSpan) secondsSpan.textContent = seconds.toString().padStart(2, '0');
+      }
+      
+      if (countdownInterval) clearInterval(countdownInterval);
+      updateTimer();
+      countdownInterval = setInterval(updateTimer, 1000);
+    }
+    
+    function loadCountdownsListForAdmin() {
+      const container = $('#countdownsListContainer');
+      if (!container) return;
+      
+      loadCountdownsFromStorage();
+      
+      if (localCountdowns.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-regular fa-calendar-xmark"></i> Nessun countdown configurato</div>';
+        return;
+      }
+      
+      container.innerHTML = '';
+      const sorted = [...localCountdowns].sort((a,b) => a.targetTime - b.targetTime);
+      
+      sorted.forEach((cd, index) => {
+        const targetDate = new Date(cd.targetTime);
+        const isExpired = cd.targetTime <= Date.now();
+        const item = document.createElement('div');
+        item.className = 'countdown-item';
+        item.innerHTML = `
+          <div class="countdown-item-info">
+            <div class="countdown-item-title">
+              <i class="fa-regular fa-hourglass-half"></i> ${escapeHtml(cd.title)}
+              <span class="countdown-item-status ${isExpired ? 'expired' : 'active'}">${isExpired ? 'Scaduto' : 'Attivo'}</span>
+            </div>
+            <div class="countdown-item-date"><i class="fa-regular fa-calendar"></i> ${targetDate.toLocaleString('it-IT')}</div>
+            ${cd.message ? `<div class="countdown-item-msg"><i class="fa-solid fa-message"></i> ${escapeHtml(cd.message)}</div>` : ''}
+          </div>
+          <div class="countdown-item-actions">
+            <button class="btn btn-sm btn-warning" onclick="window.editCountdown(${index})"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-sm btn-danger" onclick="window.deleteCountdown(${index})"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+    
+    window.editCountdown = function(index) {
+      const cd = localCountdowns[index];
+      if (!cd) return;
+      
+      $('#editCountdownId').value = index;
+      $('#countdownTitleInput').value = cd.title;
+      const date = new Date(cd.targetTime);
+      $('#countdownDateTime').value = date.toISOString().slice(0, 16);
+      $('#countdownMessageInput').value = cd.message || '';
+      $('#formTitle').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Modifica Countdown';
+      $('#btnCancelEdit').style.display = 'inline-flex';
+    };
+    
+    window.deleteCountdown = function(index) {
+      if (confirm('Sei sicuro di voler eliminare questo countdown?')) {
+        localCountdowns.splice(index, 1);
+        saveCountdownsToStorage();
+        toast('Countdown eliminato', 'fa-solid fa-trash');
+        loadCountdownsListForAdmin();
+        updateHomeCountdownDisplay();
+        const editId = $('#editCountdownId');
+        if (editId && parseInt(editId.value) === index) {
+          resetForm();
+        }
+      }
+    };
+    
+    function resetForm() {
+      $('#editCountdownId').value = '';
+      $('#countdownTitleInput').value = '';
+      $('#countdownDateTime').value = '';
+      $('#countdownMessageInput').value = '';
+      $('#formTitle').innerHTML = '<i class="fa-regular fa-calendar-plus"></i> Nuovo Countdown';
+      $('#btnCancelEdit').style.display = 'none';
+    }
+    
+    function saveCountdown() {
+      const editIndex = $('#editCountdownId').value;
+      const title = $('#countdownTitleInput').value.trim();
+      const dateTime = $('#countdownDateTime').value;
+      const message = $('#countdownMessageInput').value.trim();
+      
+      if (!title) {
+        toast('Inserisci un titolo', 'fa-solid fa-exclamation-triangle');
+        return;
+      }
+      if (!dateTime) {
+        toast('Seleziona data e ora', 'fa-solid fa-exclamation-triangle');
+        return;
+      }
+      
+      const targetTime = new Date(dateTime).getTime();
+      if (isNaN(targetTime)) {
+        toast('Data non valida', 'fa-solid fa-exclamation-triangle');
+        return;
+      }
+      
+      loadCountdownsFromStorage();
+      
+      const countdownData = {
+        title: title,
+        targetTime: targetTime,
+        message: message || '',
+        createdAt: Date.now()
+      };
+      
+      if (editIndex !== '') {
+        localCountdowns[parseInt(editIndex)] = countdownData;
+        toast('Countdown aggiornato', 'fa-solid fa-check');
+      } else {
+        localCountdowns.push(countdownData);
+        toast('Countdown creato', 'fa-solid fa-check');
+      }
+      
+      saveCountdownsToStorage();
+      resetForm();
+      loadCountdownsListForAdmin();
+      updateHomeCountdownDisplay();
+    }
 
     function detectDeviceType() {
       try {
@@ -1086,252 +1294,7 @@
         if(topAvatarIcon) topAvatarIcon.style.display = 'block';
         if(topUsername) topUsername.hidden = true;
         if(heartbeatInterval) clearInterval(heartbeatInterval);
-        const active = $('.page.active')?.id?.replace('page-','');
-        if(active === 'donations' || active === 'donation' || active === 'admin') showPage('home');
       }
-    }
-
-    function updateHomeCountdownDisplay() {
-      const banner = $('#homeCountdownBanner');
-      const noCountdownDiv = $('#noCountdownHome');
-      
-      if (!activeCountdownData || !activeCountdownData.targetTime || activeCountdownData.targetTime <= Date.now()) {
-        if (banner) banner.style.display = 'none';
-        if (noCountdownDiv) noCountdownDiv.style.display = 'block';
-        if (countdownInterval) clearInterval(countdownInterval);
-        return;
-      }
-      
-      if (banner) banner.style.display = 'block';
-      if (noCountdownDiv) noCountdownDiv.style.display = 'none';
-      
-      const titleSpan = $('#countdownTitle');
-      const messageSpan = $('#countdownMessage');
-      if (titleSpan) titleSpan.textContent = activeCountdownData.title || 'Evento Speciale';
-      if (messageSpan) messageSpan.textContent = activeCountdownData.message || '';
-      
-      function updateTimer() {
-        const now = Date.now();
-        const diff = activeCountdownData.targetTime - now;
-        
-        if (diff <= 0) {
-          if (countdownInterval) clearInterval(countdownInterval);
-          const daysSpan = $('#countdownDays');
-          const hoursSpan = $('#countdownHours');
-          const minutesSpan = $('#countdownMinutes');
-          const secondsSpan = $('#countdownSeconds');
-          if (daysSpan) daysSpan.textContent = '00';
-          if (hoursSpan) hoursSpan.textContent = '00';
-          if (minutesSpan) minutesSpan.textContent = '00';
-          if (secondsSpan) secondsSpan.textContent = '00';
-          if (messageSpan) messageSpan.textContent = activeCountdownData.message || 'Evento iniziato!';
-          activeCountdownData = null;
-          setTimeout(() => {
-            if (banner) banner.style.display = 'none';
-            if (noCountdownDiv) noCountdownDiv.style.display = 'block';
-          }, 1000);
-          return;
-        }
-        
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        
-        const daysSpan = $('#countdownDays');
-        const hoursSpan = $('#countdownHours');
-        const minutesSpan = $('#countdownMinutes');
-        const secondsSpan = $('#countdownSeconds');
-        if (daysSpan) daysSpan.textContent = days.toString().padStart(2, '0');
-        if (hoursSpan) hoursSpan.textContent = hours.toString().padStart(2, '0');
-        if (minutesSpan) minutesSpan.textContent = minutes.toString().padStart(2, '0');
-        if (secondsSpan) secondsSpan.textContent = seconds.toString().padStart(2, '0');
-      }
-      
-      if (countdownInterval) clearInterval(countdownInterval);
-      updateTimer();
-      countdownInterval = setInterval(updateTimer, 1000);
-    }
-
-    function loadActiveCountdown() {
-      if (!countdownsRef) {
-        console.warn("countdownsRef non disponibile");
-        return;
-      }
-      countdownsRef.orderByChild('targetTime').once('value', (snapshot) => {
-        const countdowns = snapshot.val();
-        if (!countdowns) {
-          activeCountdownData = null;
-          updateHomeCountdownDisplay();
-          return;
-        }
-        
-        const now = Date.now();
-        let closestFuture = null;
-        
-        Object.values(countdowns).forEach(cd => {
-          if (cd.targetTime && cd.targetTime > now) {
-            if (!closestFuture || cd.targetTime < closestFuture.targetTime) {
-              closestFuture = cd;
-            }
-          }
-        });
-        
-        activeCountdownData = closestFuture;
-        updateHomeCountdownDisplay();
-      }).catch(err => {
-        console.error("Errore caricamento countdown:", err);
-        activeCountdownData = null;
-        updateHomeCountdownDisplay();
-      });
-    }
-
-    function loadCountdownsListForAdmin() {
-      const container = $('#countdownsListContainer');
-      if (!container) return;
-      
-      if (!countdownsRef) {
-        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #ff4d4f;"><i class="fa-solid fa-exclamation-triangle"></i> Firebase non disponibile</div>';
-        return;
-      }
-      
-      container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-solid fa-spinner fa-pulse"></i> Caricamento countdown...</div>';
-      
-      countdownsRef.once('value', (snapshot) => {
-        const countdowns = snapshot.val();
-        
-        if (!countdowns || Object.keys(countdowns).length === 0) {
-          container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-regular fa-calendar-xmark"></i> Nessun countdown configurato</div>';
-          return;
-        }
-        
-        container.innerHTML = '';
-        const sortedEntries = Object.entries(countdowns).sort((a, b) => a[1].targetTime - b[1].targetTime);
-        
-        sortedEntries.forEach(([id, cd]) => {
-          const targetDate = new Date(cd.targetTime);
-          const isExpired = cd.targetTime <= Date.now();
-          const item = document.createElement('div');
-          item.className = 'countdown-item';
-          item.innerHTML = `
-            <div class="countdown-item-info">
-              <div class="countdown-item-title">
-                <i class="fa-regular fa-hourglass-half"></i> ${escapeHtml(cd.title || 'Senza titolo')}
-                <span class="countdown-item-status ${isExpired ? 'expired' : 'active'}">${isExpired ? 'Scaduto' : 'Attivo'}</span>
-              </div>
-              <div class="countdown-item-date"><i class="fa-regular fa-calendar"></i> ${targetDate.toLocaleString('it-IT')}</div>
-              ${cd.message ? `<div class="countdown-item-msg"><i class="fa-solid fa-message"></i> ${escapeHtml(cd.message)}</div>` : ''}
-            </div>
-            <div class="countdown-item-actions">
-              <button class="btn btn-sm btn-warning" onclick="window.editCountdown('${id}', '${escapeHtml(cd.title || '').replace(/'/g, "\\'")}', '${cd.targetTime}', '${escapeHtml(cd.message || '').replace(/'/g, "\\'")}')"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn btn-sm btn-danger" onclick="window.deleteCountdown('${id}')"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          `;
-          container.appendChild(item);
-        });
-      }).catch(err => {
-        console.error("Errore caricamento lista countdown:", err);
-        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #ff4d4f;"><i class="fa-solid fa-exclamation-triangle"></i> Errore caricamento countdown</div>';
-      });
-    }
-
-    window.editCountdown = function(id, title, targetTime, message) {
-      const editId = $('#editCountdownId');
-      const titleInput = $('#countdownTitleInput');
-      const dateInput = $('#countdownDateTime');
-      const msgInput = $('#countdownMessageInput');
-      const formTitle = $('#formTitle');
-      const cancelBtn = $('#btnCancelEdit');
-      
-      if(editId) editId.value = id;
-      if(titleInput) titleInput.value = title;
-      if(dateInput) {
-        const date = new Date(Number(targetTime));
-        dateInput.value = date.toISOString().slice(0, 16);
-      }
-      if(msgInput) msgInput.value = message;
-      if(formTitle) formTitle.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Modifica Countdown';
-      if(cancelBtn) cancelBtn.style.display = 'inline-flex';
-    };
-
-    window.deleteCountdown = function(id) {
-      if (confirm('Sei sicuro di voler eliminare questo countdown?')) {
-        if(!countdownsRef) return;
-        countdownsRef.child(id).remove().then(() => {
-          toast('Countdown eliminato', 'fa-solid fa-trash');
-          loadCountdownsListForAdmin();
-          loadActiveCountdown();
-          const editId = $('#editCountdownId');
-          if (editId && editId.value === id) {
-            resetForm();
-          }
-        }).catch(err => {
-          console.error(err);
-          toast('Errore eliminazione', 'fa-solid fa-exclamation-triangle');
-        });
-      }
-    };
-
-    function resetForm() {
-      const editId = $('#editCountdownId');
-      const titleInput = $('#countdownTitleInput');
-      const dateInput = $('#countdownDateTime');
-      const msgInput = $('#countdownMessageInput');
-      const formTitle = $('#formTitle');
-      const cancelBtn = $('#btnCancelEdit');
-      
-      if(editId) editId.value = '';
-      if(titleInput) titleInput.value = '';
-      if(dateInput) dateInput.value = '';
-      if(msgInput) msgInput.value = '';
-      if(formTitle) formTitle.innerHTML = '<i class="fa-regular fa-calendar-plus"></i> Nuovo Countdown';
-      if(cancelBtn) cancelBtn.style.display = 'none';
-    }
-
-    function saveCountdown() {
-      const id = $('#editCountdownId')?.value;
-      const title = $('#countdownTitleInput')?.value.trim();
-      const dateTime = $('#countdownDateTime')?.value;
-      const message = $('#countdownMessageInput')?.value.trim();
-      
-      if (!title) {
-        toast('Inserisci un titolo', 'fa-solid fa-exclamation-triangle');
-        return;
-      }
-      if (!dateTime) {
-        toast('Seleziona data e ora', 'fa-solid fa-exclamation-triangle');
-        return;
-      }
-      
-      const targetTime = new Date(dateTime).getTime();
-      if (isNaN(targetTime)) {
-        toast('Data non valida', 'fa-solid fa-exclamation-triangle');
-        return;
-      }
-      
-      if(!countdownsRef) {
-        toast('Database non disponibile', 'fa-solid fa-exclamation-triangle');
-        return;
-      }
-      
-      const countdownData = {
-        title: title,
-        targetTime: targetTime,
-        message: message || '',
-        updatedAt: Date.now()
-      };
-      
-      const savePromise = id ? countdownsRef.child(id).update(countdownData) : countdownsRef.push(countdownData);
-      
-      savePromise.then(() => {
-        toast(id ? 'Countdown aggiornato' : 'Countdown creato', 'fa-solid fa-check');
-        resetForm();
-        loadCountdownsListForAdmin();
-        loadActiveCountdown();
-      }).catch(err => {
-        console.error(err);
-        toast('Errore salvataggio', 'fa-solid fa-exclamation-triangle');
-      });
     }
 
     function listenForOnlineUsers() {
@@ -1455,7 +1418,7 @@
       if (targetPage) targetPage.classList.add('active');
       const targetNav = $(`.nav-link[data-route="${pageId}"]`);
       if (targetNav) targetNav.classList.add('active');
-      if(pageId==='home') { const v = $('#nvVideo'); if(v) v.play().catch(()=>{}); loadActiveCountdown(); }
+      if(pageId==='home') { const v = $('#nvVideo'); if(v) v.play().catch(()=>{}); updateHomeCountdownDisplay(); }
       if(pageId==='admin' && isAdmin()) { loadCountdownsListForAdmin(); }
     }
 
@@ -1515,8 +1478,9 @@
       updateAuthUI();
       loadDiscordCounts();
       setInterval(loadDiscordCounts,30000);
-      loadActiveCountdown();
-      setInterval(() => loadActiveCountdown(), 60000);
+      loadCountdownsFromStorage();
+      updateHomeCountdownDisplay();
+      
       const loginBtn = $('#btnDiscordLogin');
       const logoutBtn = $('#btnLogout');
       const saveBtn = $('#btnSaveCountdown');

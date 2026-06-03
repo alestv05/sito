@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>California Dreaming Roleplay | Admin Panel - Countdown Manager (Globale)</title>
+  <title>California Dreaming Roleplay | Admin Panel - Countdown & Visitatori</title>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -688,7 +688,7 @@
   .users-online-grid {
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     margin-top: 25px;
   }
   .user-online-card {
@@ -749,6 +749,7 @@
   .empty-users { text-align: center; padding: 60px; color: #9daccc; }
   .empty-users i { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
   .admin-current-user { border-color: #58a6ff; background: linear-gradient(135deg, #1a2542, #121a2a); }
+  .guest-badge { background: #6c757d20; padding: 2px 8px; border-radius: 40px; font-size: 0.65rem; display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; }
 
   .staff-section{max-width:1000px; margin:40px auto}
   .role{
@@ -928,7 +929,6 @@
         <div class="particles" id="particles"></div>
         <div class="logo-container"><div class="logo-bg"></div><div class="logo-glow"></div></div>
         
-        <!-- COUNTDOWN PRINCIPALE (il più imminente) -->
         <div id="homeCountdownBanner" class="countdown-banner" style="display: none;">
           <div class="countdown-title"><i class="fa-regular fa-clock"></i> <span id="countdownTitle">Evento Speciale</span></div>
           <div class="countdown-timer">
@@ -940,7 +940,6 @@
           <div class="countdown-message" id="countdownMessage"></div>
         </div>
         
-        <!-- LISTA DI TUTTI I COUNTDOWN FUTURI -->
         <div id="futureEventsContainer" class="future-events" style="display: none;">
           <h3><i class="fa-regular fa-calendar-alt"></i> Prossimi Eventi</h3>
           <div id="futureEventsList" class="future-events-list"></div>
@@ -975,7 +974,7 @@
 
     <section id="page-admin" class="page" data-page>
       <div class="admin-panel">
-        <div class="admin-header"><h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2><div class="admin-stats"><div class="live-badge"><i class="fa-solid fa-circle"></i><span>LIVE</span></div><i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span></div></div>
+        <div class="admin-header"><h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2><div class="admin-stats"><div class="live-badge"><i class="fa-solid fa-circle"></i><span>LIVE</span></div><i class="fa-solid fa-users"></i> Visitatori totali: <span id="adminUserCount">0</span></div></div>
         
         <div class="admin-countdown-section">
           <div class="admin-countdown-header"><h3><i class="fa-regular fa-hourglass-half"></i> Gestione Countdown Eventi (globale)</h3></div>
@@ -996,7 +995,7 @@
           <div class="device-card tablet"><div class="device-icon"><i class="fa-solid fa-tablet-alt"></i></div><div class="device-count" id="tabletCount">0</div><div class="device-label">Tablet</div><div class="device-sub">iPad / Android Tab</div></div>
         </div>
 
-        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-list"></i> Dettaglio Utenti Online</h3>
+        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-list"></i> Dettaglio Visitatori Online (loggati + anonimi)</h3>
         <div id="usersOnlineList" class="users-online-grid"></div>
       </div>
     </section>
@@ -1010,7 +1009,7 @@
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
-    // Configurazione Firebase
+    // ------------------- FIREBASE -------------------
     const firebaseConfig = {
       apiKey: "AIzaSyCggEkxfIHsBIH6lJhcB63KLvdgNw-OUfk",
       authDomain: "cdrp-site.firebaseapp.com",
@@ -1025,34 +1024,288 @@
     let onlineUsersRef = null;
     let countdownsRef = null;
     let currentCountdowns = [];
+    let currentUser = null;
+    let heartbeatInterval = null;
+    let countdownInterval = null;
+    let futureEventsInterval = null;
     
     try {
       const app = firebase.initializeApp(firebaseConfig);
       database = firebase.database();
       onlineUsersRef = database.ref('online_users');
       countdownsRef = database.ref('countdowns');
-      // Test permessi di scrittura (solo per debug)
-      countdownsRef.child('test_permission').set({test: true}).then(() => {
-        console.log("Permessi di scrittura OK");
-        countdownsRef.child('test_permission').remove();
-      }).catch(err => {
-        console.warn("ATTENZIONE: Nessun permesso di scrittura su /countdowns. Imposta le regole Firebase: { 'countdowns': { '.read': true, '.write': true } }");
-        toast("⚠️ Firebase: permessi di scrittura insufficienti. Contatta l'amministratore e imposta regole di scrittura su /countdowns.", "fa-solid fa-database");
-      });
-    } catch(e) { console.error("Firebase non inizializzato", e); toast("Firebase non disponibile. I countdown non saranno salvati globalmente.", "fa-solid fa-database"); }
+      console.log("Firebase connesso");
+    } catch(e) { console.error("Firebase errore", e); }
 
+    // ------------------- VARIABILI GLOBALI -------------------
     const DISCORD_CLIENT_ID = '1419444744563720404';
     const DISCORD_SCOPE = 'identify';
     const REDIRECT_URI = window.location.href.split('#')[0];
     const INVITE_CODE = 'TAhbywxE4A';
     const ADMIN_DISCORD_ID = '640478852308664360';
-    
     const $ = s => document.querySelector(s);
-    let currentUser = null;
-    let heartbeatInterval = null;
-    let countdownInterval = null;
-    let futureEventsInterval = null;
 
+    // ------------------- UTILITY -------------------
+    function detectDeviceType() { 
+      try { 
+        const parser = new UAParser(); 
+        const device = parser.getDevice(); 
+        if(device.type === 'tablet') return 'tablet'; 
+        if(device.type === 'mobile') return 'phone'; 
+      } catch(e) {} 
+      return 'desktop'; 
+    }
+    function toast(msg, icon = 'fa-solid fa-info-circle') { 
+      let existing = $('.toast'); 
+      if(existing) existing.remove(); 
+      const el = document.createElement('div'); 
+      el.className = 'toast'; 
+      el.innerHTML = `<i class="${icon}"></i> ${msg}`; 
+      document.body.appendChild(el); 
+      setTimeout(() => el.classList.add('show'), 10); 
+      setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 5000); 
+    }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+    
+    // ------------------- TRACCIAMENTO ANONIMO + SESSIONE -------------------
+    let visitorId = null;
+    let isLoggedInFlag = false;
+    
+    function getOrCreateVisitorId() {
+      let id = sessionStorage.getItem('visitor_id');
+      if (!id) {
+        id = 'anon_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+        sessionStorage.setItem('visitor_id', id);
+      }
+      return id;
+    }
+    
+    // Registra o aggiorna la presenza di un visitatore (anonimo o loggato)
+    function registerPresence(userId, userData, expiresAt) {
+      if (!onlineUsersRef) return Promise.resolve();
+      const device = detectDeviceType();
+      const record = {
+        id: userId,
+        type: userData.type, // 'guest' o 'discord'
+        name: userData.name || (userData.type === 'guest' ? 'Visitatore' : 'Utente Discord'),
+        avatar: userData.avatar || null,
+        loginTime: new Date().toISOString(),
+        expires: expiresAt,
+        lastSeen: Date.now(),
+        device: device
+      };
+      if (userData.type === 'discord') {
+        record.username = userData.username;
+        record.global_name = userData.global_name;
+        record.avatarUrl = userData.avatarUrl;
+      }
+      return onlineUsersRef.child(userId).set(record);
+    }
+    
+    function updateLastSeen(userId) {
+      if (onlineUsersRef) onlineUsersRef.child(userId).update({ lastSeen: Date.now() });
+    }
+    
+    function removePresence(userId) {
+      if (onlineUsersRef) onlineUsersRef.child(userId).remove();
+    }
+    
+    // Avvia heartbeat per l'utente corrente (anonimo o loggato)
+    function startHeartbeat(userId) {
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      heartbeatInterval = setInterval(() => {
+        if (userId) updateLastSeen(userId);
+      }, 30000);
+    }
+    
+    // Gestione visitatore anonimo
+    function initAnonymousTracking() {
+      visitorId = getOrCreateVisitorId();
+      const expiresAt = Date.now() + 3600000; // 1 ora
+      registerPresence(visitorId, { type: 'guest', name: 'Visitatore' }, expiresAt)
+        .then(() => startHeartbeat(visitorId))
+        .catch(err => console.warn("Anonimo non registrato", err));
+      // Quando la pagina viene chiusa, rimuovi la presenza
+      window.addEventListener('beforeunload', () => {
+        if (visitorId) removePresence(visitorId);
+      });
+    }
+    
+    // ------------------- GESTIONE LOGIN DISCORD -------------------
+    function getAuthToken() { const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); if(!t||!e||Date.now()>=e){ clearAuth(); return null; } return t; }
+    function getCurrentUserFromStorage() { const token = getAuthToken(); const user = JSON.parse(localStorage.getItem('nova_user') || 'null'); if(!token || !user) return null; return user; }
+    function isLoggedIn() { return !!getAuthToken(); }
+    function isAdmin() { const u = getCurrentUserFromStorage(); return u && u.id === ADMIN_DISCORD_ID; }
+    function formatDiscordName(u) { return u?.global_name || u?.username || 'Utente'; }
+    function getAvatarUrl(u) { if(!u || !u.avatar || !u.id) return null; const f = u.avatar.startsWith('a_')?'gif':'png'; return `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${f}?size=128`; }
+    
+    function clearAuth() { 
+      if (currentUser && currentUser.id) removePresence(currentUser.id);
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      localStorage.removeItem('nova_token'); 
+      localStorage.removeItem('nova_user'); 
+      localStorage.removeItem('nova_expires'); 
+      currentUser = null;
+      isLoggedInFlag = false;
+      // Riavvia tracciamento anonimo
+      initAnonymousTracking();
+    }
+    
+    async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) { 
+      if(!access_token) throw new Error('No token');
+      localStorage.setItem('nova_token',access_token);
+      const expiresAt = Date.now() + expires_in * 1000;
+      localStorage.setItem('nova_expires', expiresAt.toString());
+      const r = await fetch('https://discord.com/api/users/@me',{headers:{'Authorization':`${token_type} ${access_token}`}});
+      if(!r.ok) throw new Error();
+      const user = await r.json();
+      localStorage.setItem('nova_user',JSON.stringify(user));
+      // Rimuovi presenza anonima
+      if (visitorId) removePresence(visitorId);
+      // Registra utente Discord
+      const discordData = {
+        type: 'discord',
+        name: formatDiscordName(user),
+        username: user.username,
+        global_name: user.global_name,
+        avatar: user.avatar,
+        avatarUrl: getAvatarUrl(user)
+      };
+      await registerPresence(user.id, discordData, expiresAt);
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      startHeartbeat(user.id);
+      updateAuthUI();
+      toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
+    }
+    
+    function beginDiscordLogin(e) { 
+      if(e) e.preventDefault(); 
+      if(isLoggedIn()) { toast('Già loggato!','fa-solid fa-check'); return; } 
+      const state = Math.random().toString(36).substr(2,16); 
+      sessionStorage.setItem('oauth_state',state); 
+      const url = new URL('https://discord.com/oauth2/authorize');
+      url.searchParams.set('client_id',DISCORD_CLIENT_ID);
+      url.searchParams.set('redirect_uri',REDIRECT_URI);
+      url.searchParams.set('response_type','token');
+      url.searchParams.set('scope',DISCORD_SCOPE);
+      url.searchParams.set('state',state);
+      const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2; 
+      const popup = window.open(url.toString(),'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`); 
+      showLoader(true); 
+      const handler = async (ev) => { 
+        if(ev.origin !== window.location.origin) return; 
+        if(ev.data?.type !== 'discord_oauth') return; 
+        window.removeEventListener('message',handler); 
+        try { await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); if(popup && !popup.closed) popup.close(); } 
+        finally { showLoader(false); } 
+      }; 
+      window.addEventListener('message',handler); 
+      const checkClosed = setInterval(()=>{ if(popup?.closed){ window.removeEventListener('message',handler); showLoader(false); clearInterval(checkClosed); } },500); 
+    }
+    
+    async function handleOAuthRedirect() { 
+      if(!window.location.hash.startsWith('#')) return false; 
+      const p = new URLSearchParams(window.location.hash.substr(1)); 
+      const token = p.get('access_token'); 
+      if(!token && !p.get('error')) return false; 
+      history.replaceState(null,'',window.location.pathname+window.location.search); 
+      if(window.opener && typeof window.opener.postMessage === 'function') { 
+        window.opener.postMessage({type:'discord_oauth', access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600), state:p.get('state')}, window.opener.location.origin); 
+        window.close(); 
+        return true; 
+      } 
+      if(p.get('error')){ toast('Accesso annullato.'); return true; } 
+      showLoader(true); 
+      try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); } 
+      return true; 
+    }
+    
+    function logout(e) { 
+      if(e) e.preventDefault(); 
+      const name = currentUser ? formatDiscordName(currentUser) : ''; 
+      clearAuth(); 
+      updateAuthUI(); 
+      showPage('home'); 
+      toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); 
+    }
+    
+    function updateAuthUI() { 
+      const user = getCurrentUserFromStorage(); 
+      const token = getAuthToken(); 
+      const isIn = !!(token && user); 
+      currentUser = user;
+      isLoggedInFlag = isIn;
+      const navDon = $('#navDonations'); 
+      const btnDiscord = $('#btnDiscordLogin'); 
+      const btnLogout = $('#btnLogout'); 
+      const btnAdmin = $('#btnAdmin'); 
+      if(navDon) navDon.hidden = !isIn; 
+      if(btnDiscord) btnDiscord.hidden = isIn; 
+      if(btnLogout) btnLogout.hidden = !isIn; 
+      if(btnAdmin) btnAdmin.hidden = !isAdmin(); 
+      if(isIn) { 
+        const url = getAvatarUrl(user); 
+        if(url && $('#topAvatarImg')) { 
+          $('#topAvatarImg').src = url; 
+          $('#topAvatarImg').style.display = 'block'; 
+          $('#topAvatarIcon').style.display = 'none'; 
+        } else { 
+          $('#topAvatarImg').style.display = 'none'; 
+          $('#topAvatarIcon').style.display = 'block'; 
+        } 
+        $('#topUsername').textContent = formatDiscordName(user); 
+        $('#topUsername').hidden = false; 
+      } else { 
+        $('#topAvatarImg').style.display = 'none'; 
+        $('#topAvatarIcon').style.display = 'block'; 
+        $('#topUsername').hidden = true; 
+      } 
+    }
+    
+    function showLoader(show) { const l = $('#loginLoader'); if(l) l.classList.toggle('show', show); }
+    
+    // ------------------- LISTA VISITATORI ONLINE (ADMIN) -------------------
+    function listenForOnlineUsers() {
+      if (!onlineUsersRef) return;
+      onlineUsersRef.on('value', (snapshot) => {
+        const users = snapshot.val();
+        const now = Date.now();
+        // Filtra utenti con expires > now e lastSeen recente (max 2 minuti)
+        const userList = users ? Object.values(users).filter(u => u.expires > now && (now - (u.lastSeen || u.expires)) < 120000) : [];
+        let desktop=0, phone=0, tablet=0;
+        userList.forEach(u => { const d = u.device || 'desktop'; if(d==='desktop') desktop++; else if(d==='phone') phone++; else tablet++; });
+        
+        // Aggiorna contatori dispositivi (visibili anche a tutti? li mostriamo solo admin)
+        if (isAdmin()) {
+          if($('#adminUserCount')) $('#adminUserCount').textContent = userList.length;
+          if($('#desktopCount')) $('#desktopCount').textContent = desktop;
+          if($('#phoneCount')) $('#phoneCount').textContent = phone;
+          if($('#tabletCount')) $('#tabletCount').textContent = tablet;
+          
+          const container = $('#usersOnlineList');
+          if(container) {
+            if(userList.length === 0) container.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun visitatore online</div>`;
+            else container.innerHTML = userList.map(u => {
+              let av = u.avatarUrl || null;
+              if(!av && u.type === 'discord' && u.avatar) av = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_')?'gif':'png'}?size=128`;
+              const name = u.name || (u.type === 'discord' ? (u.global_name || u.username) : 'Visitatore');
+              const loginTime = new Date(u.loginTime).toLocaleString('it-IT');
+              const isCurr = (currentUser && currentUser.id === u.id) || (u.type === 'guest' && u.id === visitorId);
+              const dev = u.device || 'desktop';
+              let devIcon = '', devClass = '';
+              if(dev === 'desktop') { devIcon = '<i class="fa-solid fa-desktop"></i>'; devClass = 'desktop'; }
+              else if(dev === 'phone') { devIcon = '<i class="fa-solid fa-mobile-alt"></i>'; devClass = 'phone'; }
+              else { devIcon = '<i class="fa-solid fa-tablet-alt"></i>'; devClass = 'tablet'; }
+              const guestBadge = u.type === 'guest' ? '<span class="guest-badge"><i class="fa-regular fa-eye"></i> Anonimo</span>' : '';
+              return `<div class="user-online-card ${isCurr ? 'admin-current-user' : ''}">
+                ${av ? `<img class="user-avatar" src="${av}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : `<div class="user-avatar-placeholder"><i class="fa-solid ${u.type === 'discord' ? 'fa-brands fa-discord' : 'fa-user'}"></i></div>`}
+                <div class="user-info"><div class="user-name"><i class="fa-solid fa-user"></i> ${escapeHtml(name)} ${guestBadge} ${isCurr ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div><div class="user-id">ID: ${escapeHtml(u.id)}</div><div class="user-login-time"><i class="fa-regular fa-clock"></i> Arrivato: ${loginTime}</div></div></div>`;
+            }).join('');
+          }
+        }
+      });
+    }
+    
     // ------------------- COUNTDOWN GLOBALI -------------------
     function loadCountdownsFromFirebase() {
       if (!countdownsRef) return;
@@ -1067,9 +1320,9 @@
         if (isAdmin() && document.getElementById('page-admin').classList.contains('active')) {
           loadCountdownsListForAdmin();
         }
-      }, (err) => { console.error("Errore lettura countdown", err); toast("Errore nel caricamento dei countdown", "fa-solid fa-exclamation-triangle"); });
+      });
     }
-
+    
     function saveCountdownToFirebase(countdownData, idToEdit = null) {
       if (!countdownsRef) { toast("Firebase non disponibile", "fa-solid fa-database"); return Promise.reject(); }
       const newCountdown = {
@@ -1078,18 +1331,15 @@
         message: countdownData.message || '',
         createdAt: Date.now()
       };
-      if (idToEdit) {
-        return countdownsRef.child(idToEdit).update(newCountdown);
-      } else {
-        return countdownsRef.push(newCountdown);
-      }
+      if (idToEdit) return countdownsRef.child(idToEdit).update(newCountdown);
+      else return countdownsRef.push(newCountdown);
     }
-
+    
     function deleteCountdownFromFirebase(id) {
       if (!countdownsRef) return Promise.reject();
       return countdownsRef.child(id).remove();
     }
-
+    
     function getActiveCountdown() {
       const now = Date.now();
       const active = currentCountdowns.filter(cd => cd.targetTime > now).sort((a,b) => a.targetTime - b.targetTime);
@@ -1100,13 +1350,12 @@
       const now = Date.now();
       return currentCountdowns.filter(cd => cd.targetTime > now).sort((a,b) => a.targetTime - b.targetTime);
     }
-
+    
     function updateHomeCountdownDisplay() {
       const banner = $('#homeCountdownBanner');
       const noCountdownDiv = $('#noCountdownHome');
       const futureContainer = $('#futureEventsContainer');
       const futureList = $('#futureEventsList');
-      
       const futureCountdowns = getAllFutureCountdowns();
       const activeCd = getActiveCountdown();
       
@@ -1116,7 +1365,6 @@
         const titleSpan = $('#countdownTitle'); const messageSpan = $('#countdownMessage');
         if(titleSpan) titleSpan.textContent = activeCd.title || 'Evento Speciale';
         if(messageSpan) messageSpan.textContent = activeCd.message || '';
-        
         function updateMainTimer() {
           if(!activeCd) return;
           const diff = activeCd.targetTime - Date.now();
@@ -1149,10 +1397,7 @@
         const renderFutureList = () => {
           const now = Date.now();
           const valid = futureCountdowns.filter(cd => cd.targetTime > now);
-          if(valid.length === 0) {
-            futureContainer.style.display = 'none';
-            return;
-          }
+          if(valid.length === 0) { futureContainer.style.display = 'none'; return; }
           futureList.innerHTML = valid.map(cd => {
             const diff = cd.targetTime - now;
             let timeStr = '';
@@ -1161,9 +1406,7 @@
               const hours = Math.floor((diff % 86400000) / 3600000);
               const mins = Math.floor((diff % 3600000) / 60000);
               timeStr = `${days}g ${hours}h ${mins}m`;
-            } else {
-              timeStr = 'In corso';
-            }
+            } else { timeStr = 'In corso'; }
             return `<div class="future-event-item">
               <div><span class="future-event-title"><i class="fa-regular fa-calendar-check"></i> ${escapeHtml(cd.title)}</span>
               <div class="future-event-date"><i class="fa-regular fa-clock"></i> ${new Date(cd.targetTime).toLocaleString('it-IT')}</div>
@@ -1175,9 +1418,7 @@
         renderFutureList();
         if(futureEventsInterval) clearInterval(futureEventsInterval);
         futureEventsInterval = setInterval(() => {
-          if($('#futureEventsContainer') && $('#futureEventsContainer').style.display !== 'none') {
-            renderFutureList();
-          }
+          if($('#futureEventsContainer') && $('#futureEventsContainer').style.display !== 'none') renderFutureList();
         }, 1000);
       } else {
         futureContainer.style.display = 'none';
@@ -1187,10 +1428,7 @@
     
     function loadCountdownsListForAdmin() {
       const container = $('#countdownsListContainer'); if(!container) return;
-      if(currentCountdowns.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-regular fa-calendar-xmark"></i> Nessun countdown configurato</div>';
-        return;
-      }
+      if(currentCountdowns.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-regular fa-calendar-xmark"></i> Nessun countdown configurato</div>'; return; }
       container.innerHTML = '';
       [...currentCountdowns].sort((a,b)=>a.targetTime-b.targetTime).forEach(cd => {
         const targetDate = new Date(cd.targetTime);
@@ -1215,9 +1453,8 @@
     
     window.deleteCountdown = function(id) {
       if(confirm('Eliminare questo countdown? L\'operazione è globale.')) {
-        deleteCountdownFromFirebase(id).then(() => {
-          toast('Countdown eliminato (globale)', 'fa-solid fa-trash');
-        }).catch(err => { console.error(err); toast('Errore eliminazione: verifica i permessi Firebase', 'fa-solid fa-exclamation-triangle'); });
+        deleteCountdownFromFirebase(id).then(() => toast('Countdown eliminato (globale)', 'fa-solid fa-trash'))
+          .catch(err => toast('Errore eliminazione: verifica i permessi Firebase', 'fa-solid fa-exclamation-triangle'));
       }
     };
     
@@ -1239,49 +1476,103 @@
       const targetTime = new Date(dateTime).getTime();
       if(isNaN(targetTime)) { toast('Data non valida','fa-solid fa-exclamation-triangle'); return; }
       const cdData = { title, targetTime, message };
-      
       const action = editId ? saveCountdownToFirebase(cdData, editId) : saveCountdownToFirebase(cdData);
       action.then(() => {
         toast(editId ? 'Countdown aggiornato (globale)' : 'Countdown creato (globale)', 'fa-solid fa-check');
         resetForm();
-      }).catch((err) => {
-        console.error("Errore salvataggio:", err);
-        toast("Errore di salvataggio: verifica i permessi di scrittura su Firebase (nodo 'countdowns')", "fa-solid fa-exclamation-triangle");
-      });
+      }).catch((err) => { console.error(err); toast("Errore di salvataggio: verifica i permessi di scrittura su Firebase", "fa-solid fa-exclamation-triangle"); });
     }
     
-    // ------------------- GESTIONE UTENTI ONLINE -------------------
-    function detectDeviceType() { try { const parser = new UAParser(); const device = parser.getDevice(); if(device.type === 'tablet') return 'tablet'; if(device.type === 'mobile') return 'phone'; } catch(e) {} return 'desktop'; }
-    function toast(msg, icon = 'fa-solid fa-info-circle') { let existing = $('.toast'); if(existing) existing.remove(); const el = document.createElement('div'); el.className = 'toast'; el.innerHTML = `<i class="${icon}"></i> ${msg}`; document.body.appendChild(el); setTimeout(() => el.classList.add('show'), 10); setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 5000); }
-    function showLoader(show) { const l = $('#loginLoader'); if(l) l.classList.toggle('show', show); }
-    function getAuthToken() { const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); if(!t||!e||Date.now()>=e){ clearAuth(); return null; } return t; }
-    function getCurrentUserFromStorage() { const token = getAuthToken(); const user = JSON.parse(localStorage.getItem('nova_user') || 'null'); if(!token || !user) return null; return user; }
-    function isLoggedIn() { return !!getAuthToken(); }
-    function isAdmin() { const u = getCurrentUserFromStorage(); return u && u.id === ADMIN_DISCORD_ID; }
-    function formatDiscordName(u) { return u?.global_name || u?.username || 'Utente'; }
-    function getAvatarUrl(u) { if(!u || !u.avatar || !u.id) return null; const f = u.avatar.startsWith('a_')?'gif':'png'; return `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${f}?size=128`; }
-    function addUserToFirebase(user, expiresAt) { if(!onlineUsersRef) return Promise.resolve(); const device = detectDeviceType(); return onlineUsersRef.child(user.id).set({ id: user.id, username: user.username, global_name: user.global_name || user.username, avatar: user.avatar, loginTime: new Date().toISOString(), expires: expiresAt, lastSeen: Date.now(), avatarUrl: getAvatarUrl(user), device: device }); }
-    function removeUserFromFirebase(userId) { if(onlineUsersRef) return onlineUsersRef.child(userId).remove(); return Promise.resolve(); }
-    function updateLastSeen(userId) { if(onlineUsersRef) onlineUsersRef.child(userId).update({ lastSeen: Date.now() }); }
-    function clearAuth() { if(currentUser) { removeUserFromFirebase(currentUser.id); if(heartbeatInterval) clearInterval(heartbeatInterval); } localStorage.removeItem('nova_token'); localStorage.removeItem('nova_user'); localStorage.removeItem('nova_expires'); currentUser = null; }
-    function updateAuthUI() { const user = getCurrentUserFromStorage(); const token = getAuthToken(); const isIn = !!(token && user); currentUser = user; const navDon = $('#navDonations'); const btnDiscord = $('#btnDiscordLogin'); const btnLogout = $('#btnLogout'); const btnAdmin = $('#btnAdmin'); if(navDon) navDon.hidden = !isIn; if(btnDiscord) btnDiscord.hidden = isIn; if(btnLogout) btnLogout.hidden = !isIn; if(btnAdmin) btnAdmin.hidden = !isAdmin(); if(isIn) { const url = getAvatarUrl(user); if(url && $('#topAvatarImg')) { $('#topAvatarImg').src = url; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; } else { $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block'; } $('#topUsername').textContent = formatDiscordName(user); $('#topUsername').hidden = false; const expiresAt = Number(localStorage.getItem('nova_expires') || 0); addUserToFirebase(user, expiresAt); if(heartbeatInterval) clearInterval(heartbeatInterval); heartbeatInterval = setInterval(() => { if(currentUser) updateLastSeen(currentUser.id); }, 30000); } else { $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block'; $('#topUsername').hidden = true; if(heartbeatInterval) clearInterval(heartbeatInterval); } }
-    
-    function listenForOnlineUsers() { if(!onlineUsersRef) return; onlineUsersRef.on('value', (snapshot) => { const users = snapshot.val(); const now = Date.now(); const userList = users ? Object.values(users).filter(u => u.expires > now && (now - (u.lastSeen || u.expires)) < 120000) : []; let desktop=0, phone=0, tablet=0; userList.forEach(u => { const d = u.device || 'desktop'; if(d==='desktop') desktop++; else if(d==='phone') phone++; else tablet++; }); if(currentUser && currentUser.id === ADMIN_DISCORD_ID) { if($('#adminUserCount')) $('#adminUserCount').textContent = userList.length; if($('#desktopCount')) $('#desktopCount').textContent = desktop; if($('#phoneCount')) $('#phoneCount').textContent = phone; if($('#tabletCount')) $('#tabletCount').textContent = tablet; const container = $('#usersOnlineList'); if(container) { if(userList.length === 0) container.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato</div>`; else container.innerHTML = userList.map(u => { let av = u.avatarUrl; if(!av && u.avatar) av = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_')?'gif':'png'}?size=128`; const name = u.global_name || u.username || 'Utente'; const loginTime = new Date(u.loginTime).toLocaleString('it-IT'); const isCurr = currentUser && currentUser.id === u.id; const dev = u.device || 'desktop'; let devIcon = '', devClass = ''; if(dev === 'desktop') { devIcon = '<i class="fa-solid fa-desktop"></i>'; devClass = 'desktop'; } else if(dev === 'phone') { devIcon = '<i class="fa-solid fa-mobile-alt"></i>'; devClass = 'phone'; } else { devIcon = '<i class="fa-solid fa-tablet-alt"></i>'; devClass = 'tablet'; } return `<div class="user-online-card ${isCurr ? 'admin-current-user' : ''}">${av ? `<img class="user-avatar" src="${av}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : `<div class="user-avatar-placeholder"><i class="fa-solid fa-circle-user"></i></div>`}<div class="user-info"><div class="user-name"><i class="fa-brands fa-discord"></i> ${escapeHtml(name)} ${isCurr ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div><div class="user-id">ID: ${escapeHtml(u.id)}</div><div class="user-login-time"><i class="fa-regular fa-clock"></i> Login: ${loginTime}</div></div></div>`; }).join(''); } } }); }
-    
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-    function buildAuthURL(s) { const u = new URL('https://discord.com/oauth2/authorize'); u.searchParams.set('client_id',DISCORD_CLIENT_ID); u.searchParams.set('redirect_uri',REDIRECT_URI); u.searchParams.set('response_type','token'); u.searchParams.set('scope',DISCORD_SCOPE); u.searchParams.set('state',s); return u.toString(); }
-    async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) { if(!access_token) throw new Error('No token'); localStorage.setItem('nova_token',access_token); const expiresAt = Date.now() + expires_in * 1000; localStorage.setItem('nova_expires', expiresAt.toString()); const r = await fetch('https://discord.com/api/users/@me',{headers:{'Authorization':`${token_type} ${access_token}`}}); if(!r.ok) throw new Error(); const user = await r.json(); localStorage.setItem('nova_user',JSON.stringify(user)); updateAuthUI(); toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord'); }
-    function beginDiscordLogin(e) { if(e) e.preventDefault(); if(isLoggedIn()) { toast('Già loggato!','fa-solid fa-check'); return; } const state = Math.random().toString(36).substr(2,16); sessionStorage.setItem('oauth_state',state); const url = buildAuthURL(state); const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2; const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`); showLoader(true); const handler = async (ev) => { if(ev.origin !== window.location.origin) return; if(ev.data?.type !== 'discord_oauth') return; window.removeEventListener('message',handler); try { await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); if(popup && !popup.closed) popup.close(); } finally { showLoader(false); } }; window.addEventListener('message',handler); const checkClosed = setInterval(()=>{ if(popup?.closed){ window.removeEventListener('message',handler); showLoader(false); clearInterval(checkClosed); } },500); }
-    async function handleOAuthRedirect() { if(!window.location.hash.startsWith('#')) return false; const p = new URLSearchParams(window.location.hash.substr(1)); const token = p.get('access_token'); if(!token && !p.get('error')) return false; history.replaceState(null,'',window.location.pathname+window.location.search); if(window.opener && typeof window.opener.postMessage === 'function') { window.opener.postMessage({type:'discord_oauth', access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600), state:p.get('state')}, window.opener.location.origin); window.close(); return true; } if(p.get('error')){ toast('Accesso annullato.'); return true; } showLoader(true); try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); } return true; }
-    function logout(e) { if(e) e.preventDefault(); const name = currentUser ? formatDiscordName(currentUser) : ''; clearAuth(); updateAuthUI(); showPage('home'); toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); }
-    function showPage(pageId) { if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ toast('Accedi per vedere le donazioni','fa-solid fa-lock'); pageId='home'; } if(pageId==='admin' && !isAdmin()) { toast('Accesso negato. Area riservata.','fa-solid fa-shield-haltered'); pageId='home'; } document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active')); const targetPage = $(`#page-${pageId}`); if(targetPage) targetPage.classList.add('active'); const targetNav = $(`.nav-link[data-route="${pageId}"]`); if(targetNav) targetNav.classList.add('active'); if(pageId==='home') { const v = $('#nvVideo'); if(v) v.play().catch(()=>{}); updateHomeCountdownDisplay(); } if(pageId==='admin' && isAdmin()) { loadCountdownsListForAdmin(); } }
+    // ------------------- NAVIGAZIONE -------------------
+    function showPage(pageId) {
+      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ toast('Accedi per vedere le donazioni','fa-solid fa-lock'); pageId='home'; }
+      if(pageId==='admin' && !isAdmin()) { toast('Accesso negato. Area riservata.','fa-solid fa-shield-haltered'); pageId='home'; }
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+      const targetPage = $(`#page-${pageId}`);
+      if(targetPage) targetPage.classList.add('active');
+      const targetNav = $(`.nav-link[data-route="${pageId}"]`);
+      if(targetNav) targetNav.classList.add('active');
+      if(pageId==='home') { const v = $('#nvVideo'); if(v) v.play().catch(()=>{}); updateHomeCountdownDisplay(); }
+      if(pageId==='admin' && isAdmin()) { loadCountdownsListForAdmin(); }
+    }
     
     document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
-    const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"}; const grid = $('#donationsGrid'); if(grid) { grid.innerHTML = ''; [5,10,15,20,30,40,50,70].forEach(price=>{ const card = document.createElement('div'); card.className='donation-card'; card.dataset.price=price; card.innerHTML = `<div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div><div class="donation-caption"><i class="fa-solid fa-euro-sign"></i> Pacchetto ${price}€</div>`; grid.appendChild(card); }); grid.addEventListener('click',(e)=>{ const c=e.target.closest('.donation-card'); if(!c) return; if(!isLoggedIn()){ toast('Login richiesto','fa-solid fa-key'); return; } const price = c.dataset.price; const detailDiv = $('#donationDetail'); if(detailDiv) detailDiv.innerHTML = `<div class="donation-detail"><div class="donation-media"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt="Pacchetto"></div><div class="donation-info"><h2>Pacchetto ${price}€</h2><div class="price">${price}€</div><p>${OFFER_TEXT[price] || ''}</p></div></div>`; showPage('donation'); }); }
+    
+    // ------------------- DONAZIONI -------------------
+    const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"}; 
+    const grid = $('#donationsGrid'); 
+    if(grid) { 
+      grid.innerHTML = ''; 
+      [5,10,15,20,30,40,50,70].forEach(price=>{ 
+        const card = document.createElement('div'); card.className='donation-card'; card.dataset.price=price; 
+        card.innerHTML = `<div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div><div class="donation-caption"><i class="fa-solid fa-euro-sign"></i> Pacchetto ${price}€</div>`; 
+        grid.appendChild(card); 
+      }); 
+      grid.addEventListener('click',(e)=>{ 
+        const c=e.target.closest('.donation-card'); if(!c) return; 
+        if(!isLoggedIn()){ toast('Login richiesto','fa-solid fa-key'); return; } 
+        const price = c.dataset.price; 
+        const detailDiv = $('#donationDetail'); 
+        if(detailDiv) detailDiv.innerHTML = `<div class="donation-detail"><div class="donation-media"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt="Pacchetto"></div><div class="donation-info"><h2>Pacchetto ${price}€</h2><div class="price">${price}€</div><p>${OFFER_TEXT[price] || ''}</p></div></div>`; 
+        showPage('donation'); 
+      }); 
+    }
     document.addEventListener('click',(e)=>{ if(e.target.id==='btnBackDon') showPage('donations'); if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket'); });
-    async function loadDiscordCounts() { try{ const r = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`,{cache:'no-cache'}); if(!r.ok) throw new Error(); const d = await r.json(); if($('#guildName')) $('#guildName').textContent = d.guild?.name||'CDRP'; if($('#countTotal')) $('#countTotal').textContent = d.approximate_member_count||'—'; if($('#countOnline')) $('#countOnline').textContent = d.approximate_presence_count||'—'; if($('#statMembers')) $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—'; }catch(e){ if($('#countTotal')) $('#countTotal').textContent='—'; if($('#countOnline')) $('#countOnline').textContent='—'; if($('#statMembers')) $('#statMembers').textContent='—'; } }
-    window.addEventListener('load', async ()=>{ createParticles(); listenForOnlineUsers(); await handleOAuthRedirect(); updateAuthUI(); loadDiscordCounts(); setInterval(loadDiscordCounts,30000); loadCountdownsFromFirebase(); const loginBtn = $('#btnDiscordLogin'); const logoutBtn = $('#btnLogout'); const saveBtn = $('#btnSaveCountdown'); const cancelBtn = $('#btnCancelEdit'); if(loginBtn) loginBtn.addEventListener('click', beginDiscordLogin); if(logoutBtn) logoutBtn.addEventListener('click', logout); if(saveBtn) saveBtn.addEventListener('click', saveCountdown); if(cancelBtn) cancelBtn.addEventListener('click', resetForm); });
-    function createParticles() { const container = $('#particles'); if(!container) return; for(let i=0;i<50;i++) { const p = document.createElement('div'); p.classList.add('particle'); const s = Math.random()*4+2; p.style.width = s+'px'; p.style.height = s+'px'; p.style.left = Math.random()*100+'%'; p.style.animationDuration = Math.random()*10+8+'s'; p.style.animationDelay = Math.random()*5+'s'; container.appendChild(p); } }
+    
+    // ------------------- DISCORD STATS -------------------
+    async function loadDiscordCounts() { 
+      try{ 
+        const r = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`,{cache:'no-cache'}); 
+        if(!r.ok) throw new Error(); 
+        const d = await r.json(); 
+        if($('#guildName')) $('#guildName').textContent = d.guild?.name||'CDRP'; 
+        if($('#countTotal')) $('#countTotal').textContent = d.approximate_member_count||'—'; 
+        if($('#countOnline')) $('#countOnline').textContent = d.approximate_presence_count||'—'; 
+        if($('#statMembers')) $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—'; 
+      }catch(e){ 
+        if($('#countTotal')) $('#countTotal').textContent='—'; 
+        if($('#countOnline')) $('#countOnline').textContent='—'; 
+        if($('#statMembers')) $('#statMembers').textContent='—'; 
+      } 
+    }
+    
+    // ------------------- INIT -------------------
+    window.addEventListener('load', async ()=>{ 
+      createParticles(); 
+      await handleOAuthRedirect(); 
+      updateAuthUI(); 
+      // Tracciamento anonimo (solo se non loggato)
+      if (!isLoggedIn()) initAnonymousTracking();
+      loadDiscordCounts(); 
+      setInterval(loadDiscordCounts,30000); 
+      loadCountdownsFromFirebase(); 
+      listenForOnlineUsers(); 
+      const loginBtn = $('#btnDiscordLogin'); 
+      const logoutBtn = $('#btnLogout'); 
+      const saveBtn = $('#btnSaveCountdown'); 
+      const cancelBtn = $('#btnCancelEdit'); 
+      if(loginBtn) loginBtn.addEventListener('click', beginDiscordLogin); 
+      if(logoutBtn) logoutBtn.addEventListener('click', logout); 
+      if(saveBtn) saveBtn.addEventListener('click', saveCountdown); 
+      if(cancelBtn) cancelBtn.addEventListener('click', resetForm); 
+    });
+    
+    function createParticles() { 
+      const container = $('#particles'); 
+      if(!container) return; 
+      for(let i=0;i<50;i++) { 
+        const p = document.createElement('div'); 
+        p.classList.add('particle'); 
+        const s = Math.random()*4+2; 
+        p.style.width = s+'px'; 
+        p.style.height = s+'px'; 
+        p.style.left = Math.random()*100+'%'; 
+        p.style.animationDuration = Math.random()*10+8+'s'; 
+        p.style.animationDelay = Math.random()*5+'s'; 
+        container.appendChild(p); 
+      } 
+    }
   </script>
 </body>
 </html>

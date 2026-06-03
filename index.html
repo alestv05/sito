@@ -940,7 +940,7 @@
           <div class="countdown-message" id="countdownMessage"></div>
         </div>
         
-        <!-- LISTA DI TUTTI I COUNTDOWN FUTURI (se più di 1) -->
+        <!-- LISTA DI TUTTI I COUNTDOWN FUTURI -->
         <div id="futureEventsContainer" class="future-events" style="display: none;">
           <h3><i class="fa-regular fa-calendar-alt"></i> Prossimi Eventi</h3>
           <div id="futureEventsList" class="future-events-list"></div>
@@ -978,16 +978,16 @@
         <div class="admin-header"><h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2><div class="admin-stats"><div class="live-badge"><i class="fa-solid fa-circle"></i><span>LIVE</span></div><i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span></div></div>
         
         <div class="admin-countdown-section">
-          <div class="admin-countdown-header"><h3><i class="fa-regular fa-hourglass-half"></i> Gestione Countdown Eventi</h3></div>
+          <div class="admin-countdown-header"><h3><i class="fa-regular fa-hourglass-half"></i> Gestione Countdown Eventi (globale)</h3></div>
           <div style="background: #0a0f1a; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
             <h4 style="margin-bottom: 15px;"><i class="fa-regular fa-calendar-plus"></i> <span id="formTitle">Nuovo Countdown</span></h4>
             <input type="hidden" id="editCountdownId" value="">
             <div class="form-group"><label><i class="fa-solid fa-heading"></i> Titolo evento</label><input type="text" id="countdownTitleInput" placeholder="Es: Lancio del Server, Evento di Natale..."></div>
             <div class="form-group"><label><i class="fa-regular fa-calendar"></i> Data e ora evento</label><input type="datetime-local" id="countdownDateTime"></div>
             <div class="form-group"><label><i class="fa-solid fa-message"></i> Messaggio finale (opzionale)</label><textarea id="countdownMessageInput" rows="2" placeholder="Messaggio che apparirà quando il countdown scade..."></textarea></div>
-            <div class="actions" style="justify-content: flex-start;"><button id="btnSaveCountdown" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Salva</button><button id="btnCancelEdit" class="btn btn-ghost" style="display: none;"><i class="fa-solid fa-xmark"></i> Annulla</button></div>
+            <div class="actions" style="justify-content: flex-start;"><button id="btnSaveCountdown" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Salva (globale)</button><button id="btnCancelEdit" class="btn btn-ghost" style="display: none;"><i class="fa-solid fa-xmark"></i> Annulla</button></div>
           </div>
-          <div class="countdowns-list"><h4><i class="fa-solid fa-list"></i> Countdown Configurati</h4><div id="countdownsListContainer"></div></div>
+          <div class="countdowns-list"><h4><i class="fa-solid fa-list"></i> Countdown Configurati (visibili a tutti)</h4><div id="countdownsListContainer"></div></div>
         </div>
         
         <div class="device-stats-container">
@@ -1010,12 +1010,7 @@
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
-    // Gestione countdown: localStorage per salvare tutti i countdown
-    let localCountdowns = [];
-    let countdownInterval = null;
-    let activeCountdownData = null;
-    let futureEventsInterval = null; // per aggiornare i timer della lista
-    
+    // Configurazione Firebase (stessa del progetto)
     const firebaseConfig = {
       apiKey: "AIzaSyCggEkxfIHsBIH6lJhcB63KLvdgNw-OUfk",
       authDomain: "cdrp-site.firebaseapp.com",
@@ -1028,12 +1023,15 @@
     
     let database = null;
     let onlineUsersRef = null;
+    let countdownsRef = null;   // Riferimento per i countdown globali
+    let currentCountdowns = [];  // Array locale dei countdown (sincronizzato)
     
     try {
       const app = firebase.initializeApp(firebaseConfig);
       database = firebase.database();
       onlineUsersRef = database.ref('online_users');
-    } catch(e) { console.error("Firebase offline"); }
+      countdownsRef = database.ref('countdowns');  // Nuovo nodo per i countdown globali
+    } catch(e) { console.error("Firebase non disponibile", e); }
 
     const DISCORD_CLIENT_ID = '1419444744563720404';
     const DISCORD_SCOPE = 'identify';
@@ -1044,42 +1042,85 @@
     const $ = s => document.querySelector(s);
     let currentUser = null;
     let heartbeatInterval = null;
+    let countdownInterval = null;
+    let futureEventsInterval = null;
 
-    function loadCountdownsFromStorage() { const saved = localStorage.getItem('cdrp_countdowns'); if(saved) try { localCountdowns = JSON.parse(saved); } catch(e) { localCountdowns = []; } else localCountdowns = []; }
-    function saveCountdownsToStorage() { localStorage.setItem('cdrp_countdowns', JSON.stringify(localCountdowns)); }
-    function getActiveCountdown() { const now = Date.now(); const active = localCountdowns.filter(cd => cd.targetTime > now).sort((a,b) => a.targetTime - b.targetTime); return active.length > 0 ? active[0] : null; }
-    function getAllFutureCountdowns() { const now = Date.now(); return localCountdowns.filter(cd => cd.targetTime > now).sort((a,b) => a.targetTime - b.targetTime); }
+    // ------------------- COUNTDOWN GLOBALI (Firebase) -------------------
+    function loadCountdownsFromFirebase() {
+      if (!countdownsRef) return;
+      countdownsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          currentCountdowns = Object.entries(data).map(([id, cd]) => ({ id, ...cd }));
+        } else {
+          currentCountdowns = [];
+        }
+        // Aggiorna UI home e admin
+        updateHomeCountdownDisplay();
+        if (isAdmin() && document.getElementById('page-admin').classList.contains('active')) {
+          loadCountdownsListForAdmin();
+        }
+      }, (err) => { console.error("Errore lettura countdown", err); });
+    }
+
+    function saveCountdownToFirebase(countdownData, idToEdit = null) {
+      if (!countdownsRef) { toast("Firebase non disponibile", "fa-solid fa-database"); return Promise.reject(); }
+      const newCountdown = {
+        title: countdownData.title,
+        targetTime: countdownData.targetTime,
+        message: countdownData.message || '',
+        createdAt: Date.now()
+      };
+      if (idToEdit) {
+        return countdownsRef.child(idToEdit).update(newCountdown);
+      } else {
+        return countdownsRef.push(newCountdown);
+      }
+    }
+
+    function deleteCountdownFromFirebase(id) {
+      if (!countdownsRef) return Promise.reject();
+      return countdownsRef.child(id).remove();
+    }
+
+    function getActiveCountdown() {
+      const now = Date.now();
+      const active = currentCountdowns.filter(cd => cd.targetTime > now).sort((a,b) => a.targetTime - b.targetTime);
+      return active.length > 0 ? active[0] : null;
+    }
     
-    // Aggiorna sia il banner principale che la lista di tutti i countdown futuri
+    function getAllFutureCountdowns() {
+      const now = Date.now();
+      return currentCountdowns.filter(cd => cd.targetTime > now).sort((a,b) => a.targetTime - b.targetTime);
+    }
+
     function updateHomeCountdownDisplay() {
-      loadCountdownsFromStorage();
       const banner = $('#homeCountdownBanner');
       const noCountdownDiv = $('#noCountdownHome');
       const futureContainer = $('#futureEventsContainer');
       const futureList = $('#futureEventsList');
       
       const futureCountdowns = getAllFutureCountdowns();
-      activeCountdownData = futureCountdowns.length > 0 ? futureCountdowns[0] : null;
+      const activeCd = getActiveCountdown();
       
-      // Gestione banner principale (solo se esiste almeno un evento)
-      if (activeCountdownData) {
+      // Banner principale (evento più vicino)
+      if (activeCd) {
         if(banner) banner.style.display = 'block';
         if(noCountdownDiv) noCountdownDiv.style.display = 'none';
         const titleSpan = $('#countdownTitle'); const messageSpan = $('#countdownMessage');
-        if(titleSpan) titleSpan.textContent = activeCountdownData.title || 'Evento Speciale';
-        if(messageSpan) messageSpan.textContent = activeCountdownData.message || '';
+        if(titleSpan) titleSpan.textContent = activeCd.title || 'Evento Speciale';
+        if(messageSpan) messageSpan.textContent = activeCd.message || '';
         
         function updateMainTimer() {
-          if(!activeCountdownData) return;
-          const diff = activeCountdownData.targetTime - Date.now();
+          if(!activeCd) return;
+          const diff = activeCd.targetTime - Date.now();
           if(diff <= 0) {
             if(countdownInterval) clearInterval(countdownInterval);
             document.querySelectorAll('#countdownDays, #countdownHours, #countdownMinutes, #countdownSeconds').forEach(el => { if(el) el.textContent = '00'; });
-            if(messageSpan) messageSpan.textContent = activeCountdownData.message || 'Evento iniziato!';
-            setTimeout(() => { updateHomeCountdownDisplay(); }, 1000);
+            if(messageSpan) messageSpan.textContent = activeCd.message || 'Evento iniziato!';
             return;
           }
-          const days = Math.floor(diff / (1000*60*60*24));
+          const days = Math.floor(diff / 86400000);
           const hours = Math.floor((diff % 86400000) / 3600000);
           const minutes = Math.floor((diff % 3600000) / 60000);
           const seconds = Math.floor((diff % 60000) / 1000);
@@ -1097,17 +1138,17 @@
         if(countdownInterval) clearInterval(countdownInterval);
       }
       
-      // Gestione lista completa di tutti i countdown futuri (se ce n'è più di 1, o anche se ce n'è 1 ma lo mostriamo? Per chiarezza mostriamoli tutti tranne il primo se uguale, ma meglio mostrarli tutti)
+      // Lista tutti i futuri (escluso il primo se vogliamo evitare duplicati? mostriamoli tutti per completezza)
       if(futureCountdowns.length > 0) {
         futureContainer.style.display = 'block';
         const renderFutureList = () => {
           const now = Date.now();
-          const validFutures = futureCountdowns.filter(cd => cd.targetTime > now);
-          if(validFutures.length === 0) {
+          const valid = futureCountdowns.filter(cd => cd.targetTime > now);
+          if(valid.length === 0) {
             futureContainer.style.display = 'none';
             return;
           }
-          futureList.innerHTML = validFutures.map(cd => {
+          futureList.innerHTML = valid.map(cd => {
             const diff = cd.targetTime - now;
             let timeStr = '';
             if(diff > 0) {
@@ -1139,24 +1180,69 @@
       }
     }
     
+    // Per l'admin: lista modificabile
     function loadCountdownsListForAdmin() {
       const container = $('#countdownsListContainer'); if(!container) return;
-      loadCountdownsFromStorage();
-      if(localCountdowns.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-regular fa-calendar-xmark"></i> Nessun countdown configurato</div>'; return; }
+      if(currentCountdowns.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #9daccc;"><i class="fa-regular fa-calendar-xmark"></i> Nessun countdown configurato</div>';
+        return;
+      }
       container.innerHTML = '';
-      [...localCountdowns].sort((a,b)=>a.targetTime-b.targetTime).forEach((cd, idx) => {
-        const targetDate = new Date(cd.targetTime); const isExpired = cd.targetTime <= Date.now();
+      [...currentCountdowns].sort((a,b)=>a.targetTime-b.targetTime).forEach(cd => {
+        const targetDate = new Date(cd.targetTime);
+        const isExpired = cd.targetTime <= Date.now();
         const div = document.createElement('div'); div.className = 'countdown-item';
-        div.innerHTML = `<div class="countdown-item-info"><div class="countdown-item-title"><i class="fa-regular fa-hourglass-half"></i> ${escapeHtml(cd.title)} <span class="countdown-item-status ${isExpired ? 'expired' : 'active'}">${isExpired ? 'Scaduto' : 'Attivo'}</span></div><div class="countdown-item-date"><i class="fa-regular fa-calendar"></i> ${targetDate.toLocaleString('it-IT')}</div>${cd.message ? `<div class="countdown-item-msg"><i class="fa-solid fa-message"></i> ${escapeHtml(cd.message)}</div>` : ''}</div><div class="countdown-item-actions"><button class="btn btn-sm btn-warning" onclick="window.editCountdown(${idx})"><i class="fa-solid fa-pen"></i></button><button class="btn btn-sm btn-danger" onclick="window.deleteCountdown(${idx})"><i class="fa-solid fa-trash"></i></button></div>`;
+        div.innerHTML = `<div class="countdown-item-info"><div class="countdown-item-title"><i class="fa-regular fa-hourglass-half"></i> ${escapeHtml(cd.title)} <span class="countdown-item-status ${isExpired ? 'expired' : 'active'}">${isExpired ? 'Scaduto' : 'Attivo'}</span></div><div class="countdown-item-date"><i class="fa-regular fa-calendar"></i> ${targetDate.toLocaleString('it-IT')}</div>${cd.message ? `<div class="countdown-item-msg"><i class="fa-solid fa-message"></i> ${escapeHtml(cd.message)}</div>` : ''}</div><div class="countdown-item-actions"><button class="btn btn-sm btn-warning" onclick="window.editCountdown('${cd.id}')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-sm btn-danger" onclick="window.deleteCountdown('${cd.id}')"><i class="fa-solid fa-trash"></i></button></div>`;
         container.appendChild(div);
       });
     }
     
-    window.editCountdown = function(index) { const cd = localCountdowns[index]; if(!cd) return; $('#editCountdownId').value = index; $('#countdownTitleInput').value = cd.title; const date = new Date(cd.targetTime); $('#countdownDateTime').value = date.toISOString().slice(0,16); $('#countdownMessageInput').value = cd.message || ''; $('#formTitle').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Modifica Countdown'; $('#btnCancelEdit').style.display = 'inline-flex'; };
-    window.deleteCountdown = function(index) { if(confirm('Eliminare countdown?')) { localCountdowns.splice(index,1); saveCountdownsToStorage(); toast('Countdown eliminato','fa-solid fa-trash'); loadCountdownsListForAdmin(); updateHomeCountdownDisplay(); if($('#editCountdownId').value == index) resetForm(); } };
-    function resetForm() { $('#editCountdownId').value = ''; $('#countdownTitleInput').value = ''; $('#countdownDateTime').value = ''; $('#countdownMessageInput').value = ''; $('#formTitle').innerHTML = '<i class="fa-regular fa-calendar-plus"></i> Nuovo Countdown'; $('#btnCancelEdit').style.display = 'none'; }
-    function saveCountdown() { const editIndex = $('#editCountdownId').value; const title = $('#countdownTitleInput').value.trim(); const dateTime = $('#countdownDateTime').value; const message = $('#countdownMessageInput').value.trim(); if(!title || !dateTime) { toast('Titolo e data richiesti','fa-solid fa-exclamation-triangle'); return; } const targetTime = new Date(dateTime).getTime(); if(isNaN(targetTime)) return; loadCountdownsFromStorage(); const cdData = { title, targetTime, message: message || '', createdAt: Date.now() }; if(editIndex !== '') localCountdowns[parseInt(editIndex)] = cdData; else localCountdowns.push(cdData); saveCountdownsToStorage(); resetForm(); loadCountdownsListForAdmin(); updateHomeCountdownDisplay(); toast('Countdown salvato','fa-solid fa-check'); }
+    window.editCountdown = function(id) {
+      const cd = currentCountdowns.find(c => c.id === id);
+      if(!cd) return;
+      $('#editCountdownId').value = id;
+      $('#countdownTitleInput').value = cd.title;
+      const date = new Date(cd.targetTime);
+      $('#countdownDateTime').value = date.toISOString().slice(0,16);
+      $('#countdownMessageInput').value = cd.message || '';
+      $('#formTitle').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Modifica Countdown';
+      $('#btnCancelEdit').style.display = 'inline-flex';
+    };
     
+    window.deleteCountdown = function(id) {
+      if(confirm('Eliminare questo countdown? L\'operazione è globale.')) {
+        deleteCountdownFromFirebase(id).then(() => {
+          toast('Countdown eliminato (globale)', 'fa-solid fa-trash');
+        }).catch(err => toast('Errore eliminazione', 'fa-solid fa-exclamation-triangle'));
+      }
+    };
+    
+    function resetForm() {
+      $('#editCountdownId').value = '';
+      $('#countdownTitleInput').value = '';
+      $('#countdownDateTime').value = '';
+      $('#countdownMessageInput').value = '';
+      $('#formTitle').innerHTML = '<i class="fa-regular fa-calendar-plus"></i> Nuovo Countdown';
+      $('#btnCancelEdit').style.display = 'none';
+    }
+    
+    function saveCountdown() {
+      const editId = $('#editCountdownId').value;
+      const title = $('#countdownTitleInput').value.trim();
+      const dateTime = $('#countdownDateTime').value;
+      const message = $('#countdownMessageInput').value.trim();
+      if(!title || !dateTime) { toast('Titolo e data richiesti','fa-solid fa-exclamation-triangle'); return; }
+      const targetTime = new Date(dateTime).getTime();
+      if(isNaN(targetTime)) return;
+      const cdData = { title, targetTime, message };
+      if(editId) {
+        saveCountdownToFirebase(cdData, editId).then(() => { toast('Countdown aggiornato (globale)','fa-solid fa-check'); resetForm(); }).catch(() => toast('Errore salvataggio','fa-solid fa-exclamation-triangle'));
+      } else {
+        saveCountdownToFirebase(cdData).then(() => { toast('Countdown creato (globale)','fa-solid fa-check'); resetForm(); }).catch(() => toast('Errore salvataggio','fa-solid fa-exclamation-triangle'));
+      }
+    }
+    
+    // ------------------- GESTIONE UTENTI ONLINE (Firebase) -------------------
     function detectDeviceType() { try { const parser = new UAParser(); const device = parser.getDevice(); if(device.type === 'tablet') return 'tablet'; if(device.type === 'mobile') return 'phone'; } catch(e) {} return 'desktop'; }
     function toast(msg, icon = 'fa-solid fa-info-circle') { let existing = $('.toast'); if(existing) existing.remove(); const el = document.createElement('div'); el.className = 'toast'; el.innerHTML = `<i class="${icon}"></i> ${msg}`; document.body.appendChild(el); setTimeout(() => el.classList.add('show'), 10); setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500); }
     function showLoader(show) { const l = $('#loginLoader'); if(l) l.classList.toggle('show', show); }
@@ -1186,7 +1272,7 @@
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"}; const grid = $('#donationsGrid'); if(grid) { grid.innerHTML = ''; [5,10,15,20,30,40,50,70].forEach(price=>{ const card = document.createElement('div'); card.className='donation-card'; card.dataset.price=price; card.innerHTML = `<div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div><div class="donation-caption"><i class="fa-solid fa-euro-sign"></i> Pacchetto ${price}€</div>`; grid.appendChild(card); }); grid.addEventListener('click',(e)=>{ const c=e.target.closest('.donation-card'); if(!c) return; if(!isLoggedIn()){ toast('Login richiesto','fa-solid fa-key'); return; } const price = c.dataset.price; const detailDiv = $('#donationDetail'); if(detailDiv) detailDiv.innerHTML = `<div class="donation-detail"><div class="donation-media"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt="Pacchetto"></div><div class="donation-info"><h2>Pacchetto ${price}€</h2><div class="price">${price}€</div><p>${OFFER_TEXT[price] || ''}</p></div></div>`; showPage('donation'); }); }
     document.addEventListener('click',(e)=>{ if(e.target.id==='btnBackDon') showPage('donations'); if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket'); });
     async function loadDiscordCounts() { try{ const r = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`,{cache:'no-cache'}); if(!r.ok) throw new Error(); const d = await r.json(); if($('#guildName')) $('#guildName').textContent = d.guild?.name||'CDRP'; if($('#countTotal')) $('#countTotal').textContent = d.approximate_member_count||'—'; if($('#countOnline')) $('#countOnline').textContent = d.approximate_presence_count||'—'; if($('#statMembers')) $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—'; }catch(e){ if($('#countTotal')) $('#countTotal').textContent='—'; if($('#countOnline')) $('#countOnline').textContent='—'; if($('#statMembers')) $('#statMembers').textContent='—'; } }
-    window.addEventListener('load', async ()=>{ createParticles(); listenForOnlineUsers(); await handleOAuthRedirect(); updateAuthUI(); loadDiscordCounts(); setInterval(loadDiscordCounts,30000); loadCountdownsFromStorage(); updateHomeCountdownDisplay(); const loginBtn = $('#btnDiscordLogin'); const logoutBtn = $('#btnLogout'); const saveBtn = $('#btnSaveCountdown'); const cancelBtn = $('#btnCancelEdit'); if(loginBtn) loginBtn.addEventListener('click', beginDiscordLogin); if(logoutBtn) logoutBtn.addEventListener('click', logout); if(saveBtn) saveBtn.addEventListener('click', saveCountdown); if(cancelBtn) cancelBtn.addEventListener('click', resetForm); });
+    window.addEventListener('load', async ()=>{ createParticles(); listenForOnlineUsers(); await handleOAuthRedirect(); updateAuthUI(); loadDiscordCounts(); setInterval(loadDiscordCounts,30000); loadCountdownsFromFirebase(); const loginBtn = $('#btnDiscordLogin'); const logoutBtn = $('#btnLogout'); const saveBtn = $('#btnSaveCountdown'); const cancelBtn = $('#btnCancelEdit'); if(loginBtn) loginBtn.addEventListener('click', beginDiscordLogin); if(logoutBtn) logoutBtn.addEventListener('click', logout); if(saveBtn) saveBtn.addEventListener('click', saveCountdown); if(cancelBtn) cancelBtn.addEventListener('click', resetForm); });
     function createParticles() { const container = $('#particles'); if(!container) return; for(let i=0;i<50;i++) { const p = document.createElement('div'); p.classList.add('particle'); const s = Math.random()*4+2; p.style.width = s+'px'; p.style.height = s+'px'; p.style.left = Math.random()*100+'%'; p.style.animationDuration = Math.random()*10+8+'s'; p.style.animationDelay = Math.random()*5+'s'; container.appendChild(p); } }
   </script>
 </body>

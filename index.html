@@ -5,22 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>California Dreaming Roleplay | Admin Panel Live</title>
 
-  <!-- Firebase SDK (versione compat) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- Preconnect Discord -->
-  <link rel="preconnect" href="https://discord.com" crossorigin>
-  <link rel="dns-prefetch" href="//discord.com">
-  <link rel="preconnect" href="https://cdn.discordapp.com" crossorigin>
+  <!-- UA Parser per device detection -->
+  <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.37/dist/ua-parser.min.js"></script>
 
   <!-- Font & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-  <!-- Device Detection Library -->
-  <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.37/dist/ua-parser.min.js"></script>
 
   <style>
   :root{
@@ -433,7 +428,7 @@
   .member-role{font-weight:600; font-size:.85rem; margin-top:-6px; display: flex; align-items: center; justify-content: center; gap: 6px; background: #0f1625; padding: 4px 10px; border-radius: 40px; width: fit-content; margin-left: auto; margin-right: auto;}
   .member-role i { font-size: 0.85rem; }
 
-  /* ADMIN PANEL - Device Stats Section */
+  /* ADMIN PANEL - Device Stats */
   .admin-panel {
     max-width: 1200px;
     margin: 0 auto;
@@ -457,9 +452,7 @@
     gap: 12px;
     font-size: 1.8rem;
   }
-  .admin-header h2 i {
-    color: #ff4d4f;
-  }
+  .admin-header h2 i { color: #ff4d4f; }
   .admin-stats {
     display: flex;
     gap: 20px;
@@ -486,8 +479,7 @@
     color: #ff4d4f;
     animation: pulse 1.5s infinite;
   }
-  
-  /* DEVICE STATS CARDS */
+
   .device-stats-container {
     display: flex;
     justify-content: center;
@@ -509,31 +501,13 @@
     border-color: #58a6ff;
     box-shadow: 0 15px 35px rgba(88,166,255,0.2);
   }
-  .device-icon {
-    font-size: 48px;
-    margin-bottom: 12px;
-  }
+  .device-icon { font-size: 48px; margin-bottom: 12px; }
   .device-card.desktop .device-icon { color: #58a6ff; }
   .device-card.phone .device-icon { color: #7ee787; }
   .device-card.tablet .device-icon { color: #ffd76a; }
-  .device-count {
-    font-size: 48px;
-    font-weight: 900;
-    line-height: 1;
-    margin: 10px 0;
-  }
-  .device-label {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #9daccc;
-    font-weight: 600;
-  }
-  .device-sub {
-    font-size: 0.7rem;
-    color: #6a7a9e;
-    margin-top: 8px;
-  }
+  .device-count { font-size: 48px; font-weight: 900; line-height: 1; margin: 10px 0; }
+  .device-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: #9daccc; font-weight: 600; }
+  .device-sub { font-size: 0.7rem; color: #6a7a9e; margin-top: 8px; }
 
   .users-online-grid {
     display: grid;
@@ -550,12 +524,10 @@
     align-items: center;
     gap: 16px;
     transition: all 0.3s ease;
-    animation: fadeInUp 0.4s ease;
   }
   .user-online-card:hover {
     transform: translateY(-3px);
     border-color: #58a6ff;
-    box-shadow: 0 10px 25px rgba(88,166,255,0.2);
   }
   .user-avatar {
     width: 56px;
@@ -575,9 +547,7 @@
     font-size: 28px;
     color: #58a6ff;
   }
-  .user-info {
-    flex: 1;
-  }
+  .user-info { flex: 1; }
   .user-name {
     font-weight: 700;
     font-size: 1rem;
@@ -598,48 +568,22 @@
   .device-badge.desktop { color: #58a6ff; border: 1px solid #58a6ff; }
   .device-badge.phone { color: #7ee787; border: 1px solid #7ee787; }
   .device-badge.tablet { color: #ffd76a; border: 1px solid #ffd76a; }
-  .user-id {
-    font-size: 0.65rem;
-    color: #9daccc;
-    font-family: monospace;
-  }
-  .user-login-time {
-    font-size: 0.65rem;
-    color: #7ee787;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 4px;
-  }
-  .empty-users {
-    text-align: center;
-    padding: 60px;
-    color: #9daccc;
-  }
-  .empty-users i {
-    font-size: 48px;
-    margin-bottom: 16px;
-    opacity: 0.5;
-  }
-  .admin-current-user {
-    border-color: #58a6ff;
-    background: linear-gradient(135deg, #1a2542, #121a2a);
-  }
+  .user-id { font-size: 0.65rem; color: #9daccc; font-family: monospace; }
+  .user-login-time { font-size: 0.65rem; color: #7ee787; display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .empty-users { text-align: center; padding: 60px; color: #9daccc; }
+  .empty-users i { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+  .admin-current-user { border-color: #58a6ff; background: linear-gradient(135deg, #1a2542, #121a2a); }
 
-  #page-donations{position:relative; padding:40px 20px}
   .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; max-width:920px; margin:0 auto}
   .donation-card{text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:12px; transition:transform .3s ease; cursor:pointer}
   .donation-card:hover{transform:translateY(-5px)}
   .donation-thumb{width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; border:2px solid #2a3a61; background:#0f1528; display:grid; place-items:center}
   .donation-thumb img{width:90%; height:90%; object-fit:contain}
   .donation-caption{font-weight:700; font-size:1rem; padding:6px 12px; border-radius:10px; background:rgba(23,33,55,.85); border:1px solid #2a3a61; text-align:center}
-
   .donation-detail{max-width:960px;margin:0 auto;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
   .donation-media{background:#0f1528;border:2px solid #2a3a61;border-radius:20px;overflow:hidden;display:grid;place-items:center;padding:20px}
   .donation-media img{max-width:100%;height:auto;display:block}
   .donation-info .price{font-size:2rem;font-weight:800;margin:6px 0 10px}
-  .donation-info pre{white-space:pre-wrap; background:#0f1528; border:1px solid #2a3a61; border-radius:12px; padding:14px; font-family:inherit; color:#cfe0ff; font-size:0.9rem}
-
   .btn{
     padding:12px 28px;
     border-radius:12px;
@@ -652,27 +596,10 @@
     font-family:inherit;
     font-size:0.85rem;
   }
-  .btn-primary{
-    background:linear-gradient(135deg, #58a6ff, #0b6dd6);
-    color:#fff;
-  }
-  .btn-primary:hover{
-    transform:translateY(-2px);
-    box-shadow:0 8px 20px rgba(88,166,255,0.3);
-  }
-  .btn-danger {
-    background: linear-gradient(135deg, #ff4d4f, #cc0000);
-    color: #fff;
-  }
-  .btn-ghost{
-    background:transparent;
-    border:2px solid #2a3a61;
-    color:#eaf0ff;
-  }
-  .btn-ghost:hover{
-    border-color:#58a6ff;
-    transform:translateY(-2px);
-  }
+  .btn-primary{ background:linear-gradient(135deg, #58a6ff, #0b6dd6); color:#fff; }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(88,166,255,0.3); }
+  .btn-ghost{ background:transparent; border:2px solid #2a3a61; color:#eaf0ff; }
+  .btn-ghost:hover{ border-color:#58a6ff; transform:translateY(-2px); }
   .actions{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; justify-content:center}
 
   .site-footer{text-align:center; padding:40px 20px; color:#9daccc; border-top:1px solid #2a3a61; margin-top:40px}
@@ -727,12 +654,9 @@
       <a class="nav-link" data-route="staff"><i class="fa-solid fa-users"></i> Staff</a>
       <a class="nav-link" id="navDonations" data-route="donations" hidden><i class="fa-solid fa-hand-holding-heart"></i> Donazioni</a>
       <a class="nav-link" id="btnAdmin" data-route="admin" hidden><i class="fa-solid fa-shield-haltered"></i> Admin</a>
-      <a class="nav-link" id="btnDiscordLogin" title="Login con Discord">
-        <i class="fa-brands fa-discord"></i> Login
-      </a>
+      <a class="nav-link" id="btnDiscordLogin" title="Login con Discord"><i class="fa-brands fa-discord"></i> Login</a>
       <a class="nav-link" id="btnLogout" hidden><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
     </nav>
-
     <div class="top-avatar" id="topAvatar" title="Utente">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
       <img id="topAvatarImg" alt="Avatar" crossorigin="anonymous">
@@ -744,209 +668,53 @@
     <section id="page-home" class="page active" data-page>
       <div class="hero">
         <div class="particles" id="particles"></div>
-        <div class="logo-container">
-          <div class="logo-bg"></div>
-          <div class="logo-glow"></div>
-        </div>
-
+        <div class="logo-container"><div class="logo-bg"></div><div class="logo-glow"></div></div>
         <div class="welcome-section">
-          <div class="welcome-badge">
-            <i class="fa-solid fa-crown"></i>
-            <span>Nuovo Server RP Italiano</span>
-          </div>
+          <div class="welcome-badge"><i class="fa-solid fa-crown"></i><span>Nuovo Server RP Italiano</span></div>
           <h1 class="welcome-title">Benvenuto su California Dreaming!</h1>
-          <p class="welcome-description">
-            Siamo un nuovo server roleplay <span class="welcome-highlight">FiveM Italiano</span> ambientato negli Stati Uniti, 
-            precisamente a <span class="welcome-highlight">Los Angeles</span>, la città degli angeli. 
-            Se cerchi <span class="welcome-highlight">innovazione, divertimento e realismo</span>, sei nel posto giusto. 
-            <strong>Ti aspettiamo!</strong>
-          </p>
-          <div class="welcome-tags">
-            <span class="welcome-tag"><i class="fa-solid fa-gamepad"></i> FiveM</span>
-            <span class="welcome-tag"><i class="fa-solid fa-city"></i> Los Angeles</span>
-            <span class="welcome-tag"><i class="fa-solid fa-star"></i> Realismo</span>
-            <span class="welcome-tag"><i class="fa-solid fa-users"></i> Community Italiana</span>
-            <span class="welcome-tag"><i class="fa-solid fa-rocket"></i> Innovazione</span>
-            <span class="welcome-tag"><i class="fa-solid fa-shield"></i> Anti-Cheat</span>
-            <span class="welcome-tag"><i class="fa-solid fa-car"></i> Veicoli Personalizzati</span>
-          </div>
+          <p class="welcome-description">Siamo un nuovo server roleplay <span class="welcome-highlight">FiveM Italiano</span> ambientato negli Stati Uniti, precisamente a <span class="welcome-highlight">Los Angeles</span>. Se cerchi <span class="welcome-highlight">innovazione, divertimento e realismo</span>, sei nel posto giusto. <strong>Ti aspettiamo!</strong></p>
+          <div class="welcome-tags"><span class="welcome-tag"><i class="fa-solid fa-gamepad"></i> FiveM</span><span class="welcome-tag"><i class="fa-solid fa-city"></i> Los Angeles</span><span class="welcome-tag"><i class="fa-solid fa-star"></i> Realismo</span><span class="welcome-tag"><i class="fa-solid fa-users"></i> Community Italiana</span><span class="welcome-tag"><i class="fa-solid fa-rocket"></i> Innovazione</span><span class="welcome-tag"><i class="fa-solid fa-shield"></i> Anti-Cheat</span><span class="welcome-tag"><i class="fa-solid fa-car"></i> Veicoli Personalizzati</span></div>
         </div>
-
-        <div class="stats-bar">
-          <div class="stat-item">
-            <div class="stat-number"><i class="fa-regular fa-clock"></i> 24/7</div>
-            <div class="stat-label">Server Online</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number"><i class="fa-solid fa-users"></i> <span id="statMembers">—</span></div>
-            <div class="stat-label">Membri Discord</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number"><i class="fa-solid fa-briefcase"></i> 50+</div>
-            <div class="stat-label">Lavori Disponibili</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number"><i class="fa-solid fa-car-side"></i> 100+</div>
-            <div class="stat-label">Veicoli</div>
-          </div>
-        </div>
-
-        <div class="home-video">
-          <div class="home-video-head">
-            <i class="fa-solid fa-film"></i>
-            <span>Trailer ufficiale</span>
-          </div>
-          <div class="home-video-frame">
-            <video id="nvVideo" src="https://files.catbox.moe/vq53u8.mp4" muted autoplay loop playsinline webkit-playsinline preload="auto"></video>
-          </div>
-        </div>
-
-        <div class="cta-button">
-          <a href="https://discord.gg/TAhbywxE4A" target="_blank" class="btn-join">
-            <i class="fa-brands fa-discord"></i> Unisciti al Discord
-            <i class="fa-solid fa-arrow-right"></i>
-          </a>
-        </div>
-
-        <div class="discord-counts" id="discordCountsCard">
-          <div class="discord-chip">
-            <i class="fa-brands fa-discord"></i>
-            <span id="guildName">California Dreaming RP</span>
-          </div>
-          <div class="discord-numbers">
-            <div class="discord-num">
-              <span class="dc-label"><i class="fa-regular fa-user"></i> Membri</span>
-              <span class="dc-value" id="countTotal">—</span>
-            </div>
-            <div class="dc-divider"></div>
-            <div class="discord-num">
-              <span class="dc-label"><i class="fa-solid fa-circle-nodes"></i> Online Ora</span>
-              <span class="dc-value online" id="countOnline">—</span>
-            </div>
-          </div>
-        </div>
+        <div class="stats-bar"><div class="stat-item"><div class="stat-number"><i class="fa-regular fa-clock"></i> 24/7</div><div class="stat-label">Server Online</div></div><div class="stat-item"><div class="stat-number"><i class="fa-solid fa-users"></i> <span id="statMembers">—</span></div><div class="stat-label">Membri Discord</div></div><div class="stat-item"><div class="stat-number"><i class="fa-solid fa-briefcase"></i> 50+</div><div class="stat-label">Lavori Disponibili</div></div><div class="stat-item"><div class="stat-number"><i class="fa-solid fa-car-side"></i> 100+</div><div class="stat-label">Veicoli</div></div></div>
+        <div class="home-video"><div class="home-video-head"><i class="fa-solid fa-film"></i><span>Trailer ufficiale</span></div><div class="home-video-frame"><video id="nvVideo" src="https://files.catbox.moe/vq53u8.mp4" muted autoplay loop playsinline webkit-playsinline preload="auto"></video></div></div>
+        <div class="cta-button"><a href="https://discord.gg/TAhbywxE4A" target="_blank" class="btn-join"><i class="fa-brands fa-discord"></i> Unisciti al Discord <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="discord-counts" id="discordCountsCard"><div class="discord-chip"><i class="fa-brands fa-discord"></i><span id="guildName">California Dreaming RP</span></div><div class="discord-numbers"><div class="discord-num"><span class="dc-label"><i class="fa-regular fa-user"></i> Membri</span><span class="dc-value" id="countTotal">—</span></div><div class="dc-divider"></div><div class="discord-num"><span class="dc-label"><i class="fa-solid fa-circle-nodes"></i> Online Ora</span><span class="dc-value online" id="countOnline">—</span></div></div></div>
       </div>
     </section>
 
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-crown"></i> Il nostro staff</h2>
-
-      <div class="staff-section">
-        <div class="role"><i class="fa-solid fa-crown"></i> Owner</div>
-        <div class="staff-grid"><div class="member"><div class="avatar ring ring-gold"><img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy"></div><div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div></div></div>
-      </div>
-      <div class="staff-section">
-        <div class="role"><i class="fa-solid fa-star"></i> Founder</div>
-        <div class="staff-grid"><div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto"></div><div class="member-name">Anto</div></div><div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony"></div><div class="member-name">Mony</div></div></div>
-      </div>
-      <div class="staff-section">
-        <div class="role"><i class="fa-solid fa-handshake"></i> Co-Founder</div>
-        <div class="staff-grid">
-          <div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo"></div><div class="member-name">Gabbo</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div>
-          <div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez"></div><div class="member-name">Rodriguez</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div>
-          <div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss"></div><div class="member-name">Th3b00ss</div></div>
-        </div>
-      </div>
-      <div class="staff-section">
-        <div class="role"><i class="fa-solid fa-shield-haltered"></i> Admin</div>
-        <div class="staff-grid">
-          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo"></div><div class="member-name">Alexo</div><div class="member-role role-eup"><i class="fa-solid fa-shirt"></i> Eup Creator</div></div>
-          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri"></div><div class="member-name">Chri</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div>
-          <div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide"></div><div class="member-name">Il Davide</div><div class="member-role role-eup"><i class="fa-solid fa-shirt"></i> Eup Creator</div></div>
-        </div>
-      </div>
-      <div class="staff-section">
-        <div class="role"><i class="fa-solid fa-gavel"></i> Moderatore</div>
-        <div class="staff-grid">
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales"></div><div class="member-name">Ales</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div>
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze"></div><div class="member-name">Blaze</div><div class="member-role role-grafico"><i class="fa-solid fa-palette"></i> Grafico</div></div>
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco"></div><div class="member-name">Franco</div><div class="member-role role-grafico"><i class="fa-solid fa-palette"></i> Grafico</div></div>
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio"></div><div class="member-name">Glaudio</div></div>
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca"></div><div class="member-name">Luca</div></div>
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger"></div><div class="member-name">Mattiger</div></div>
-          <div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight"></div><div class="member-name">Voight</div></div>
-        </div>
-      </div>
-      <div class="staff-section">
-        <div class="role"><i class="fa-solid fa-hand-peace"></i> Helper</div>
-        <div class="staff-grid">
-          <div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre"></div><div class="member-name">Andre</div></div>
-          <div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco"></div><div class="member-name">Falco</div></div>
-        </div>
-      </div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-crown"></i> Owner</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-gold"><img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio"></div><div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-star"></i> Founder</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/PJWJmzZm/4352ec1303ecdc977d7d5742f735fff1.png" alt="Anto"></div><div class="member-name">Anto</div></div><div class="member"><div class="avatar ring ring-silver"><img src="https://i.postimg.cc/qqTMMhYg/e55c0b5b4bccca7cae37baa55d201851.png" alt="Mony"></div><div class="member-name">Mony</div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-handshake"></i> Co-Founder</div><div class="staff-grid"><div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/PqvtWQnP/12b80f2e9ba912f14b31b5e266a0f682-1.png" alt="Gabbo"></div><div class="member-name">Gabbo</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div><div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/htkFBFNt/6ad827b1feba707e879d756b119a3686.png" alt="Rodriguez"></div><div class="member-name">Rodriguez</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div><div class="member"><div class="avatar ring"><img src="https://i.postimg.cc/brNWTqS3/5f711a717fb7ba1b771d9945317115c4.png" alt="Th3b00ss"></div><div class="member-name">Th3b00ss</div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-shield-haltered"></i> Admin</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/281X8cQb/1e61f8bb23ae0618379b441300fcfbd9.png" alt="Alexo"></div><div class="member-name">Alexo</div><div class="member-role role-eup"><i class="fa-solid fa-shirt"></i> Eup Creator</div></div><div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/SKhZdmwC/a-e8e39e5c836119be3f60bcb65e14c6f4.png" alt="Chri"></div><div class="member-name">Chri</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div><div class="member"><div class="avatar ring ring-red"><img src="https://i.postimg.cc/GtVKyRFB/0416d4b328c505304326a8dc8245cc17.png" alt="Il Davide"></div><div class="member-name">Il Davide</div><div class="member-role role-eup"><i class="fa-solid fa-shirt"></i> Eup Creator</div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-gavel"></i> Moderatore</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/43jpPPKM/b7bcf963d0aee00c3897fc99c712901b-1.png" alt="Ales"></div><div class="member-name">Ales</div><div class="member-role role-dev"><i class="fa-solid fa-code"></i> Developer</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/15ywvft9/1de106f2243b0a69cb7ad4cb3ad07fdd-1.png" alt="Blaze"></div><div class="member-name">Blaze</div><div class="member-role role-grafico"><i class="fa-solid fa-palette"></i> Grafico</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/VNzPkJjH/a-edb3451e6d947e16ef4238d025acc7e2.png" alt="Franco"></div><div class="member-name">Franco</div><div class="member-role role-grafico"><i class="fa-solid fa-palette"></i> Grafico</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/XqRTSqjL/10e50f9740ef0ec0128356b0e50bfa07.png" alt="Glaudio"></div><div class="member-name">Glaudio</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/K828tvPt/08d61d22900b74f0858eaa667928cc14.png" alt="Luca"></div><div class="member-name">Luca</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/nzCFnsxf/a-09025472357165cc6f701321fe17ac83-1.png" alt="Mattiger"></div><div class="member-name">Mattiger</div></div><div class="member"><div class="avatar ring ring-green"><img src="https://i.postimg.cc/TwFR1R2L/206addc7d0ca709d436ed6ee9536d6c6.png" alt="Voight"></div><div class="member-name">Voight</div></div></div></div>
+      <div class="staff-section"><div class="role"><i class="fa-solid fa-hand-peace"></i> Helper</div><div class="staff-grid"><div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/Y2LrVm81/33bb0bad054c7588ba25fd7e14026687.png" alt="Andre"></div><div class="member-name">Andre</div></div><div class="member"><div class="avatar ring ring-purple"><img src="https://i.postimg.cc/P5TdPVH4/50c3a9ce68ae80848396cbdefe1f3280.png" alt="Falco"></div><div class="member-name">Falco</div></div></div></div>
     </section>
 
-    <!-- ADMIN PANEL with DEVICE STATS -->
+    <!-- ADMIN PANEL -->
     <section id="page-admin" class="page" data-page>
       <div class="admin-panel">
-        <div class="admin-header">
-          <h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2>
-          <div class="admin-stats">
-            <div class="live-badge">
-              <i class="fa-solid fa-circle"></i>
-              <span>LIVE</span>
-            </div>
-            <i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span>
-          </div>
-        </div>
-        
-        <!-- DEVICE STATISTICS CARDS -->
+        <div class="admin-header"><h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2><div class="admin-stats"><div class="live-badge"><i class="fa-solid fa-circle"></i><span>LIVE</span></div><i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span></div></div>
         <div class="device-stats-container">
-          <div class="device-card desktop">
-            <div class="device-icon"><i class="fa-solid fa-desktop"></i></div>
-            <div class="device-count" id="desktopCount">0</div>
-            <div class="device-label">Desktop</div>
-            <div class="device-sub">PC / Laptop</div>
-          </div>
-          <div class="device-card phone">
-            <div class="device-icon"><i class="fa-solid fa-mobile-alt"></i></div>
-            <div class="device-count" id="phoneCount">0</div>
-            <div class="device-label">Telefono</div>
-            <div class="device-sub">Mobile / Smartphone</div>
-          </div>
-          <div class="device-card tablet">
-            <div class="device-icon"><i class="fa-solid fa-tablet-alt"></i></div>
-            <div class="device-count" id="tabletCount">0</div>
-            <div class="device-label">Tablet</div>
-            <div class="device-sub">iPad / Android Tab</div>
-          </div>
+          <div class="device-card desktop"><div class="device-icon"><i class="fa-solid fa-desktop"></i></div><div class="device-count" id="desktopCount">0</div><div class="device-label">Desktop</div><div class="device-sub">PC / Laptop</div></div>
+          <div class="device-card phone"><div class="device-icon"><i class="fa-solid fa-mobile-alt"></i></div><div class="device-count" id="phoneCount">0</div><div class="device-label">Telefono</div><div class="device-sub">Mobile / Smartphone</div></div>
+          <div class="device-card tablet"><div class="device-icon"><i class="fa-solid fa-tablet-alt"></i></div><div class="device-count" id="tabletCount">0</div><div class="device-label">Tablet</div><div class="device-sub">iPad / Android Tab</div></div>
         </div>
-        
         <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-list"></i> Dettaglio Utenti Online</h3>
         <div id="usersOnlineList" class="users-online-grid"></div>
       </div>
     </section>
 
-    <section id="page-donations" class="page" data-page>
-      <h2 class="title-roman"><i class="fa-solid fa-coins"></i> Sostieni California Dreaming</h2>
-      <div id="donationsGrid" class="donations-grid"></div>
-    </section>
-    <section id="page-donation" class="page" data-page>
-      <div class="card">
-        <div id="donationDetail"></div>
-        <div class="actions">
-          <button id="btnBackDon" class="btn btn-ghost"><i class="fa-solid fa-arrow-left"></i> Indietro</button>
-          <button id="btnBuy" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Acquista</button>
-        </div>
-      </div>
-    </section>
+    <section id="page-donations" class="page" data-page><h2 class="title-roman"><i class="fa-solid fa-coins"></i> Sostieni California Dreaming</h2><div id="donationsGrid" class="donations-grid"></div></section>
+    <section id="page-donation" class="page" data-page><div class="card"><div id="donationDetail"></div><div class="actions"><button id="btnBackDon" class="btn btn-ghost"><i class="fa-solid fa-arrow-left"></i> Indietro</button><button id="btnBuy" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Acquista</button></div></div></section>
   </main>
 
-  <footer class="site-footer">
-    <div class="stripe"></div>
-    <p>© 2025 California Dreaming Roleplay — La città degli angeli ti aspetta</p>
-    <div class="footer-icons">
-      <a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
-      <a class="yt" href="https://youtube.com/@novaromarp?si=A5FuufVL9c9LEBAc" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i></a>
-      <a class="tt" href="https://www.tiktok.com/@novaromarp?_t=ZN-8xEfyEObCFi&_r=1" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a>
-      <a class="dc" href="https://discord.gg/TAhbywxE4A" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i></a>
-    </div>
-  </footer>
+  <footer class="site-footer"><div class="stripe"></div><p>© 2025 California Dreaming Roleplay — La città degli angeli ti aspetta</p><div class="footer-icons"><a class="ig" href="https://www.instagram.com/novaromaroleplay?igsh=ZngzZGZqNHM1Mmky" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a><a class="yt" href="https://youtube.com/@novaromarp?si=A5FuufVL9c9LEBAc" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i></a><a class="tt" href="https://www.tiktok.com/@novaromarp?_t=ZN-8xEfyEObCFi&_r=1" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a><a class="dc" href="https://discord.gg/TAhbywxE4A" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i></a></div></footer>
 
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
-    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCggEkxfIHsBIH6lJhcB63KLvdgNw-OUfk",
       authDomain: "cdrp-site.firebaseapp.com",
@@ -956,7 +724,6 @@
       messagingSenderId: "385667634977",
       appId: "1:385667634977:web:c26c3c4dc5c833adcf5060"
     };
-
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const onlineUsersRef = database.ref('online_users');
@@ -968,275 +735,136 @@
     const ADMIN_DISCORD_ID = '640478852308664360';
     
     const $ = s => document.querySelector(s);
-    const $$ = s => document.querySelectorAll(s);
-    
     let currentUser = null;
     let heartbeatInterval = null;
-    
-    // Device detection function using UAParser.js
+
     function detectDeviceType() {
       const parser = new UAParser();
-      const result = parser.getResult();
-      const device = result.device;
-      
-      // Check for tablet first (iPad or Android tablet)
-      if (device.type === 'tablet') {
-        return 'tablet';
-      }
-      // Check for mobile (phone)
-      if (device.type === 'mobile') {
-        return 'phone';
-      }
-      // Default to desktop
+      const device = parser.getDevice();
+      if (device.type === 'tablet') return 'tablet';
+      if (device.type === 'mobile') return 'phone';
       return 'desktop';
     }
-    
-    function toast(message, icon = 'fa-solid fa-info-circle') {
+
+    function toast(msg, icon = 'fa-solid fa-info-circle') {
       let existing = $('.toast');
       if (existing) existing.remove();
       const el = document.createElement('div');
       el.className = 'toast';
-      el.innerHTML = `<i class="${icon}"></i> ${message}`;
+      el.innerHTML = `<i class="${icon}"></i> ${msg}`;
       document.body.appendChild(el);
       setTimeout(() => el.classList.add('show'), 10);
       setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
     }
-    
-    const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
-    
-    function createParticles() {
-      const container = $('#particles');
-      if(!container) return;
-      for(let i = 0; i < 50; i++) {
-        const p = document.createElement('div');
-        p.classList.add('particle');
-        const s = Math.random() * 4 + 2;
-        p.style.width = s+'px'; p.style.height = s+'px';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = Math.random() * 10 + 8 + 's';
-        p.style.animationDelay = Math.random() * 5 + 's';
-        container.appendChild(p);
-      }
-    }
-    
+
+    function showLoader(show) { const l = $('#loginLoader'); if(l) l.classList.toggle('show', show); }
+
     function getAuthToken() { 
       const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); 
       if(!t||!e) return null; 
-      if(Date.now()>=e){clearAuth();return null;} 
+      if(Date.now()>=e){ clearAuth(); return null; } 
       return t; 
     }
-    
     function getCurrentUserFromStorage() {
       const token = getAuthToken();
       const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
       if(!token || !user) return null;
       return user;
     }
-    
     function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
-    
-    function isAdmin() {
-      const user = getCurrentUserFromStorage();
-      return user && user.id === ADMIN_DISCORD_ID;
+    function isAdmin() { const u = getCurrentUserFromStorage(); return u && u.id === ADMIN_DISCORD_ID; }
+    function formatDiscordName(u) { return u?.global_name || u?.username || 'Utente'; }
+    function getAvatarUrl(u) { 
+      if(!u || !u.avatar || !u.id) return null; 
+      const f = u.avatar.startsWith('a_')?'gif':'png'; 
+      return `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${f}?size=128`; 
     }
-    
-    function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
-    
-    function getAvatarUrl(user) { 
-      if(!user) return null; 
-      if(user.avatar && user.id) { 
-        const f = user.avatar.startsWith('a_')?'gif':'png'; 
-        return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; 
-      } 
-      return null;
-    }
-    
-    // Add user to Firebase with device info
+
     function addUserToFirebase(user, expiresAt) {
       const device = detectDeviceType();
-      const userData = {
-        id: user.id,
-        username: user.username,
-        global_name: user.global_name || user.username,
-        avatar: user.avatar,
-        loginTime: new Date().toISOString(),
-        expires: expiresAt,
-        lastSeen: Date.now(),
-        avatarUrl: getAvatarUrl(user),
-        device: device
-      };
-      return onlineUsersRef.child(user.id).set(userData);
+      return onlineUsersRef.child(user.id).set({
+        id: user.id, username: user.username, global_name: user.global_name || user.username,
+        avatar: user.avatar, loginTime: new Date().toISOString(), expires: expiresAt,
+        lastSeen: Date.now(), avatarUrl: getAvatarUrl(user), device: device
+      });
     }
-    
-    function removeUserFromFirebase(userId) {
-      return onlineUsersRef.child(userId).remove();
-    }
-    
-    function updateLastSeen(userId) {
-      onlineUsersRef.child(userId).update({ lastSeen: Date.now() });
-    }
-    
+    function removeUserFromFirebase(userId) { return onlineUsersRef.child(userId).remove(); }
+    function updateLastSeen(userId) { onlineUsersRef.child(userId).update({ lastSeen: Date.now() }); }
+
     function clearAuth() { 
-      if(currentUser) {
-        removeUserFromFirebase(currentUser.id);
-        if(heartbeatInterval) clearInterval(heartbeatInterval);
-      }
-      localStorage.removeItem('nova_token'); 
-      localStorage.removeItem('nova_user'); 
-      localStorage.removeItem('nova_expires'); 
+      if(currentUser) { removeUserFromFirebase(currentUser.id); if(heartbeatInterval) clearInterval(heartbeatInterval); }
+      localStorage.removeItem('nova_token'); localStorage.removeItem('nova_user'); localStorage.removeItem('nova_expires'); 
       currentUser = null;
     }
-    
+
     function updateAuthUI() {
       const token = getAuthToken();
       const user = getCurrentUserFromStorage();
       const isIn = !!(token && user);
       currentUser = user;
-      
       $('#navDonations').hidden = !isIn;
       $('#btnDiscordLogin').hidden = isIn;
       $('#btnLogout').hidden = !isIn;
       $('#btnAdmin').hidden = !isAdmin();
-      
       if(isIn) {
         const url = getAvatarUrl(user);
-        if(url) { 
-          $('#topAvatarImg').src = url; 
-          $('#topAvatarImg').style.display = 'block'; 
-          $('#topAvatarIcon').style.display = 'none'; 
-        } else {
-          $('#topAvatarImg').style.display = 'none'; 
-          $('#topAvatarIcon').style.display = 'block';
-        }
+        if(url) { $('#topAvatarImg').src = url; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; } 
+        else { $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block'; }
         $('#topUsername').textContent = formatDiscordName(user);
         $('#topUsername').hidden = false;
-        
         const expiresAt = Number(localStorage.getItem('nova_expires') || 0);
         addUserToFirebase(user, expiresAt).then(() => {
           if(heartbeatInterval) clearInterval(heartbeatInterval);
-          heartbeatInterval = setInterval(() => {
-            if(currentUser) {
-              updateLastSeen(currentUser.id);
-            }
-          }, 30000);
-        }).catch(err => console.error("Firebase add user error:", err));
+          heartbeatInterval = setInterval(() => { if(currentUser) updateLastSeen(currentUser.id); }, 30000);
+        }).catch(console.error);
       } else {
-        $('#topAvatarImg').style.display = 'none'; 
-        $('#topAvatarIcon').style.display = 'block';
+        $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block';
         $('#topUsername').hidden = true;
         if(heartbeatInterval) clearInterval(heartbeatInterval);
         const active = $('.page.active')?.id?.replace('page-','');
         if(active === 'donations' || active === 'donation' || active === 'admin') showPage('home');
       }
     }
-    
-    // Listen for online users and update device counters
+
     function listenForOnlineUsers() {
       onlineUsersRef.on('value', (snapshot) => {
         const users = snapshot.val();
         const now = Date.now();
         const userList = users ? Object.values(users).filter(u => u.expires > now && (now - (u.lastSeen || u.expires)) < 120000) : [];
-        
-        // Count devices
-        let desktopCount = 0;
-        let phoneCount = 0;
-        let tabletCount = 0;
-        
-        userList.forEach(user => {
-          const device = user.device || 'desktop';
-          if (device === 'desktop') desktopCount++;
-          else if (device === 'phone') phoneCount++;
-          else if (device === 'tablet') tabletCount++;
-          else desktopCount++; // fallback to desktop
-        });
-        
-        const isAdminUser = currentUser && currentUser.id === ADMIN_DISCORD_ID;
-        
-        if(isAdminUser) {
-          const userCountSpan = $('#adminUserCount');
-          const usersListDiv = $('#usersOnlineList');
-          
-          if(userCountSpan) userCountSpan.textContent = userList.length;
-          
-          // Update device counters in UI
-          const desktopSpan = $('#desktopCount');
-          const phoneSpan = $('#phoneCount');
-          const tabletSpan = $('#tabletCount');
-          if(desktopSpan) desktopSpan.textContent = desktopCount;
-          if(phoneSpan) phoneSpan.textContent = phoneCount;
-          if(tabletSpan) tabletSpan.textContent = tabletCount;
-          
-          if(usersListDiv) {
-            if(userList.length === 0) {
-              usersListDiv.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato al momento</div>`;
-            } else {
-              usersListDiv.innerHTML = userList.map(user => {
-                let avatarUrl = user.avatarUrl;
-                if(!avatarUrl && user.avatar) {
-                  const f = user.avatar.startsWith('a_') ? 'gif' : 'png';
-                  avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`;
-                }
-                const userName = user.global_name || user.username || 'Utente';
-                const loginDate = new Date(user.loginTime);
-                const formattedTime = loginDate.toLocaleString('it-IT');
-                const isCurrentUser = currentUser && currentUser.id === user.id;
-                const userDevice = user.device || 'desktop';
-                
-                let deviceIcon = '';
-                let deviceClass = '';
-                if(userDevice === 'desktop') { deviceIcon = '<i class="fa-solid fa-desktop"></i>'; deviceClass = 'desktop'; }
-                else if(userDevice === 'phone') { deviceIcon = '<i class="fa-solid fa-mobile-alt"></i>'; deviceClass = 'phone'; }
-                else if(userDevice === 'tablet') { deviceIcon = '<i class="fa-solid fa-tablet-alt"></i>'; deviceClass = 'tablet'; }
-                
-                return `
-                  <div class="user-online-card ${isCurrentUser ? 'admin-current-user' : ''}">
-                    ${avatarUrl ? 
-                      `<img class="user-avatar" src="${avatarUrl}" alt="${escapeHtml(userName)}" crossorigin="anonymous" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : 
-                      `<div class="user-avatar-placeholder"><i class="fa-solid fa-circle-user"></i></div>`
-                    }
-                    <div class="user-info">
-                      <div class="user-name">
-                        <i class="fa-brands fa-discord"></i> ${escapeHtml(userName)}
-                        ${isCurrentUser ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}
-                        <span class="device-badge ${deviceClass}">${deviceIcon} ${userDevice === 'desktop' ? 'Desktop' : (userDevice === 'phone' ? 'Telefono' : 'Tablet')}</span>
-                      </div>
-                      <div class="user-id">ID: ${escapeHtml(user.id)}</div>
-                      <div class="user-login-time">
-                        <i class="fa-regular fa-clock"></i> Login: ${formattedTime}
-                      </div>
-                    </div>
-                  </div>
-                `;
-              }).join('');
-            }
+        let desktop=0, phone=0, tablet=0;
+        userList.forEach(u => { const d = u.device || 'desktop'; if(d==='desktop') desktop++; else if(d==='phone') phone++; else tablet++; });
+        if(currentUser && currentUser.id === ADMIN_DISCORD_ID) {
+          $('#adminUserCount').textContent = userList.length;
+          $('#desktopCount').textContent = desktop;
+          $('#phoneCount').textContent = phone;
+          $('#tabletCount').textContent = tablet;
+          const container = $('#usersOnlineList');
+          if(container) {
+            if(userList.length === 0) container.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato</div>`;
+            else container.innerHTML = userList.map(u => {
+              let av = u.avatarUrl;
+              if(!av && u.avatar) av = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_')?'gif':'png'}?size=128`;
+              const name = u.global_name || u.username || 'Utente';
+              const loginTime = new Date(u.loginTime).toLocaleString('it-IT');
+              const isCurr = currentUser && currentUser.id === u.id;
+              const dev = u.device || 'desktop';
+              let devIcon = '', devClass = '';
+              if(dev === 'desktop') { devIcon = '<i class="fa-solid fa-desktop"></i>'; devClass = 'desktop'; }
+              else if(dev === 'phone') { devIcon = '<i class="fa-solid fa-mobile-alt"></i>'; devClass = 'phone'; }
+              else { devIcon = '<i class="fa-solid fa-tablet-alt"></i>'; devClass = 'tablet'; }
+              return `<div class="user-online-card ${isCurr ? 'admin-current-user' : ''}">
+                ${av ? `<img class="user-avatar" src="${av}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : `<div class="user-avatar-placeholder"><i class="fa-solid fa-circle-user"></i></div>`}
+                <div class="user-info"><div class="user-name"><i class="fa-brands fa-discord"></i> ${escapeHtml(name)} ${isCurr ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div><div class="user-id">ID: ${escapeHtml(u.id)}</div><div class="user-login-time"><i class="fa-regular fa-clock"></i> Login: ${loginTime}</div></div></div>`;
+            }).join('');
           }
         }
-      }, (error) => {
-        console.error("Firebase read error:", error);
-        toast("Errore connessione database", "fa-solid fa-exclamation-triangle");
-      });
+      }, (err) => { console.error(err); toast("Errore connessione database", "fa-solid fa-exclamation-triangle"); });
     }
-    
-    function escapeHtml(str) {
-      if(!str) return '';
-      return str.replace(/[&<>]/g, function(m) {
-        if(m === '&') return '&amp;';
-        if(m === '<') return '&lt;';
-        if(m === '>') return '&gt;';
-        return m;
-      });
-    }
-    
-    function buildAuthURL(s) { 
-      const u = new URL('https://discord.com/oauth2/authorize'); 
-      u.searchParams.set('client_id',DISCORD_CLIENT_ID); 
-      u.searchParams.set('redirect_uri',REDIRECT_URI); 
-      u.searchParams.set('response_type','token'); 
-      u.searchParams.set('scope',DISCORD_SCOPE); 
-      u.searchParams.set('state',s); 
-      return u.toString(); 
-    }
-    
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+    function buildAuthURL(s) { const u = new URL('https://discord.com/oauth2/authorize'); u.searchParams.set('client_id',DISCORD_CLIENT_ID); u.searchParams.set('redirect_uri',REDIRECT_URI); u.searchParams.set('response_type','token'); u.searchParams.set('scope',DISCORD_SCOPE); u.searchParams.set('state',s); return u.toString(); }
+
     async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
       if(!access_token) throw new Error('No token');
       localStorage.setItem('nova_token',access_token);
@@ -1246,14 +874,13 @@
       if(!r.ok) throw new Error();
       const user = await r.json();
       localStorage.setItem('nova_user',JSON.stringify(user));
-      
       updateAuthUI();
       toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
     }
-    
+
     function beginDiscordLogin(e) {
-      if(e){e.preventDefault();} 
-      if(isLoggedIn()){toast('Sei già loggato!','fa-solid fa-check');return;}
+      if(e) e.preventDefault();
+      if(isLoggedIn()) { toast('Sei già loggato!','fa-solid fa-check'); return; }
       const state = Math.random().toString(36).substr(2,16);
       sessionStorage.setItem('oauth_state',state);
       const url = buildAuthURL(state);
@@ -1261,24 +888,16 @@
       const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`);
       showLoader(true);
       const handler = async (ev) => { 
-        if(ev.origin !== new URL(REDIRECT_URI).origin) return; 
-        if(ev.data?.type !== 'discord_oauth') return; 
-        window.removeEventListener('message',handler); 
-        try{ 
-          await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); 
-          if(popup&&!popup.closed) popup.close(); 
-        }finally{ showLoader(false); } 
+        if(ev.origin !== new URL(REDIRECT_URI).origin) return;
+        if(ev.data?.type !== 'discord_oauth') return;
+        window.removeEventListener('message',handler);
+        try { await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); if(popup && !popup.closed) popup.close(); } 
+        finally { showLoader(false); }
       };
       window.addEventListener('message',handler);
-      const checkClosed = setInterval(()=>{ 
-        if(popup?.closed){ 
-          window.removeEventListener('message',handler); 
-          showLoader(false);
-          clearInterval(checkClosed);
-        } 
-      },500);
+      const checkClosed = setInterval(()=>{ if(popup?.closed){ window.removeEventListener('message',handler); showLoader(false); clearInterval(checkClosed); } },500);
     }
-    
+
     async function handleOAuthRedirect() {
       if(!window.location.hash.startsWith('#')) return false;
       const p = new URLSearchParams(window.location.hash.substr(1));
@@ -1287,8 +906,8 @@
       history.replaceState(null,'',window.location.pathname+window.location.search);
       if(window.opener && typeof window.opener.postMessage === 'function') {
         window.opener.postMessage({type:'discord_oauth', access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600), state:p.get('state')}, window.opener.location.origin);
-        document.body.innerHTML = `<div style="padding:40px;text-align:center;">✅ Autenticazione completata, puoi chiudere.</div>`;
-        setTimeout(()=>window.close(),1500);
+        // Chiudi immediatamente senza mostrare alcun messaggio
+        window.close();
         return true;
       }
       if(p.get('error')){ toast('Accesso annullato.'); return true; }
@@ -1296,81 +915,40 @@
       try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); }
       return true;
     }
-    
-    function logout(e){ 
-      if(e) e.preventDefault(); 
-      const name = currentUser ? formatDiscordName(currentUser) : ''; 
-      clearAuth(); 
-      updateAuthUI(); 
-      showPage('home'); 
-      toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); 
-    }
-    
+
+    function logout(e) { if(e) e.preventDefault(); const name = currentUser ? formatDiscordName(currentUser) : ''; clearAuth(); updateAuthUI(); showPage('home'); toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); }
+
     function showPage(pageId) {
-      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ 
-        toast('Accedi per vedere le donazioni','fa-solid fa-lock'); 
-        pageId='home'; 
-      }
-      if(pageId==='admin' && !isAdmin()) {
-        toast('Accesso negato. Area riservata agli amministratori.','fa-solid fa-shield-haltered');
-        pageId='home';
-      }
-      $$('.page').forEach(p=>p.classList.remove('active'));
-      $$('.nav-link').forEach(l=>l.classList.remove('active'));
+      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ toast('Accedi per vedere le donazioni','fa-solid fa-lock'); pageId='home'; }
+      if(pageId==='admin' && !isAdmin()) { toast('Accesso negato. Area riservata agli amministratori.','fa-solid fa-shield-haltered'); pageId='home'; }
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
       $(`#page-${pageId}`)?.classList.add('active');
       $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
-      if(pageId==='home') {
-        const video = $('#nvVideo');
-        if(video) video.play().catch(()=>{});
-      }
+      if(pageId==='home') { const v = $('#nvVideo'); if(v) v.play().catch(()=>{}); }
     }
-    
-    document.addEventListener('click',(e)=>{ 
-      const l=e.target.closest('[data-route]'); 
-      if(l){ 
-        e.preventDefault(); 
-        showPage(l.getAttribute('data-route')); 
-      } 
-    });
-    
+
+    document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"};
     const grid = $('#donationsGrid');
     if(grid) {
       grid.innerHTML = '';
       [5,10,15,20,30,40,50,70].forEach(price=>{
-        const card = document.createElement('div');
-        card.className='donation-card';
-        card.dataset.price=price;
+        const card = document.createElement('div'); card.className='donation-card'; card.dataset.price=price;
         card.innerHTML = `<div class="donation-thumb"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt=""></div><div class="donation-caption"><i class="fa-solid fa-euro-sign"></i> Pacchetto ${price}€</div>`;
         grid.appendChild(card);
       });
       grid.addEventListener('click',(e)=>{
-        const c=e.target.closest('.donation-card');
-        if(!c)return;
+        const c=e.target.closest('.donation-card'); if(!c) return;
         if(!isLoggedIn()){ toast('Login richiesto','fa-solid fa-key'); return; }
         const price = c.dataset.price;
         const detailDiv = $('#donationDetail');
-        if(detailDiv) {
-          detailDiv.innerHTML = `
-            <div class="donation-detail">
-              <div class="donation-media"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt="Pacchetto"></div>
-              <div class="donation-info">
-                <h2>Pacchetto ${price}€</h2>
-                <div class="price">${price}€</div>
-                <p>${OFFER_TEXT[price] || ''}</p>
-              </div>
-            </div>
-          `;
-        }
+        if(detailDiv) detailDiv.innerHTML = `<div class="donation-detail"><div class="donation-media"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt="Pacchetto"></div><div class="donation-info"><h2>Pacchetto ${price}€</h2><div class="price">${price}€</div><p>${OFFER_TEXT[price] || ''}</p></div></div>`;
         showPage('donation');
       });
     }
-    
-    document.addEventListener('click',(e)=>{
-      if(e.target.id==='btnBackDon') showPage('donations');
-      if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket');
-    });
-    
+    document.addEventListener('click',(e)=>{ if(e.target.id==='btnBackDon') showPage('donations'); if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket'); });
+
     async function loadDiscordCounts() {
       try{
         const r = await fetch(`https://discord.com/api/invites/${INVITE_CODE}?with_counts=true`,{cache:'no-cache'});
@@ -1380,13 +958,9 @@
         $('#countTotal').textContent = d.approximate_member_count||'—';
         $('#countOnline').textContent = d.approximate_presence_count||'—';
         $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—';
-      }catch(e){ 
-        $('#countTotal').textContent='—'; 
-        $('#countOnline').textContent='—'; 
-        $('#statMembers').textContent='—'; 
-      }
+      }catch(e){ $('#countTotal').textContent='—'; $('#countOnline').textContent='—'; $('#statMembers').textContent='—'; }
     }
-    
+
     window.addEventListener('load', async ()=>{
       createParticles();
       listenForOnlineUsers();
@@ -1397,6 +971,20 @@
       $('#btnDiscordLogin')?.addEventListener('click',beginDiscordLogin);
       $('#btnLogout')?.addEventListener('click',logout);
     });
+    function createParticles() {
+      const container = $('#particles');
+      if(!container) return;
+      for(let i=0;i<50;i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        const s = Math.random()*4+2;
+        p.style.width = s+'px'; p.style.height = s+'px';
+        p.style.left = Math.random()*100+'%';
+        p.style.animationDuration = Math.random()*10+8+'s';
+        p.style.animationDelay = Math.random()*5+'s';
+        container.appendChild(p);
+      }
+    }
   </script>
 </body>
 </html>

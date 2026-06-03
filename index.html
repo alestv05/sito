@@ -19,6 +19,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
+  <!-- Device Detection Library -->
+  <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.37/dist/ua-parser.min.js"></script>
+
   <style>
   :root{
     --bg:#070b14; --surface:#121a2a; --text:#eaf0ff; --muted:#9daccc;
@@ -430,7 +433,7 @@
   .member-role{font-weight:600; font-size:.85rem; margin-top:-6px; display: flex; align-items: center; justify-content: center; gap: 6px; background: #0f1625; padding: 4px 10px; border-radius: 40px; width: fit-content; margin-left: auto; margin-right: auto;}
   .member-role i { font-size: 0.85rem; }
 
-  /* ADMIN PANEL */
+  /* ADMIN PANEL - Device Stats Section */
   .admin-panel {
     max-width: 1200px;
     margin: 0 auto;
@@ -483,10 +486,60 @@
     color: #ff4d4f;
     animation: pulse 1.5s infinite;
   }
+  
+  /* DEVICE STATS CARDS */
+  .device-stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .device-card {
+    background: linear-gradient(135deg, #121a2a, #0f1625);
+    border: 1px solid #2a3a61;
+    border-radius: 24px;
+    padding: 25px 35px;
+    text-align: center;
+    min-width: 160px;
+    transition: all 0.3s ease;
+  }
+  .device-card:hover {
+    transform: translateY(-5px);
+    border-color: #58a6ff;
+    box-shadow: 0 15px 35px rgba(88,166,255,0.2);
+  }
+  .device-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  .device-card.desktop .device-icon { color: #58a6ff; }
+  .device-card.phone .device-icon { color: #7ee787; }
+  .device-card.tablet .device-icon { color: #ffd76a; }
+  .device-count {
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1;
+    margin: 10px 0;
+  }
+  .device-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #9daccc;
+    font-weight: 600;
+  }
+  .device-sub {
+    font-size: 0.7rem;
+    color: #6a7a9e;
+    margin-top: 8px;
+  }
+
   .users-online-grid {
     display: grid;
     gap: 16px;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    margin-top: 20px;
   }
   .user-online-card {
     background: linear-gradient(135deg, #121a2a, #0f1625);
@@ -527,20 +580,31 @@
   }
   .user-name {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 6px;
     flex-wrap: wrap;
   }
-  .user-id {
+  .device-badge {
     font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #0f1625;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .device-badge.desktop { color: #58a6ff; border: 1px solid #58a6ff; }
+  .device-badge.phone { color: #7ee787; border: 1px solid #7ee787; }
+  .device-badge.tablet { color: #ffd76a; border: 1px solid #ffd76a; }
+  .user-id {
+    font-size: 0.65rem;
     color: #9daccc;
     font-family: monospace;
   }
   .user-login-time {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: #7ee787;
     display: flex;
     align-items: center;
@@ -647,6 +711,9 @@
     .stat-number{font-size:1.8rem}
     .stat-number i { font-size: 1.4rem; }
     .admin-header{flex-direction:column; text-align:center}
+    .device-card{min-width:100px; padding:15px 20px;}
+    .device-count{font-size:32px;}
+    .device-icon{font-size:32px;}
     .users-online-grid{grid-template-columns:1fr}
   }
   </style>
@@ -809,7 +876,7 @@
       </div>
     </section>
 
-    <!-- ADMIN PANEL -->
+    <!-- ADMIN PANEL with DEVICE STATS -->
     <section id="page-admin" class="page" data-page>
       <div class="admin-panel">
         <div class="admin-header">
@@ -822,6 +889,30 @@
             <i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span>
           </div>
         </div>
+        
+        <!-- DEVICE STATISTICS CARDS -->
+        <div class="device-stats-container">
+          <div class="device-card desktop">
+            <div class="device-icon"><i class="fa-solid fa-desktop"></i></div>
+            <div class="device-count" id="desktopCount">0</div>
+            <div class="device-label">Desktop</div>
+            <div class="device-sub">PC / Laptop</div>
+          </div>
+          <div class="device-card phone">
+            <div class="device-icon"><i class="fa-solid fa-mobile-alt"></i></div>
+            <div class="device-count" id="phoneCount">0</div>
+            <div class="device-label">Telefono</div>
+            <div class="device-sub">Mobile / Smartphone</div>
+          </div>
+          <div class="device-card tablet">
+            <div class="device-icon"><i class="fa-solid fa-tablet-alt"></i></div>
+            <div class="device-count" id="tabletCount">0</div>
+            <div class="device-label">Tablet</div>
+            <div class="device-sub">iPad / Android Tab</div>
+          </div>
+        </div>
+        
+        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-list"></i> Dettaglio Utenti Online</h3>
         <div id="usersOnlineList" class="users-online-grid"></div>
       </div>
     </section>
@@ -855,7 +946,7 @@
   <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-pulse"></i> Login in corso…</div>
 
   <script>
-    // 🔧 CONFIGURAZIONE FIREBASE (GIA' INSERITA)
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCggEkxfIHsBIH6lJhcB63KLvdgNw-OUfk",
       authDomain: "cdrp-site.firebaseapp.com",
@@ -866,7 +957,6 @@
       appId: "1:385667634977:web:c26c3c4dc5c833adcf5060"
     };
 
-    // Inizializza Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const onlineUsersRef = database.ref('online_users');
@@ -882,6 +972,24 @@
     
     let currentUser = null;
     let heartbeatInterval = null;
+    
+    // Device detection function using UAParser.js
+    function detectDeviceType() {
+      const parser = new UAParser();
+      const result = parser.getResult();
+      const device = result.device;
+      
+      // Check for tablet first (iPad or Android tablet)
+      if (device.type === 'tablet') {
+        return 'tablet';
+      }
+      // Check for mobile (phone)
+      if (device.type === 'mobile') {
+        return 'phone';
+      }
+      // Default to desktop
+      return 'desktop';
+    }
     
     function toast(message, icon = 'fa-solid fa-info-circle') {
       let existing = $('.toast');
@@ -943,8 +1051,9 @@
       return null;
     }
     
-    // Aggiungi/rimuovi utente su Firebase
+    // Add user to Firebase with device info
     function addUserToFirebase(user, expiresAt) {
+      const device = detectDeviceType();
       const userData = {
         id: user.id,
         username: user.username,
@@ -953,7 +1062,8 @@
         loginTime: new Date().toISOString(),
         expires: expiresAt,
         lastSeen: Date.now(),
-        avatarUrl: getAvatarUrl(user)
+        avatarUrl: getAvatarUrl(user),
+        device: device
       };
       return onlineUsersRef.child(user.id).set(userData);
     }
@@ -1020,26 +1130,47 @@
       }
     }
     
-    // Ascolta i cambiamenti in tempo reale da Firebase
+    // Listen for online users and update device counters
     function listenForOnlineUsers() {
       onlineUsersRef.on('value', (snapshot) => {
         const users = snapshot.val();
         const now = Date.now();
         const userList = users ? Object.values(users).filter(u => u.expires > now && (now - (u.lastSeen || u.expires)) < 120000) : [];
         
+        // Count devices
+        let desktopCount = 0;
+        let phoneCount = 0;
+        let tabletCount = 0;
+        
+        userList.forEach(user => {
+          const device = user.device || 'desktop';
+          if (device === 'desktop') desktopCount++;
+          else if (device === 'phone') phoneCount++;
+          else if (device === 'tablet') tabletCount++;
+          else desktopCount++; // fallback to desktop
+        });
+        
         const isAdminUser = currentUser && currentUser.id === ADMIN_DISCORD_ID;
         
         if(isAdminUser) {
-          const userCount = $('#adminUserCount');
-          const usersList = $('#usersOnlineList');
+          const userCountSpan = $('#adminUserCount');
+          const usersListDiv = $('#usersOnlineList');
           
-          if(userCount) userCount.textContent = userList.length;
+          if(userCountSpan) userCountSpan.textContent = userList.length;
           
-          if(usersList) {
+          // Update device counters in UI
+          const desktopSpan = $('#desktopCount');
+          const phoneSpan = $('#phoneCount');
+          const tabletSpan = $('#tabletCount');
+          if(desktopSpan) desktopSpan.textContent = desktopCount;
+          if(phoneSpan) phoneSpan.textContent = phoneCount;
+          if(tabletSpan) tabletSpan.textContent = tabletCount;
+          
+          if(usersListDiv) {
             if(userList.length === 0) {
-              usersList.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato al momento</div>`;
+              usersListDiv.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato al momento</div>`;
             } else {
-              usersList.innerHTML = userList.map(user => {
+              usersListDiv.innerHTML = userList.map(user => {
                 let avatarUrl = user.avatarUrl;
                 if(!avatarUrl && user.avatar) {
                   const f = user.avatar.startsWith('a_') ? 'gif' : 'png';
@@ -1049,6 +1180,13 @@
                 const loginDate = new Date(user.loginTime);
                 const formattedTime = loginDate.toLocaleString('it-IT');
                 const isCurrentUser = currentUser && currentUser.id === user.id;
+                const userDevice = user.device || 'desktop';
+                
+                let deviceIcon = '';
+                let deviceClass = '';
+                if(userDevice === 'desktop') { deviceIcon = '<i class="fa-solid fa-desktop"></i>'; deviceClass = 'desktop'; }
+                else if(userDevice === 'phone') { deviceIcon = '<i class="fa-solid fa-mobile-alt"></i>'; deviceClass = 'phone'; }
+                else if(userDevice === 'tablet') { deviceIcon = '<i class="fa-solid fa-tablet-alt"></i>'; deviceClass = 'tablet'; }
                 
                 return `
                   <div class="user-online-card ${isCurrentUser ? 'admin-current-user' : ''}">
@@ -1060,6 +1198,7 @@
                       <div class="user-name">
                         <i class="fa-brands fa-discord"></i> ${escapeHtml(userName)}
                         ${isCurrentUser ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}
+                        <span class="device-badge ${deviceClass}">${deviceIcon} ${userDevice === 'desktop' ? 'Desktop' : (userDevice === 'phone' ? 'Telefono' : 'Tablet')}</span>
                       </div>
                       <div class="user-id">ID: ${escapeHtml(user.id)}</div>
                       <div class="user-login-time">

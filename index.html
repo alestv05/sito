@@ -573,11 +573,6 @@
     margin: 15px 0;
   }
   
-  .warning-box i{
-    color: #ff4d4f;
-    margin-right: 10px;
-  }
-  
   .info-box{
     background: rgba(88, 166, 255, 0.1);
     border-left: 4px solid #58a6ff;
@@ -591,7 +586,7 @@
     font-weight: 600;
   }
 
-  /* STAFF con icone FontAwesome migliorate */
+  /* STAFF */
   .staff-section{max-width:1000px; margin:40px auto}
   .role{
     display:flex; 
@@ -679,7 +674,7 @@
   .footer-icons a.tt:hover{background:#25f4ee; color:#000}
   .footer-icons a.dc:hover{background:#5865F2; color:#fff}
 
-  /* Toast e Loader con icone */
+  /* Toast e Loader */
   .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:#0f1625; color:#fff; border:1px solid #2a3a61; box-shadow:var(--shadow); padding:12px 20px; border-radius:12px; font-weight:600; z-index:1000; opacity:0; transition:all .3s ease; backdrop-filter:blur(10px); display: flex; align-items: center; gap: 12px;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
   .loader{position:fixed; inset:auto 20px 20px auto; background:#0f1625; border:1px solid #58a6ff; padding:10px 18px; border-radius:12px; font-weight:600; z-index:1100; display:none; backdrop-filter:blur(10px);}
@@ -782,7 +777,6 @@
           </div>
         </div>
 
-        <!-- STATS BAR CON ICONE FONTAWESOME -->
         <div class="stats-bar">
           <div class="stat-item">
             <div class="stat-number"><i class="fa-regular fa-clock"></i> 24/7</div>
@@ -842,7 +836,6 @@
     <!-- STAFF -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-crown"></i> Il nostro staff</h2>
-
       <div class="staff-section">
         <div class="role"><i class="fa-solid fa-crown"></i> Owner</div>
         <div class="staff-grid"><div class="member"><div class="avatar ring ring-gold"><img src="https://i.postimg.cc/CxFBstcd/c37611adf5aecfcd368a2c30335adcd2.png" alt="Antonio" loading="lazy"></div><div class="member-name">Antonio <i class="fa-solid fa-monkey"></i></div></div></div>
@@ -888,10 +881,9 @@
       </div>
     </section>
 
-    <!-- REGOLAMENTO - Con tutti i sottopulsanti -->
+    <!-- REGOLAMENTO -->
     <section id="page-regolamento" class="page" data-page>
       <div class="regolamento-wrapper">
-        <!-- Sidebar con bottoni -->
         <div class="regolamento-sidebar">
           <h3><i class="fa-solid fa-book-open"></i> Sezioni</h3>
           <div class="regolamento-buttons">
@@ -910,10 +902,9 @@
           </div>
         </div>
 
-        <!-- Contenuto dinamico -->
         <div class="regolamento-content">
           <!-- Regolamento Generale -->
-          <div id="reg-generale" class="regolamento-section active-section">
+          <div id="reg-generale" class="regolamento-section">
             <h2><i class="fa-solid fa-gavel"></i> Regolamento Generale</h2>
             <p>L'educazione e il rispetto reciproco sono aspetti fondamentali della community di California Dreaming Roleplay. Riteniamo che ci siano modi e modi di dire le cose e, sebbene sia pressoché naturale alterarsi per qualsiasi situazione spiacevole, è necessario che si mantenga un comportamento tollerabile per garantire un'esperienza di gioco sempre gradevole.</p>
             <p>Vi si chiede, quindi, di gestire ogni impulsività in modo impeccabile, specie nei momenti in cui si è a conoscenza o si teme che le proprie azioni possano ledere gli interessi di un altro utente. Vi si ricorda, inoltre, che non c'è diatriba che non si possa risolvere attraverso il confronto pacifico e, in extrema ratio, i mezzi predisposti dallo staff per la risoluzione di eventuali conflitti: <strong class="term-highlight">Ticket e Assistenze</strong>.</p>
@@ -926,194 +917,208 @@
 
             <h3><i class="fa-solid fa-ban"></i> Regole Principali</h3>
             <ul>
-              <li><i class="fa-solid fa-skull"></i> <strong class="term-highlight">RDM (Random Deathmatch):</strong> Uccidere o ferire un'altra persona senza un valido motivo roleplay. Non è ammesso provocare qualcuno con l'unico scopo di far partire una rissa/sparatoria.</li>
-              <li><i class="fa-solid fa-car"></i> <strong class="term-highlight">VDM (Vehicle Deathmatch):</strong> Uccidere o ferire un'altra persona senza un valido motivo roleplay attraverso l'utilizzo di veicolo (Es: Investendo la persona fino a quando muore).</li>
-              <li><i class="fa-solid fa-dragon"></i> <strong class="term-highlight">POWERGAME:</strong> Consiste nel compiere atti umanamente impossibili nonostante la fisica di GTA V li renda possibili (Es: Cadere da un'altezza notevole e non ruolare alcuna ferita.)</li>
-              <li><i class="fa-solid fa-eye"></i> <strong class="term-highlight">METAGAME:</strong> L'utilizzo In Character (IC) di informazioni che si conoscono Out Of Character (OOC) è vietato. Nel metagame rientrano anche Stream Sniping e Back Seating.</li>
-              <li><i class="fa-solid fa-stream"></i> <strong class="term-highlight">STREAM SNIPING:</strong> Ricavare delle informazioni RP tramite la live di uno streamer. Disturbare il gioco dello streamer raggiungendo la sua posizione ottenuta tramite la stream.</li>
-              <li><i class="fa-solid fa-chair"></i> <strong class="term-highlight">BACK SEATING:</strong> Utilizzare la chat della live di uno streamer al fine di consigliare le azioni da intraprendere. Di conseguenza, lo streamer non è autorizzato a seguire le azioni consigliate.</li>
-              <li><i class="fa-solid fa-face-frown"></i> <strong class="term-highlight">FAIL RP:</strong> Si verifica quando un giocatore mantiene comportamenti irrealistici, forzati e impossibili. Ad esempio cambiare la propria interpretazione, troncando la storia roleplay.</li>
-              <li><i class="fa-solid fa-gun"></i> <strong class="term-highlight">REVENGE KILL:</strong> Consiste nell'uccidere o tentare di uccidere il personaggio che ci ha eliminati in precedenza.</li>
-              <li><i class="fa-solid fa-face-fearful"></i> <strong class="term-highlight">NO FEAR:</strong> Non simulare la paura e/o preoccupazione in azioni di panico.</li>
-              <li><i class="fa-solid fa-person-running"></i> <strong class="term-highlight">BUNNY HOP:</strong> Saltare da una parte all'altra in ripetuta per acquisire maggiore velocità o per schivare proiettili.</li>
-              <li><i class="fa-solid fa-handcuffs"></i> <strong class="term-highlight">COP BAITING:</strong> E' severamente vietato provocare e disturbare le FdO con l'intento di creare un inseguimento senza una motivazione.</li>
-              <li><i class="fa-solid fa-right-from-bracket"></i> <strong class="term-highlight">COMBATLOG:</strong> Uscire dal server di gioco mentre un'azione è in corso per fuggire da situazioni di svantaggio; Entrare in gioco mentre si è a conoscenza di un'azione in corso per portare vantaggio alla propria fazione.</li>
-              <li><i class="fa-solid fa-comment-dots"></i> <strong class="term-highlight">MIX CHAT:</strong> Scambiare l'utilizzo delle varie chat presenti con la chat IC (In Character) e/o viceversa.</li>
-              <li><i class="fa-solid fa-bug"></i> <strong class="term-highlight">BUG ABUSING:</strong> Sfruttare un bug, un errore di gioco e/o un glitch a proprio vantaggio.</li>
-              <li><i class="fa-solid fa-car-side"></i> <strong class="term-highlight">CAR SURF:</strong> Stanziare sopra la carrozzeria di un veicolo che è in movimento.</li>
-              <li><i class="fa-solid fa-car"></i> <strong class="term-highlight">CARJACK:</strong> Rubare il veicolo ad una persona senza una valida motivazione e scena.</li>
+              <li><i class="fa-solid fa-skull"></i> <strong class="term-highlight">RDM:</strong> Uccidere o ferire senza valido motivo RP.</li>
+              <li><i class="fa-solid fa-car"></i> <strong class="term-highlight">VDM:</strong> Uccidere o ferire con veicolo senza motivo RP.</li>
+              <li><i class="fa-solid fa-dragon"></i> <strong class="term-highlight">POWERGAME:</strong> Atti umanamente impossibili.</li>
+              <li><i class="fa-solid fa-eye"></i> <strong class="term-highlight">METAGAME:</strong> Usare info OOC in IC.</li>
+              <li><i class="fa-solid fa-face-frown"></i> <strong class="term-highlight">FAIL RP:</strong> Comportamenti irrealistici.</li>
+              <li><i class="fa-solid fa-right-from-bracket"></i> <strong class="term-highlight">COMBATLOG:</strong> Uscire dal server durante un'azione.</li>
+            </ul>
+          </div>
+
+          <!-- Regolamento Azioni (COMPLETO) -->
+          <div id="reg-azioni" class="regolamento-section">
+            <h2><i class="fa-solid fa-hand-fist"></i> Regolamento Azioni</h2>
+            
+            <p>Vengono considerate <strong class="term-highlight">AZIONI GENERICHE</strong> tutte quelle che si avviano in modo casuale durante l'RP. Tutte le armi sono concesse così come un GAP a testa. <strong>Non sono consentiti caschi.</strong></p>
+
+            <h3><i class="fa-solid fa-ban"></i> Azioni Vietate</h3>
+            <ul>
+              <li><i class="fa-solid fa-ban"></i> Non è possibile svolgere azioni che rientrino in almeno una delle seguenti categorie: <strong class="term-highlight">Stupro, Pedofilia, Necrofilia, Cannibalismo, Molestie sessuali</strong> (salvo le più lievi, tra cui ad esempio palpare il sedere).</li>
+              <li><i class="fa-solid fa-skull"></i> Sarà possibile svolgere azioni di <strong class="term-highlight">Tortura</strong> (sia criminali che FDO, assumendosi le relative conseguenze RP e comunque utilizzando un linguaggio consono).</li>
             </ul>
 
-            <h3><i class="fa-solid fa-language"></i> Linguaggio e Comportamento</h3>
+            <h3><i class="fa-solid fa-gun"></i> Ingresso e Conflitti</h3>
             <ul>
-              <li><i class="fa-solid fa-message"></i> È vietato l'utilizzo di un LINGUAGGIO VOLGARE ED OFFENSIVO se non a scopo di RP (inclusa tossicità). È severamente vietato utilizzare termini non concessi dal regolamento di Twitch.tv.</li>
-              <li><i class="fa-solid fa-eye"></i> <strong class="term-highlight">ABUSO DI TERZA PERSONA:</strong> Utilizzare la terza persona per poter vedere aree che il proprio personaggio non sarebbe in grado di vedere.</li>
-              <li>È severamente vietato l'uso improprio dello /me.</li>
-              <li>È severamente vietato l'utilizzo di tutte le terze parti che possano avvantaggiare il giocatore (Mod grafiche, grafiche stretchate, boost passi e armi, no prop, no bush, no vegetation, low vegetation, crosshair, modifiche al killfeed, rapid fire, no recoil e no rolas). E' vietato l'utilizzo di macro.</li>
-              <li>Se si è in compagnia, è vietato riprodurre brani musicali protetti da copyright.</li>
-              <li>È severamente vietato l'utilizzo di nomi non consoni all'rp: nomi troll e nomi famosi.</li>
+              <li><i class="fa-solid fa-comment"></i> L'ingaggio può avvenire solo con <strong class="term-highlight">provocazioni verbali e/o fisiche</strong>.</li>
+              <li><i class="fa-solid fa-car"></i> Tamponare o seguire un veicolo <strong>non è considerato ingaggio</strong> ma può portare ad un'azione parlata e poi ad un eventuale ingaggio.</li>
+              <li><i class="fa-solid fa-gun"></i> <strong class="term-highlight">Puntare l'arma da fuoco</strong> contro una persona può essere considerato ingaggio.</li>
             </ul>
 
-            <h3><i class="fa-solid fa-user-astronaut"></i> Aspetto e Riconoscimento</h3>
+            <h3><i class="fa-solid fa-user-plus"></i> Restrizioni su Vittime</h3>
             <ul>
-              <li>È vietato utilizzare il personaggio iniziale (Skin base). Bisogna cambiare aspetto senza bug di arti invisibili, vestiti strappati o la maschera in viso.</li>
-              <li>Durante l'utilizzo di una maschera che copre totalmente il viso, è consentito l'uso di un modificatore di voce. In ogni caso, sia che il modificatore sia attivo o meno, la voce non può essere riconosciuta.</li>
-              <li>Sarà possibile riconoscere una persona dai vestiti se trovata nei pressi del luogo di commissione del fatto (es. ladro di auto segnalato vicino all'armeria che è vestito con tuta blu).</li>
-              <li>Sarà possibile risalire all'identità di una persona, mediante i suoi tatuaggi se già noto alle Forze dell'Ordine (Es. persona già arrestata con dei tatuaggi schedati, potrà essere eventualmente un elemento per essere riconosciuto) oppure già nota a terzi soggetti.</li>
-              <li>Mascherare parzialmente il viso (Es. bandana) può permettere il riconoscimento della persona se già noti gli altri suoi particolari del viso (Es. occhi, taglio o colore capelli particolari, tatuaggi).</li>
+              <li><i class="fa-solid fa-door-open"></i> Non sarà possibile rapire o rapinare un player <strong>appena entrato nel server</strong>.</li>
+              <li><i class="fa-solid fa-briefcase"></i> Non sarà possibile rapire e/o rapinare i <strong>lavoratori NO whitelist</strong> sui punti di lavoro.</li>
+              <li><i class="fa-solid fa-truck-medical"></i> È severamente vietato rapire qualsiasi appartenente ai <strong>VVF o ASL Roma</strong> con meno di 3 membri online nella fazione.</li>
             </ul>
 
-            <h3><i class="fa-solid fa-suitcase"></i> Lavori e Fazioni</h3>
+            <h3><i class="fa-solid fa-eye"></i> Tattiche Vietate</h3>
             <ul>
-              <li>L'utilizzo del comando /me DEVE essere utilizzato soltanto per le azioni compiute e non può essere utilizzato per i pensieri.</li>
-              <li>E' vietato a tutti i player con un lavoro whitelist, giocare su altri server WL; tale violazione comporterà la rimozione immediata del job con relativo richiamo, tale regola è valida anche su server no WL.</li>
-              <li>E' vietato guidare qualsiasi tipo di veivolo (Elicottero/Aereo) senza aver preso il Brevetto di volo in game, salvo per le persone appartenenti alla Cupola.</li>
-              <li>I veicoli di fazione (lavoro WL) dovranno essere utilizzati esclusivamente per scopi di fazione/Lavoro no WL.</li>
-              <li>Per entrare nelle fazioni legali occorrerà presentare l'apposito bando su discord (se aperti) e seguire le indicazioni che verranno date. E' assolutamente vietato per i capi fazione fazionare gente senza bandi (salvo autorizzazione del Managment).</li>
+              <li><i class="fa-solid fa-bush"></i> È severamente vietato <strong class="term-highlight">camperarsi all'interno dei cespugli</strong> da vivi per sparare da dentro essi.</li>
+              <li><i class="fa-solid fa-mountain"></i> Ogni <strong class="term-highlight">"ABUSO" di Headglitch</strong>, verrà sanzionato.</li>
+              <li><i class="fa-solid fa-phone"></i> È severamente vietato utilizzare una <strong>chiamata commerciale</strong> per iniziare azioni illegali premeditate (rapimento/rapine).</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-car"></i> Regole Veicoli</h3>
+            <ul>
+              <li><i class="fa-solid fa-tire"></i> Non sarà possibile utilizzare il veicolo se <strong>la metà delle ruote di esso saranno bucate</strong>. In caso di una sola ruota bucata si dovrà diminuire la velocità del veicolo. In caso una ruota dovesse staccarsi, il veicolo non potrà essere utilizzato.</li>
+              <li><i class="fa-solid fa-truck"></i> I veicoli <strong class="term-highlight">4x4/offroad/moto da cross (Es: Kamacho)</strong> potranno andare SOLO in sentieri. È fatto divieto assoluto di scalare le montagne (sia scendere che salire).</li>
+              <li><i class="fa-solid fa-helicopter"></i> Per le FDO e gli Enti di Soccorso è <strong>obbligatorio</strong> avere a bordo dell'elicottero sia il <strong>Pilota e sia il CO-Pilota</strong>. Per i voli con elicotteri privati non vale il presente articolo.</li>
+              <li><i class="fa-solid fa-clock"></i> L'utilizzo dell'elicottero sarà consentito per un massimo di <strong>30 (trenta) minuti</strong>. Una volta scaduto il tempo, gli operatori potranno atterrare per 5 minuti per simulare il rifornimento del carburante. Gli operatori dovranno essere considerati parte del numero dell'azione.</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-camera"></i> Clip e Registrazioni</h3>
+            <ul>
+              <li><i class="fa-solid fa-video"></i> Le <strong class="term-highlight">"clip" personali</strong> potranno essere utilizzate nei seguenti casi:<br>
+                - Avere un telefono cellulare in mano;<br>
+                - Avere la GoPro attiva in auto o addosso alla persona (sia come item che fisicamente come vestiario. Se non presente come vestiario, avvisare la persona che si sta utilizzando la gopro).</li>
+              <li><i class="fa-solid fa-camera"></i> Qualsiasi foto deve essere scattata esclusivamente con l'utilizzo del <strong>telefono o tramite fotocamera (/e camera)</strong>. La GoPro attive (REC) potranno essere utilizzate per estrapolare frame del video.</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-heartbeat"></i> Sistema di Morte</h3>
+            <ul>
+              <li><i class="fa-solid fa-droplet"></i> <strong class="term-highlight">Fase di Dissanguamento:</strong> dura circa due minuti, durante i quali la persona può ancora parlare e ricordare ciò che è accaduto o ciò che le è stato detto.</li>
+              <li><i class="fa-solid fa-skull"></i> <strong class="term-highlight">Fase di Morte:</strong> in questa fase la persona non è più in grado di parlare.</li>
+              <li><i class="fa-solid fa-brain"></i> In caso di successiva rianimazione da NPC o medico, l'evento immediatamente precedente alla morte diventa <strong>particolarmente difficile da ricordare</strong>. Per ricostruire esattamente gli eventi o ricordare i particolari di ciò che è accaduto, possono contribuire testimonianze di soggetti presenti o registrazioni effettuate da GoPro o simili dispositivi attivi durante l'evento. (N.B. i ricordi che si avranno saranno ad esempio: omicidio => solo ricordo che è avvenuto l'evento senza memoria del luogo o dei partecipanti).</li>
+              <li><i class="fa-solid fa-truck-medical"></i> In caso di morte e in assenza dei soccorsi, è possibile <strong>rianimarsi con il medico NPC</strong> solo ed esclusivamente al termine dell'azione.</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-bullet"></i> Equipaggiamento</h3>
+            <ul>
+              <li><i class="fa-solid fa-gun"></i> Si potranno portare al seguito sulla propria persona un <strong>congruo numero di munizioni</strong> che teoricamente una persona terrebbe addosso (Es. 2 o 3 caricatori, non 200 munizioni). Ulteriori munizioni potranno essere trasportate nei borsoni o bagagliai delle auto.</li>
+              <li><i class="fa-solid fa-box"></i> Si potranno ruolare oggetti <strong>esclusivamente presenti o interpretabili in RP</strong>.</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-phone"></i> Chiamate e Procedure</h3>
+            <ul>
+              <li><i class="fa-solid fa-phone-slash"></i> Una <strong class="term-highlight">chiamata anonima</strong> deve essere ruolata mettendo in off "Mostra ID Chiamante" nelle impostazioni del telefono (Impostazioni - Telefono - Mostra ID Chiamante). Non si potrà dire senza modalità "questo numero è criptato".</li>
+              <li><i class="fa-solid fa-clock"></i> La <strong>valutazione di un'azione</strong> potrà essere effettuata entro <strong>12h</strong> dalla fine della stessa. La rivalutazione potrà essere effettuata solo prima che l'esito stesso venga pubblicato.</li>
+              <li><i class="fa-solid fa-shield-haltered"></i> Le FDO possono esclusivamente <strong>sequestrare oggetti considerati illegali</strong> o che sono stati utilizzati per commettere il reato (es: armi e oggetti per rapine). Non possono essere sequestrati documenti, potranno essere presi in custodia radio e telefono per le procedure d'arresto ma dovranno essere obbligatoriamente restituiti una volta lasciato il soggetto.</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-hospital"></i> Ospedale e Tempi</h3>
+            <ul>
+              <li><i class="fa-solid fa-clock"></i> A seguito delle cure in ospedale è obbligatorio rispettare un <strong>tempo di attesa non inferiore ai 3 minuti e non superiore ai 10</strong>, durante il quale verrà monitorato a livello precauzionale.</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-ban"></i> Altre Regole Importanti</h3>
+            <ul>
+              <li><i class="fa-solid fa-car"></i> È strettamente proibito l'uso del comando <strong class="term-highlight">/azione per oscurare la targa</strong> di un veicolo, poiché esiste un sistema appositamente concepito per tale scopo.</li>
+              <li><i class="fa-solid fa-skull"></i> E' severamente vietato <strong>rimuovere i cadaveri</strong> per allontanarli dal contesto dell'azione stessa, ad eccezione di quelli appartenenti alla propria fazione.</li>
+              <li><i class="fa-solid fa-clock"></i> E' vietato iniziare un'azione <strong class="term-highlight">freeroam prima dei 20 MINUTI dal restart</strong> del server, pena annullamento dell'azione e perdita del loot.</li>
+              <li><i class="fa-solid fa-fire"></i> Ogni intento di <strong class="term-highlight">dar fuoco a un locale</strong> richiede l'approvazione tramite ticket dello staff prima di procedere.</li>
             </ul>
 
             <div class="warning-box">
               <i class="fa-solid fa-triangle-exclamation"></i>
-              <strong>Nota Bene:</strong> La violazione di queste regole può portare a sanzioni che vanno dal warn al ban permanente. Lo staff si riserva il diritto di prendere decisioni in casi non esplicitamente coperti dal regolamento.
+              <strong>Nota Bene:</strong> La violazione di queste regole può portare a sanzioni che vanno dal warn al ban permanente.
             </div>
           </div>
 
-          <!-- Regolamento Azioni -->
-          <div id="reg-azioni" class="regolamento-section">
-            <h2><i class="fa-solid fa-hand-fist"></i> Regolamento Azioni</h2>
-            <p>Le azioni RP devono essere sempre giustificate da un contesto valido e coerente con il personaggio interpretato.</p>
-            <ul>
-              <li><i class="fa-regular fa-clock"></i> Ogni azione violenta deve avere una motivazione RP chiara e proporzionata.</li>
-              <li><i class="fa-solid fa-handcuffs"></i> Le azioni di arresto devono seguire la procedura standard.</li>
-              <li><i class="fa-solid fa-truck-medical"></i> Le cure mediche devono essere richieste tramite /me.</li>
-              <li><i class="fa-solid fa-gavel"></i> Le azioni legali devono essere documentate.</li>
-            </ul>
-          </div>
-
-          <!-- Regolamento Loot -->
+          <!-- Altre sezioni (contenuti placeholder) -->
           <div id="reg-loot" class="regolamento-section">
             <h2><i class="fa-solid fa-sack-dollar"></i> Regolamento Loot</h2>
             <p>Il loot dei cadaveri è consentito solo in specifiche situazioni RP.</p>
             <ul>
-              <li><i class="fa-solid fa-skull"></i> È possibile saccheggiare solo il cadavere di un giocatore che si ha ucciso in uno scontro RP valido.</li>
-              <li><i class="fa-solid fa-handcuffs"></i> Non è permesso lootare agenti delle Forze dell'Ordine.</li>
-              <li><i class="fa-solid fa-truck-medical"></i> I dottori possono lootare solo materiale medico.</li>
-              <li><i class="fa-solid fa-clock"></i> Il loot deve avvenire entro 5 minuti dalla morte.</li>
+              <li>È possibile saccheggiare solo il cadavere di un giocatore che si ha ucciso in uno scontro RP valido.</li>
+              <li>Non è permesso lootare agenti delle Forze dell'Ordine.</li>
+              <li>Il loot deve avvenire entro 5 minuti dalla morte.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Permadeath -->
           <div id="reg-permadeath" class="regolamento-section">
             <h2><i class="fa-solid fa-skull"></i> Regolamento Permadeath</h2>
             <p>Il permadeath è una meccanica che può essere attivata in determinate circostanze.</p>
             <ul>
-              <li><i class="fa-solid fa-heartbeat"></i> La morte definitiva del personaggio può essere volontaria o forzata da situazioni estreme.</li>
-              <li><i class="fa-solid fa-file-signature"></i> In caso di permadeath, il giocatore deve creare un nuovo personaggio.</li>
-              <li><i class="fa-solid fa-handcuffs"></i> I beni del personaggio defunto vanno in gestione allo staff.</li>
+              <li>La morte definitiva del personaggio può essere volontaria o forzata da situazioni estreme.</li>
+              <li>In caso di permadeath, il giocatore deve creare un nuovo personaggio.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Safezone -->
           <div id="reg-safezone" class="regolamento-section">
             <h2><i class="fa-solid fa-shield"></i> Regolamento Safezone</h2>
             <p>Le safezone sono aree protette dove non sono consentite azioni violente.</p>
             <ul>
-              <li><i class="fa-solid fa-hospital"></i> Gli ospedali sono considerati safezone.</li>
-              <li><i class="fa-solid fa-handcuffs"></i> I commissariati sono safezone per le Forze dell'Ordine.</li>
-              <li><i class="fa-solid fa-gun"></i> È vietato sparare o commettere reati all'interno delle safezone.</li>
-              <li><i class="fa-solid fa-car"></i> Anche i parcheggi dei veicoli di servizio sono protetti.</li>
+              <li>Gli ospedali sono considerati safezone.</li>
+              <li>I commissariati sono safezone per le Forze dell'Ordine.</li>
+              <li>È vietato sparare o commettere reati all'interno delle safezone.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Capi Fazione -->
           <div id="reg-capifazione" class="regolamento-section">
             <h2><i class="fa-solid fa-crown"></i> Regolamento Capi Fazione</h2>
             <p>I capi fazione hanno responsabilità aggiuntive all'interno del server.</p>
             <ul>
-              <li><i class="fa-solid fa-clipboard-list"></i> Devono gestire i membri della propria fazione.</li>
-              <li><i class="fa-solid fa-envelope"></i> Devono rispondere ai ticket entro 48 ore.</li>
-              <li><i class="fa-solid fa-scale-balanced"></i> Devono far rispettare il regolamento all'interno della fazione.</li>
-              <li><i class="fa-solid fa-chart-line"></i> Devono organizzare attività di fazione settimanali.</li>
+              <li>Devono gestire i membri della propria fazione.</li>
+              <li>Devono rispondere ai ticket entro 48 ore.</li>
+              <li>Devono far rispettare il regolamento all'interno della fazione.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Lavori e Locali -->
           <div id="reg-lavori" class="regolamento-section">
             <h2><i class="fa-solid fa-briefcase"></i> Regolamento Lavori e Locali</h2>
             <p>I lavori e i locali devono essere gestiti con serietà e professionalità.</p>
             <ul>
-              <li><i class="fa-solid fa-store"></i> Ogni attività deve avere orari di apertura coerenti.</li>
-              <li><i class="fa-solid fa-tag"></i> I prezzi devono essere realistici.</li>
-              <li><i class="fa-solid fa-users"></i> È obbligatoria la presenza di personale durante l'orario di apertura.</li>
-              <li><i class="fa-solid fa-chart-simple"></i> Le entrate vanno dichiarate al governo.</li>
+              <li>Ogni attività deve avere orari di apertura coerenti.</li>
+              <li>I prezzi devono essere realistici.</li>
+              <li>È obbligatoria la presenza di personale durante l'orario di apertura.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Forze dell'Ordine -->
           <div id="reg-forzeordine" class="regolamento-section">
             <h2><i class="fa-solid fa-shield-haltered"></i> Regolamento Forze dell'Ordine</h2>
             <p>Le Forze dell'Ordine devono rispettare rigidi protocolli.</p>
             <ul>
-              <li><i class="fa-solid fa-handcuffs"></i> Devono seguire la procedura di arresto standard.</li>
-              <li><i class="fa-solid fa-gun"></i> Possono usare la forza solo quando necessario.</li>
-              <li><i class="fa-solid fa-car"></i> Devono rispettare il codice della strada durante gli inseguimenti.</li>
-              <li><i class="fa-solid fa-file-signature"></i> Devono compilare rapporti per ogni intervento.</li>
+              <li>Devono seguire la procedura di arresto standard.</li>
+              <li>Possono usare la forza solo quando necessario.</li>
+              <li>Devono rispettare il codice della strada durante gli inseguimenti.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Servizi di Emergenza -->
           <div id="reg-emergenza" class="regolamento-section">
             <h2><i class="fa-solid fa-truck-medical"></i> Regolamento Servizi di Emergenza</h2>
             <p>I servizi di emergenza (EMS, Vigili del Fuoco) devono rispondere tempestivamente alle chiamate.</p>
             <ul>
-              <li><i class="fa-solid fa-truck"></i> Devono raggiungere la scena entro tempi ragionevoli.</li>
-              <li><i class="fa-solid fa-heartbeat"></i> Devono stabilizzare i pazienti prima del trasporto.</li>
-              <li><i class="fa-solid fa-file-medical"></i> Devono compilare referti medici.</li>
-              <li><i class="fa-solid fa-fire-extinguisher"></i> Devono risolvere le emergenze in modo realistico.</li>
+              <li>Devono raggiungere la scena entro tempi ragionevoli.</li>
+              <li>Devono stabilizzare i pazienti prima del trasporto.</li>
+              <li>Devono compilare referti medici.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Incidenti -->
           <div id="reg-incidenti" class="regolamento-section">
             <h2><i class="fa-solid fa-car-crash"></i> Regolamento Incidenti</h2>
             <p>Gli incidenti stradali devono essere gestiti con realismo.</p>
             <ul>
-              <li><i class="fa-solid fa-car"></i> In caso di incidente grave, bisogna attendere l'arrivo delle autorità.</li>
-              <li><i class="fa-solid fa-hand"></i> Non è permesso lasciare la scena se si è coinvolti.</li>
-              <li><i class="fa-solid fa-clipboard"></i> Le Forze dell'Ordine devono ricostruire la dinamica.</li>
-              <li><i class="fa-solid fa-truck-medical"></i> I feriti devono ricevere cure prima di essere spostati.</li>
+              <li>In caso di incidente grave, bisogna attendere l'arrivo delle autorità.</li>
+              <li>Non è permesso lasciare la scena se si è coinvolti.</li>
+              <li>I feriti devono ricevere cure prima di essere spostati.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Criminalità -->
           <div id="reg-criminalita" class="regolamento-section">
             <h2><i class="fa-solid fa-mask"></i> Regolamento Criminalità</h2>
             <p>Le attività criminali devono essere gestite con discrezione e realismo.</p>
             <ul>
-              <li><i class="fa-solid fa-gun"></i> Le rapine devono avere una pianificazione RP.</li>
-              <li><i class="fa-solid fa-mask"></i> L'uso della maschera è obbligatorio durante i crimini.</li>
-              <li><i class="fa-solid fa-handcuffs"></i> Se arrestati, i criminali devono collaborare con le FdO.</li>
-              <li><i class="fa-solid fa-building"></i> Le basi criminali devono essere nascoste alla vista.</li>
+              <li>Le rapine devono avere una pianificazione RP.</li>
+              <li>L'uso della maschera è obbligatorio durante i crimini.</li>
+              <li>Se arrestati, i criminali devono collaborare con le FdO.</li>
             </ul>
           </div>
 
-          <!-- Regolamento Rapine -->
           <div id="reg-rapine" class="regolamento-section">
             <h2><i class="fa-solid fa-handcuffs"></i> Regolamento Rapine</h2>
             <p>Le rapine sono consentite solo con determinate limitazioni.</p>
             <ul>
-              <li><i class="fa-solid fa-clock"></i> Non più di 3 rapine al giorno per persona.</li>
-              <li><i class="fa-solid fa-store"></i> È vietato rapinare lo stesso negozio due volte nella stessa ora.</li>
-              <li><i class="fa-solid fa-gun"></i> È obbligatorio mostrare l'arma durante la rapina.</li>
-              <li><i class="fa-solid fa-sack-dollar"></i> Il bottino massimo è stabilito dallo staff.</li>
-              <li><i class="fa-solid fa-handcuffs"></i> Gli ostaggi devono essere rilasciati dopo la fuga.</li>
+              <li>Non più di 3 rapine al giorno per persona.</li>
+              <li>È vietato rapinare lo stesso negozio due volte nella stessa ora.</li>
+              <li>È obbligatorio mostrare l'arma durante la rapina.</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- DONAZIONI E DETTAGLIO -->
+    <!-- DONAZIONI -->
     <section id="page-donations" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-coins"></i> Sostieni California Dreaming</h2>
       <div id="donationsGrid" class="donations-grid"></div>
@@ -1287,7 +1292,6 @@
         });
       });
       
-      // Mostra la prima sezione di default
       if(buttons.length > 0) {
         showSection('generale');
       }

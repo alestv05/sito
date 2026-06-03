@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>California Dreaming Roleplay | FontAwesome Icons</title>
+  <title>California Dreaming Roleplay | Admin Panel</title>
 
   <!-- Preconnect Discord -->
   <link rel="preconnect" href="https://discord.com" crossorigin>
@@ -440,6 +440,116 @@
   .role-eup{color:#4a90e2}
   .role-grafico{color:#ff4dd2}
 
+  /* ADMIN PANEL STYLES */
+  .admin-panel {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a2542, #0f1625);
+    border-radius: 20px;
+    border: 1px solid #58a6ff;
+  }
+  .admin-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.8rem;
+  }
+  .admin-header h2 i {
+    color: #ff4d4f;
+  }
+  .admin-stats {
+    display: flex;
+    gap: 20px;
+    font-size: 1.2rem;
+  }
+  .admin-stats span {
+    color: #58a6ff;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-left: 8px;
+  }
+  .users-online-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .user-online-card {
+    background: linear-gradient(135deg, #121a2a, #0f1625);
+    border: 1px solid #2a3a61;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.4s ease;
+  }
+  .user-online-card:hover {
+    transform: translateY(-3px);
+    border-color: #58a6ff;
+    box-shadow: 0 10px 25px rgba(88,166,255,0.2);
+  }
+  .user-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #58a6ff;
+  }
+  .user-avatar-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #2a3a61;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #58a6ff;
+  }
+  .user-info {
+    flex: 1;
+  }
+  .user-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .user-id {
+    font-size: 0.7rem;
+    color: #9daccc;
+    font-family: monospace;
+  }
+  .user-login-time {
+    font-size: 0.7rem;
+    color: #7ee787;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .empty-users {
+    text-align: center;
+    padding: 60px;
+    color: #9daccc;
+  }
+  .empty-users i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
   /* Donazioni */
   #page-donations{position:relative; padding:40px 20px}
   .donations-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; max-width:920px; margin:0 auto}
@@ -477,6 +587,10 @@
   .btn-primary:hover{
     transform:translateY(-2px);
     box-shadow:0 8px 20px rgba(88,166,255,0.3);
+  }
+  .btn-danger {
+    background: linear-gradient(135deg, #ff4d4f, #cc0000);
+    color: #fff;
   }
   .btn-ghost{
     background:transparent;
@@ -540,6 +654,7 @@
       <a class="nav-link active" data-route="home"><i class="fa-solid fa-house"></i> Home</a>
       <a class="nav-link" data-route="staff"><i class="fa-solid fa-users"></i> Staff</a>
       <a class="nav-link" id="navDonations" data-route="donations" hidden><i class="fa-solid fa-hand-holding-heart"></i> Donazioni</a>
+      <a class="nav-link" id="btnAdmin" data-route="admin" hidden><i class="fa-solid fa-shield-haltered"></i> Admin</a>
       <a class="nav-link" id="btnDiscordLogin" title="Login con Discord">
         <i class="fa-brands fa-discord"></i> Login
       </a>
@@ -643,7 +758,7 @@
       </div>
     </section>
 
-    <!-- STAFF - Icone FontAwesome ovunque -->
+    <!-- STAFF -->
     <section id="page-staff" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-crown"></i> Il nostro staff</h2>
 
@@ -692,13 +807,32 @@
       </div>
     </section>
 
-    <!-- DONAZIONI E DETTAGLIO... (già presenti) -->
+    <!-- ADMIN PANEL - Solo per admin con ID specifico -->
+    <section id="page-admin" class="page" data-page>
+      <div class="admin-panel">
+        <div class="admin-header">
+          <h2><i class="fa-solid fa-shield-haltered"></i> Pannello di Controllo Admin</h2>
+          <div class="admin-stats">
+            <i class="fa-solid fa-users"></i> Utenti collegati: <span id="adminUserCount">0</span>
+          </div>
+        </div>
+        <div id="usersOnlineList" class="users-online-grid"></div>
+      </div>
+    </section>
+
+    <!-- DONAZIONI E DETTAGLIO -->
     <section id="page-donations" class="page" data-page>
       <h2 class="title-roman"><i class="fa-solid fa-coins"></i> Sostieni California Dreaming</h2>
-      <div id="donationsGrid" class="donations-grid">... </div>
+      <div id="donationsGrid" class="donations-grid"></div>
     </section>
     <section id="page-donation" class="page" data-page>
-      <div class="card">...</div>
+      <div class="card">
+        <div id="donationDetail"></div>
+        <div class="actions">
+          <button id="btnBackDon" class="btn btn-ghost"><i class="fa-solid fa-arrow-left"></i> Indietro</button>
+          <button id="btnBuy" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Acquista</button>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -720,8 +854,13 @@
     const DISCORD_SCOPE = 'identify';
     const REDIRECT_URI = 'https://alestv05.github.io/sito/';
     const INVITE_CODE = 'TAhbywxE4A';
+    const ADMIN_DISCORD_ID = '640478852308664360'; // Solo questo ID vede il pannello admin
+    
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
+    
+    // Store degli utenti collegati (login)
+    let loggedInUsers = [];
     
     function toast(message, icon = 'fa-solid fa-info-circle') {
       let existing = $('.toast');
@@ -735,6 +874,7 @@
     }
     
     const showLoader = (show) => { const loader = $('#loginLoader'); if(loader) loader.classList.toggle('show', show); };
+    
     function createParticles() {
       const container = $('#particles');
       if(!container) return;
@@ -749,18 +889,159 @@
         container.appendChild(p);
       }
     }
-    function getAuthToken() { const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); if(!t||!e) return null; if(Date.now()>=e){clearAuth();return null;} return t; }
-    function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
-    function clearAuth() { localStorage.removeItem('nova_token'); localStorage.removeItem('nova_user'); localStorage.removeItem('nova_expires'); }
-    function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
-    function getAvatarUrl(user) { if(!user) return null; if(user.avatar && user.id) { const f = user.avatar.startsWith('a_')?'gif':'png'; return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; } const d = parseInt(user.discriminator||'0',10); return `https://cdn.discordapp.com/embed/avatars/${d%5||0}.png`; }
-    function updateAuthUI() {
+    
+    function getAuthToken() { 
+      const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); 
+      if(!t||!e) return null; 
+      if(Date.now()>=e){clearAuth();return null;} 
+      return t; 
+    }
+    
+    function getCurrentUser() {
       const token = getAuthToken();
       const user = JSON.parse(localStorage.getItem('nova_user') || 'null');
+      if(!token || !user) return null;
+      return user;
+    }
+    
+    function isLoggedIn() { return !!(getAuthToken() && localStorage.getItem('nova_user')); }
+    
+    function isAdmin() {
+      const user = getCurrentUser();
+      return user && user.id === ADMIN_DISCORD_ID;
+    }
+    
+    function clearAuth() { 
+      // Rimuovi utente dalla lista dei collegati prima di fare logout
+      const user = getCurrentUser();
+      if(user) {
+        loggedInUsers = loggedInUsers.filter(u => u.id !== user.id);
+        saveLoggedInUsers();
+      }
+      localStorage.removeItem('nova_token'); 
+      localStorage.removeItem('nova_user'); 
+      localStorage.removeItem('nova_expires'); 
+    }
+    
+    function saveLoggedInUsers() {
+      localStorage.setItem('logged_in_users', JSON.stringify(loggedInUsers));
+      updateAdminPanel();
+    }
+    
+    function loadLoggedInUsers() {
+      const stored = localStorage.getItem('logged_in_users');
+      if(stored) {
+        try {
+          loggedInUsers = JSON.parse(stored);
+          // Rimuovi utenti scaduti (che hanno fatto logout o token scaduto)
+          loggedInUsers = loggedInUsers.filter(u => {
+            const token = u.token;
+            const expires = u.expires;
+            return token && expires && Date.now() < expires;
+          });
+          saveLoggedInUsers();
+        } catch(e) { loggedInUsers = []; }
+      } else {
+        loggedInUsers = [];
+      }
+    }
+    
+    function addLoggedInUser(user, token, expires) {
+      // Non aggiungere se già presente
+      if(!loggedInUsers.find(u => u.id === user.id)) {
+        loggedInUsers.push({
+          id: user.id,
+          username: user.username,
+          global_name: user.global_name,
+          avatar: user.avatar,
+          discriminator: user.discriminator,
+          loginTime: new Date().toISOString(),
+          token: token,
+          expires: expires
+        });
+        saveLoggedInUsers();
+      }
+    }
+    
+    function formatDiscordName(user) { return user?.global_name || user?.username || 'Utente'; }
+    
+    function getAvatarUrl(user) { 
+      if(!user) return null; 
+      if(user.avatar && user.id) { 
+        const f = user.avatar.startsWith('a_')?'gif':'png'; 
+        return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${f}?size=128`; 
+      } 
+      const d = parseInt(user.discriminator||'0',10); 
+      return `https://cdn.discordapp.com/embed/avatars/${d%5||0}.png`; 
+    }
+    
+    function updateAdminPanel() {
+      const adminBtn = $('#btnAdmin');
+      const adminPage = $('#page-admin');
+      
+      if(isAdmin()) {
+        adminBtn.hidden = false;
+        // Aggiorna la lista degli utenti collegati
+        const userCount = $('#adminUserCount');
+        const usersList = $('#usersOnlineList');
+        
+        if(userCount) userCount.textContent = loggedInUsers.length;
+        
+        if(usersList) {
+          if(loggedInUsers.length === 0) {
+            usersList.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun utente collegato al momento</div>`;
+          } else {
+            usersList.innerHTML = loggedInUsers.map(user => {
+              const avatarUrl = getAvatarUrl(user);
+              const userName = formatDiscordName(user);
+              const loginDate = new Date(user.loginTime);
+              const formattedTime = loginDate.toLocaleString('it-IT');
+              
+              return `
+                <div class="user-online-card">
+                  ${avatarUrl ? 
+                    `<img class="user-avatar" src="${avatarUrl}" alt="${userName}" crossorigin="anonymous">` : 
+                    `<div class="user-avatar-placeholder"><i class="fa-solid fa-circle-user"></i></div>`
+                  }
+                  <div class="user-info">
+                    <div class="user-name">
+                      <i class="fa-brands fa-discord"></i> ${escapeHtml(userName)}
+                    </div>
+                    <div class="user-id">ID: ${user.id}</div>
+                    <div class="user-login-time">
+                      <i class="fa-regular fa-clock"></i> Login: ${formattedTime}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+      } else {
+        adminBtn.hidden = true;
+      }
+    }
+    
+    function escapeHtml(str) {
+      if(!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if(m === '&') return '&amp;';
+        if(m === '<') return '&lt;';
+        if(m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    function updateAuthUI() {
+      const token = getAuthToken();
+      const user = getCurrentUser();
       const isIn = !!(token && user);
+      
       $('#navDonations').hidden = !isIn;
       $('#btnDiscordLogin').hidden = isIn;
       $('#btnLogout').hidden = !isIn;
+      $('#btnAdmin').hidden = !isAdmin();
+      
       if(isIn) {
         const url = getAvatarUrl(user);
         if(url) { $('#topAvatarImg').src = url; $('#topAvatarImg').style.display = 'block'; $('#topAvatarIcon').style.display = 'none'; }
@@ -770,10 +1051,22 @@
         $('#topAvatarImg').style.display = 'none'; $('#topAvatarIcon').style.display = 'block';
         $('#topUsername').hidden = true;
         const active = $('.page.active')?.id?.replace('page-','');
-        if(active === 'donations' || active === 'donation') showPage('home');
+        if(active === 'donations' || active === 'donation' || active === 'admin') showPage('home');
       }
+      
+      updateAdminPanel();
     }
-    function buildAuthURL(s) { const u = new URL('https://discord.com/oauth2/authorize'); u.searchParams.set('client_id',DISCORD_CLIENT_ID); u.searchParams.set('redirect_uri',REDIRECT_URI); u.searchParams.set('response_type','token'); u.searchParams.set('scope',DISCORD_SCOPE); u.searchParams.set('state',s); return u.toString(); }
+    
+    function buildAuthURL(s) { 
+      const u = new URL('https://discord.com/oauth2/authorize'); 
+      u.searchParams.set('client_id',DISCORD_CLIENT_ID); 
+      u.searchParams.set('redirect_uri',REDIRECT_URI); 
+      u.searchParams.set('response_type','token'); 
+      u.searchParams.set('scope',DISCORD_SCOPE); 
+      u.searchParams.set('state',s); 
+      return u.toString(); 
+    }
+    
     async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) {
       if(!access_token) throw new Error('No token');
       localStorage.setItem('nova_token',access_token);
@@ -782,21 +1075,37 @@
       if(!r.ok) throw new Error();
       const user = await r.json();
       localStorage.setItem('nova_user',JSON.stringify(user));
+      
+      // Aggiungi alla lista degli utenti collegati
+      const expiresTime = Date.now() + expires_in * 1000;
+      addLoggedInUser(user, access_token, expiresTime);
+      
       updateAuthUI();
       toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
     }
+    
     function beginDiscordLogin(e) {
-      if(e){e.preventDefault();} if(isLoggedIn()){toast('Sei già loggato!','fa-solid fa-check');return;}
+      if(e){e.preventDefault();} 
+      if(isLoggedIn()){toast('Sei già loggato!','fa-solid fa-check');return;}
       const state = Math.random().toString(36).substr(2,16);
       sessionStorage.setItem('oauth_state',state);
       const url = buildAuthURL(state);
       const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2;
       const popup = window.open(url,'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`);
       showLoader(true);
-      const handler = async (ev) => { if(ev.origin !== new URL(REDIRECT_URI).origin) return; if(ev.data?.type !== 'discord_oauth') return; window.removeEventListener('message',handler); try{ await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); if(popup&&!popup.closed) popup.close(); }finally{ showLoader(false); } };
+      const handler = async (ev) => { 
+        if(ev.origin !== new URL(REDIRECT_URI).origin) return; 
+        if(ev.data?.type !== 'discord_oauth') return; 
+        window.removeEventListener('message',handler); 
+        try{ 
+          await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); 
+          if(popup&&!popup.closed) popup.close(); 
+        }finally{ showLoader(false); } 
+      };
       window.addEventListener('message',handler);
       setInterval(()=>{ if(popup?.closed){ window.removeEventListener('message',handler); showLoader(false); } },500);
     }
+    
     async function handleOAuthRedirect() {
       if(!window.location.hash.startsWith('#')) return false;
       const p = new URLSearchParams(window.location.hash.substr(1));
@@ -814,16 +1123,41 @@
       try{ await finalizeOAuth({ access_token:token, token_type:p.get('token_type')||'Bearer', expires_in:Number(p.get('expires_in')||3600) }); }catch(e){ toast('Errore login'); }finally{ showLoader(false); }
       return true;
     }
-    function logout(e){ if(e)e.preventDefault(); const user = JSON.parse(localStorage.getItem('nova_user')||'null'); const name = user?formatDiscordName(user):''; clearAuth(); updateAuthUI(); showPage('home'); toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); }
+    
+    function logout(e){ 
+      if(e) e.preventDefault(); 
+      const user = getCurrentUser(); 
+      const name = user ? formatDiscordName(user) : ''; 
+      clearAuth(); 
+      updateAuthUI(); 
+      showPage('home'); 
+      toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); 
+    }
+    
     function showPage(pageId) {
-      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ toast('Accedi per vedere le donazioni','fa-solid fa-lock'); pageId='home'; }
+      if((pageId==='donations'||pageId==='donation') && !isLoggedIn()){ 
+        toast('Accedi per vedere le donazioni','fa-solid fa-lock'); 
+        pageId='home'; 
+      }
+      if(pageId==='admin' && !isAdmin()) {
+        toast('Accesso negato. Area riservata agli amministratori.','fa-solid fa-shield-haltered');
+        pageId='home';
+      }
       $$('.page').forEach(p=>p.classList.remove('active'));
       $$('.nav-link').forEach(l=>l.classList.remove('active'));
       $(`#page-${pageId}`)?.classList.add('active');
       $(`.nav-link[data-route="${pageId}"]`)?.classList.add('active');
       if(pageId==='home') $('#nvVideo')?.play().catch(()=>{});
+      if(pageId==='admin') updateAdminPanel();
     }
-    document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
+    
+    document.addEventListener('click',(e)=>{ 
+      const l=e.target.closest('[data-route]'); 
+      if(l){ 
+        e.preventDefault(); 
+        showPage(l.getAttribute('data-route')); 
+      } 
+    });
     
     // Donations init
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"};
@@ -843,13 +1177,23 @@
         if(!c)return;
         if(!isLoggedIn()){ toast('Login richiesto','fa-solid fa-key'); return; }
         const price = c.dataset.price;
-        $('#detailTitle').textContent = `Pacchetto ${price}€`;
-        $('#detailPrice').textContent = price;
-        $('#detailImg').src = 'https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png';
-        $('#detailDesc').textContent = OFFER_TEXT[price] || '';
+        const detailDiv = $('#donationDetail');
+        if(detailDiv) {
+          detailDiv.innerHTML = `
+            <div class="donation-detail">
+              <div class="donation-media"><img src="https://i.postimg.cc/PxPsssLH/7-C030-F38-2503-4-D9-C-BE75-B89-FE9979-A30.png" alt="Pacchetto"></div>
+              <div class="donation-info">
+                <h2>Pacchetto ${price}€</h2>
+                <div class="price">${price}€</div>
+                <p>${OFFER_TEXT[price] || ''}</p>
+              </div>
+            </div>
+          `;
+        }
         showPage('donation');
       });
     }
+    
     document.addEventListener('click',(e)=>{
       if(e.target.id==='btnBackDon') showPage('donations');
       if(e.target.id==='btnBuy') toast('💳 Sistema in sviluppo, apri ticket su Discord','fa-solid fa-ticket');
@@ -866,8 +1210,22 @@
         $('#statMembers').textContent = d.approximate_member_count ? d.approximate_member_count+'+' : '—';
       }catch(e){ $('#countTotal').textContent='—'; $('#countOnline').textContent='—'; $('#statMembers').textContent='—'; }
     }
+    
+    // Controllo periodico della validità dei token per rimuovere utenti scaduti
+    setInterval(() => {
+      const oldLength = loggedInUsers.length;
+      loggedInUsers = loggedInUsers.filter(u => {
+        return u.expires && Date.now() < u.expires;
+      });
+      if(oldLength !== loggedInUsers.length) {
+        saveLoggedInUsers();
+      }
+      updateAdminPanel();
+    }, 60000); // Ogni minuto
+    
     window.addEventListener('load', async ()=>{
       createParticles();
+      loadLoggedInUsers();
       await handleOAuthRedirect();
       updateAuthUI();
       loadDiscordCounts();

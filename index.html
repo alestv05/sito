@@ -752,6 +752,98 @@
   .admin-current-user { border-color: #58a6ff; background: linear-gradient(135deg, #1a2542, #121a2a); }
   .guest-badge { background: #6c757d20; padding: 2px 8px; border-radius: 40px; font-size: 0.65rem; display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; }
 
+  /* LOGIN MODAL PANEL */
+  .login-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  .login-modal.active {
+    display: flex;
+  }
+  .login-panel {
+    background: linear-gradient(145deg, #121a2a, #0a0f1a);
+    border: 2px solid #58a6ff;
+    border-radius: 32px;
+    padding: 40px 30px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 30px 50px rgba(0,0,0,0.7);
+    animation: fadeInUp 0.3s ease;
+  }
+  .login-panel h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #fff, #58a6ff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  .login-panel p {
+    color: #9daccc;
+    margin-bottom: 30px;
+  }
+  .login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 60px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    font-family: inherit;
+    width: 100%;
+  }
+  .login-btn.discord {
+    background: #5865F2;
+    color: white;
+    box-shadow: 0 5px 15px rgba(88,101,242,0.3);
+  }
+  .login-btn.discord:hover {
+    transform: translateY(-2px);
+    background: #4752c4;
+    box-shadow: 0 10px 25px rgba(88,101,242,0.5);
+  }
+  .login-btn.google {
+    background: #fff;
+    color: #222;
+    border: 1px solid #ddd;
+  }
+  .login-btn.google:hover {
+    background: #f5f5f5;
+    transform: translateY(-2px);
+  }
+  .close-modal {
+    margin-top: 30px;
+    background: transparent;
+    border: none;
+    color: #9daccc;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .close-modal:hover {
+    color: #ff4d4f;
+  }
+
   .staff-section{max-width:1000px; margin:40px auto}
   .role{
     display:flex; 
@@ -902,6 +994,7 @@
     .countdown-item-actions { margin-top: 8px; justify-content: flex-start; width: 100%; }
     .countdown-item-info { width: 100%; }
     .future-event-item { flex-direction: column; align-items: flex-start; }
+    .login-panel { padding: 30px 20px; }
   }
   </style>
 </head>
@@ -914,8 +1007,7 @@
       <a class="nav-link" data-route="staff"><i class="fa-solid fa-users"></i> Staff</a>
       <a class="nav-link" id="navDonations" data-route="donations" hidden><i class="fa-solid fa-hand-holding-heart"></i> Donazioni</a>
       <a class="nav-link" id="btnAdmin" data-route="admin" hidden><i class="fa-solid fa-shield-haltered"></i> Admin</a>
-      <a class="nav-link" id="btnDiscordLogin" title="Login con Discord"><i class="fa-brands fa-discord"></i> Discord</a>
-      <a class="nav-link" id="btnGoogleLogin" title="Login con Google"><i class="fa-brands fa-google"></i> Google</a>
+      <a class="nav-link" id="btnLogin"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
       <a class="nav-link" id="btnLogout" hidden><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
     </nav>
     <div class="top-avatar" id="topAvatar" title="Utente">
@@ -924,6 +1016,19 @@
       <span id="topUsername" hidden></span>
     </div>
   </header>
+
+  <!-- MODALE LOGIN -->
+  <div id="loginModal" class="login-modal">
+    <div class="login-panel">
+      <h3><i class="fa-solid fa-unlock-keyhole"></i> Accedi</h3>
+      <p>Scegli il metodo di accesso</p>
+      <div class="login-buttons">
+        <button id="modalDiscordBtn" class="login-btn discord"><i class="fa-brands fa-discord fa-lg"></i> Continua con Discord</button>
+        <button id="modalGoogleBtn" class="login-btn google"><i class="fa-brands fa-google fa-lg"></i> Continua con Google</button>
+      </div>
+      <button id="closeModalBtn" class="close-modal"><i class="fa-solid fa-xmark"></i> Chiudi</button>
+    </div>
+  </div>
 
   <main id="app">
     <section id="page-home" class="page active" data-page>
@@ -1047,7 +1152,7 @@
     const REDIRECT_URI = window.location.href.split('#')[0];
     const INVITE_CODE = 'TAhbywxE4A';
     const ADMIN_DISCORD_ID = '640478852308664360';
-    const ADMIN_GOOGLE_EMAIL = 'alessio.lucchini2005@gmail.com';  // <-- CAMBIA CON LA TUA EMAIL ADMIN PER GOOGLE
+    const ADMIN_GOOGLE_EMAIL = 'alessio.lucchini2005@gmail.com';
     const $ = s => document.querySelector(s);
 
     // ------------------- UTILITY -------------------
@@ -1135,13 +1240,12 @@
       });
     }
     
-    // ------------------- GESTIONE LOGIN DISCORD (esistente) -------------------
+    // ------------------- GESTIONE LOGIN DISCORD -------------------
     function getAuthToken() { const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); if(!t||!e||Date.now()>=e){ clearAuth(); return null; } return t; }
     function getCurrentUserFromStorage() { 
       const token = getAuthToken(); 
       const user = JSON.parse(localStorage.getItem('nova_user') || 'null'); 
       if(!token || !user) return null; 
-      // se l'utente è google, verifica anche che non sia scaduto il token personalizzato (1gg)
       if(user.type === 'google' && localStorage.getItem('google_expires') && Date.now() > Number(localStorage.getItem('google_expires'))) {
         clearAuth(); return null;
       }
@@ -1181,7 +1285,6 @@
       initAnonymousTracking();
     }
     
-    // Discord OAuth (già presente)
     async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) { 
       if(!access_token) throw new Error('No token');
       localStorage.setItem('nova_token',access_token);
@@ -1206,6 +1309,7 @@
       startHeartbeat(user.id);
       updateAuthUI();
       toast(`Benvenuto ${discordUser.name}!`, 'fa-brands fa-discord');
+      closeLoginModal();
     }
     
     function beginDiscordLogin(e) { 
@@ -1250,7 +1354,7 @@
       return true; 
     }
     
-    // ------------------- LOGIN CON GOOGLE (Firebase Auth) -------------------
+    // ------------------- LOGIN CON GOOGLE -------------------
     async function googleLogin() {
       if(isLoggedIn()) { toast('Disconnettiti prima di fare login con un altro account', 'fa-solid fa-info-circle'); return; }
       if(!auth) { toast('Servizio auth non disponibile', 'fa-solid fa-exclamation-triangle'); return; }
@@ -1270,8 +1374,7 @@
           avatar: user.photoURL,
           avatarUrl: user.photoURL
         };
-        // salva session personalizzata
-        const expiresAt = Date.now() + 86400000; // 1 giorno
+        const expiresAt = Date.now() + 86400000;
         localStorage.setItem('nova_token', 'google_' + user.uid);
         localStorage.setItem('nova_expires', expiresAt.toString());
         localStorage.setItem('google_expires', expiresAt.toString());
@@ -1282,6 +1385,7 @@
         startHeartbeat(user.uid);
         updateAuthUI();
         toast(`Benvenuto ${googleUser.name}!`, 'fa-brands fa-google');
+        closeLoginModal();
       } catch (err) {
         console.error(err);
         toast('Errore login con Google: ' + err.message, 'fa-solid fa-exclamation-triangle');
@@ -1290,7 +1394,6 @@
       }
     }
     
-    // logout unificato
     function logout(e) { 
       if(e) e.preventDefault(); 
       const name = currentUser ? formatUserName(currentUser) : ''; 
@@ -1300,19 +1403,25 @@
       toast(name?`Arrivederci ${name}!`:'Logout effettuato','fa-solid fa-sign-out-alt'); 
     }
     
+    // UI AUTH + MODALE
+    function openLoginModal() {
+      $('#loginModal').classList.add('active');
+    }
+    function closeLoginModal() {
+      $('#loginModal').classList.remove('active');
+    }
+    
     function updateAuthUI() { 
       const user = getCurrentUserFromStorage(); 
       const token = getAuthToken(); 
       const isIn = !!(token && user); 
       currentUser = user;
       const navDon = $('#navDonations'); 
-      const btnDiscord = $('#btnDiscordLogin'); 
-      const btnGoogle = $('#btnGoogleLogin');
+      const btnLogin = $('#btnLogin');
       const btnLogout = $('#btnLogout'); 
       const btnAdmin = $('#btnAdmin'); 
       if(navDon) navDon.hidden = !isIn; 
-      if(btnDiscord) btnDiscord.hidden = isIn; 
-      if(btnGoogle) btnGoogle.hidden = isIn;
+      if(btnLogin) btnLogin.hidden = isIn; 
       if(btnLogout) btnLogout.hidden = !isIn; 
       if(btnAdmin) btnAdmin.hidden = !isAdmin(); 
       if(isIn) { 
@@ -1336,7 +1445,7 @@
     
     function showLoader(show) { const l = $('#loginLoader'); if(l) l.classList.toggle('show', show); }
     
-    // ------------------- LISTA VISITATORI ONLINE (ADMIN) -------------------
+    // ------------------- ONLINE USERS (admin) -------------------
     function listenForOnlineUsers() {
       if (!onlineUsersRef) return;
       onlineUsersRef.on('value', (snapshot) => {
@@ -1376,7 +1485,7 @@
       });
     }
     
-    // ------------------- COUNTDOWN GLOBALI (stessa logica invariata) -------------------
+    // ------------------- COUNTDOWN (invariato) -------------------
     function loadCountdownsFromFirebase() {
       if (!countdownsRef) return;
       countdownsRef.on('value', (snapshot) => {
@@ -1569,7 +1678,7 @@
     
     document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
     
-    // ------------------- DONAZIONI (identiche) -------------------
+    // ------------------- DONAZIONI -------------------
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"}; 
     const grid = $('#donationsGrid'); 
     if(grid) { 
@@ -1617,13 +1726,21 @@
       setInterval(loadDiscordCounts,30000); 
       loadCountdownsFromFirebase(); 
       listenForOnlineUsers(); 
-      const loginDiscordBtn = $('#btnDiscordLogin'); 
-      const loginGoogleBtn = $('#btnGoogleLogin');
+      
+      // Gestione modale login
+      const loginBtn = $('#btnLogin');
+      const modalDiscord = $('#modalDiscordBtn');
+      const modalGoogle = $('#modalGoogleBtn');
+      const closeModalBtn = $('#closeModalBtn');
+      if(loginBtn) loginBtn.addEventListener('click', openLoginModal);
+      if(modalDiscord) modalDiscord.addEventListener('click', beginDiscordLogin);
+      if(modalGoogle) modalGoogle.addEventListener('click', googleLogin);
+      if(closeModalBtn) closeModalBtn.addEventListener('click', closeLoginModal);
+      window.addEventListener('click', (e) => { if(e.target === $('#loginModal')) closeLoginModal(); });
+      
       const logoutBtn = $('#btnLogout'); 
       const saveBtn = $('#btnSaveCountdown'); 
       const cancelBtn = $('#btnCancelEdit'); 
-      if(loginDiscordBtn) loginDiscordBtn.addEventListener('click', beginDiscordLogin); 
-      if(loginGoogleBtn) loginGoogleBtn.addEventListener('click', googleLogin);
       if(logoutBtn) logoutBtn.addEventListener('click', logout); 
       if(saveBtn) saveBtn.addEventListener('click', saveCountdown); 
       if(cancelBtn) cancelBtn.addEventListener('click', resetForm); 

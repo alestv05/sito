@@ -1231,16 +1231,18 @@
     }
     
     async function clearAnonymousAndStopHeartbeat() {
-      if (visitorId) {
-        try {
+      try {
+        if (visitorId) {
           await removePresence(visitorId);
           console.log("[Login] Rimossa presenza anonima:", visitorId);
-        } catch(e) { console.warn("Errore rimozione anonimo", e); }
-        visitorId = null;
-      }
-      if (heartbeatInterval) {
-        clearInterval(heartbeatInterval);
-        heartbeatInterval = null;
+          visitorId = null;
+        }
+        if (heartbeatInterval) {
+          clearInterval(heartbeatInterval);
+          heartbeatInterval = null;
+        }
+      } catch(e) {
+        console.warn("[Login] Errore durante rimozione anonimo (non bloccante):", e);
       }
     }
     
@@ -1318,10 +1320,10 @@
       };
       localStorage.setItem('nova_user',JSON.stringify(discordUser));
       
-      // 1) Rimuovi l'anonimo corrente dalla sessione (attesa)
+      // Rimuovi l'anonimo corrente (in modo sicuro)
       await clearAnonymousAndStopHeartbeat();
       
-      // 2) Registra l'utente loggato
+      // Registra l'utente loggato
       await registerPresence(user.id, { type: 'discord', name: discordUser.name, username: user.username, global_name: user.global_name, avatarUrl: discordUser.avatarUrl }, expiresAt);
       startHeartbeat(user.id);
       updateAuthUI();
@@ -1342,12 +1344,17 @@
       url.searchParams.set('state',state);
       const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2; 
       const popup = window.open(url.toString(),'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`); 
+      if (!popup) {
+        toast("Impossibile aprire il popup, verifica che il browser non blocchi le finestre popup.", "fa-solid fa-exclamation-triangle");
+        return;
+      }
       showLoader(true); 
       const handler = async (ev) => { 
         if(ev.origin !== window.location.origin) return; 
         if(ev.data?.type !== 'discord_oauth') return; 
         window.removeEventListener('message',handler); 
         try { await finalizeOAuth({ access_token: ev.data.access_token, token_type: ev.data.token_type||'Bearer', expires_in: ev.data.expires_in||3600 }); if(popup && !popup.closed) popup.close(); } 
+        catch(err) { toast("Errore durante il login Discord", "fa-solid fa-exclamation-triangle"); console.error(err); }
         finally { showLoader(false); } 
       }; 
       window.addEventListener('message',handler); 

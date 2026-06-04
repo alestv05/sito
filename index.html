@@ -69,43 +69,28 @@
   }
   .nav-link:hover::after,.nav-link.active::after{ transform:scaleX(1) }
 
-  /* Bottoni login separati */
-  .login-buttons {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  .btn-login {
-    padding: 6px 16px;
+  .btn-login-main {
+    background: linear-gradient(135deg, #58a6ff, #0b6dd6);
+    border: none;
+    color: white;
+    padding: 8px 20px;
     border-radius: 40px;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: none;
     font-family: inherit;
   }
-  .btn-login-discord {
-    background: var(--discord);
-    color: white;
-  }
-  .btn-login-discord:hover {
-    background: #4752c4;
+  .btn-login-main:hover {
     transform: translateY(-2px);
-  }
-  .btn-login-google {
-    background: var(--google);
-    color: white;
-  }
-  .btn-login-google:hover {
-    background: #3367d6;
-    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(88,166,255,0.4);
   }
 
-  .top-avatar{display:flex; gap:12px; align-items:center; background:#0a0f1a; padding:6px 12px; border-radius:40px; border:1px solid #2a3a61}
+  .top-avatar{display:flex; gap:12px; align-items:center; background:#0a0f1a; padding:6px 12px; border-radius:40px; border:1px solid #2a3a61; cursor:pointer; transition:all 0.3s ease;}
+  .top-avatar:hover{ border-color:#58a6ff; }
   #topAvatarIcon{font-size:28px}
   #topAvatarImg{width:34px; height:34px; border-radius:50%; object-fit:cover; display:none; border:2px solid #58a6ff}
   #topUsername{font-weight:600; letter-spacing:.04em; color:#cfe0ff; font-size:0.9rem}
@@ -115,6 +100,139 @@
     padding: 2px 8px;
     border-radius: 20px;
     margin-left: 8px;
+  }
+
+  /* MODALE LOGIN */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  }
+  .modal.active {
+    display: flex;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .modal-content {
+    background: linear-gradient(135deg, #121a2a, #0f1625);
+    border-radius: 28px;
+    padding: 40px;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid #58a6ff;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal-logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    background: url('https://i.postimg.cc/ZndLcvQH/LOGO-SERVER-copia.png') no-repeat center/contain;
+    opacity: 0.8;
+  }
+  .modal-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #fff, #58a6ff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  .modal-subtitle {
+    color: #9daccc;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+  }
+  .login-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 25px;
+  }
+  .login-option-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    font-family: inherit;
+    width: 100%;
+  }
+  .login-option-btn i {
+    font-size: 1.3rem;
+  }
+  .login-option-discord {
+    background: #5865F2;
+    color: white;
+  }
+  .login-option-discord:hover {
+    background: #4752c4;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(88,101,242,0.4);
+  }
+  .login-option-google {
+    background: #4285F4;
+    color: white;
+  }
+  .login-option-google:hover {
+    background: #3367d6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(66,133,244,0.4);
+  }
+  .modal-close {
+    margin-top: 15px;
+    background: transparent;
+    border: 1px solid #2a3a61;
+    color: #9daccc;
+    padding: 10px 20px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+  }
+  .modal-close:hover {
+    border-color: #ff4d4f;
+    color: #ff4d4f;
+  }
+  .modal-divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: #2a3a61;
+    font-size: 0.8rem;
+  }
+  .modal-divider::before,
+  .modal-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #2a3a61;
+  }
+  .modal-divider span {
+    margin: 0 15px;
   }
 
   .hero{
@@ -948,8 +1066,8 @@
     .countdown-item-actions { margin-top: 8px; justify-content: flex-start; width: 100%; }
     .countdown-item-info { width: 100%; }
     .future-event-item { flex-direction: column; align-items: flex-start; }
-    .login-buttons { flex-direction: column; width: 100%; }
-    .btn-login { width: 100%; justify-content: center; }
+    .modal-content { padding: 25px; }
+    .login-option-btn { padding: 12px 20px; }
   }
   </style>
 </head>
@@ -962,19 +1080,35 @@
       <a class="nav-link" data-route="staff"><i class="fa-solid fa-users"></i> Staff</a>
       <a class="nav-link" id="navDonations" data-route="donations" hidden><i class="fa-solid fa-hand-holding-heart"></i> Donazioni</a>
       <a class="nav-link" id="btnAdmin" data-route="admin" hidden><i class="fa-solid fa-shield-haltered"></i> Admin</a>
-      <div class="login-buttons" id="loginButtons">
-        <button class="btn-login btn-login-discord" id="btnDiscordLogin"><i class="fa-brands fa-discord"></i> Discord</button>
-        <button class="btn-login btn-login-google" id="btnGoogleLogin"><i class="fa-brands fa-google"></i> Google</button>
-      </div>
+      <button class="btn-login-main" id="mainLoginBtn" hidden><i class="fa-solid fa-right-to-bracket"></i> Accedi</button>
       <a class="nav-link" id="btnLogout" hidden><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
     </nav>
-    <div class="top-avatar" id="topAvatar" title="Utente">
+    <div class="top-avatar" id="topAvatar" title="Utente" style="cursor: pointer;">
       <i id="topAvatarIcon" class="fa-solid fa-circle-user"></i>
       <img id="topAvatarImg" alt="Avatar" crossorigin="anonymous">
       <span id="topUsername" hidden></span>
       <span id="loginMethodBadge" class="login-method-badge" hidden></span>
     </div>
   </header>
+
+  <!-- MODALE LOGIN -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-logo"></div>
+      <h2 class="modal-title">Benvenuto</h2>
+      <p class="modal-subtitle">Scegli come accedere a California Dreaming</p>
+      <div class="login-options">
+        <button class="login-option-btn login-option-discord" id="modalDiscordBtn">
+          <i class="fa-brands fa-discord"></i> Continua con Discord
+        </button>
+        <button class="login-option-btn login-option-google" id="modalGoogleBtn">
+          <i class="fa-brands fa-google"></i> Continua con Google
+        </button>
+      </div>
+      <div class="modal-divider"><span>oppure</span></div>
+      <button class="modal-close" id="modalCloseBtn">Chiudi</button>
+    </div>
+  </div>
 
   <main id="app">
     <section id="page-home" class="page active" data-page>
@@ -1101,6 +1235,25 @@
     const ADMIN_DISCORD_ID = '640478852308664360';
     const $ = s => document.querySelector(s);
 
+    // ------------------- MODALE LOGIN -------------------
+    const loginModal = $('#loginModal');
+    const mainLoginBtn = $('#mainLoginBtn');
+    
+    function openLoginModal() {
+      if(loginModal) loginModal.classList.add('active');
+    }
+    
+    function closeLoginModal() {
+      if(loginModal) loginModal.classList.remove('active');
+    }
+    
+    // Chiudi modale cliccando fuori
+    if(loginModal) {
+      loginModal.addEventListener('click', (e) => {
+        if(e.target === loginModal) closeLoginModal();
+      });
+    }
+    
     // ------------------- UTILITY -------------------
     function detectDeviceType() { 
       try { 
@@ -1125,10 +1278,11 @@
     
     // ------------------- GOOGLE LOGIN con Firebase Auth -------------------
     async function loginWithGoogle() {
-      if(isLoggedIn()) { toast('Già loggato!','fa-solid fa-check'); return; }
+      if(isLoggedIn()) { toast('Già loggato!','fa-solid fa-check'); closeLoginModal(); return; }
       if(!auth) { toast('Firebase Auth non disponibile', 'fa-solid fa-exclamation-triangle'); return; }
       
       showLoader(true);
+      closeLoginModal();
       try {
         const provider = new firebase.auth.GoogleAuthProvider();
         provider.addScope('profile');
@@ -1162,7 +1316,6 @@
           if (heartbeatInterval) clearInterval(heartbeatInterval);
           startHeartbeat(user.uid);
           
-          // Salva dati utente in localStorage per persistenza
           localStorage.setItem('google_user', JSON.stringify(userData));
           localStorage.setItem('login_method', 'google');
           localStorage.setItem('login_expires', expiresAt.toString());
@@ -1275,7 +1428,7 @@
     
     function beginDiscordLogin(e) { 
       if(e) e.preventDefault(); 
-      if(isLoggedIn()) { toast('Già loggato!','fa-solid fa-check'); return; } 
+      if(isLoggedIn()) { toast('Già loggato!','fa-solid fa-check'); closeLoginModal(); return; } 
       const state = Math.random().toString(36).substr(2,16); 
       sessionStorage.setItem('oauth_state',state); 
       const url = new URL('https://discord.com/oauth2/authorize');
@@ -1287,6 +1440,7 @@
       const w=520,h=700,y=window.top.outerHeight/2+window.top.screenY-h/2,x=window.top.outerWidth/2+window.top.screenX-w/2; 
       const popup = window.open(url.toString(),'discord_oauth',`width=${w},height=${h},left=${x},top=${y},resizable=yes`); 
       showLoader(true); 
+      closeLoginModal();
       const handler = async (ev) => { 
         if(ev.origin !== window.location.origin) return; 
         if(ev.data?.type !== 'discord_oauth') return; 
@@ -1335,14 +1489,12 @@
       currentLoginMethod = loginMethod;
       
       const navDon = $('#navDonations'); 
-      const btnDiscord = $('#btnDiscordLogin'); 
-      const btnGoogle = $('#btnGoogleLogin');
-      const loginButtons = $('#loginButtons');
+      const mainLogin = $('#mainLoginBtn');
       const btnLogout = $('#btnLogout'); 
       const btnAdmin = $('#btnAdmin'); 
       
       if(navDon) navDon.hidden = !isIn; 
-      if(loginButtons) loginButtons.hidden = isIn;
+      if(mainLogin) mainLogin.hidden = isIn;
       if(btnLogout) btnLogout.hidden = !isIn; 
       if(btnAdmin) btnAdmin.hidden = !isAdmin(); 
       
@@ -1720,16 +1872,35 @@
       setInterval(loadDiscordCounts,30000); 
       loadCountdownsFromFirebase(); 
       listenForOnlineUsers(); 
-      const discordLoginBtn = $('#btnDiscordLogin'); 
-      const googleLoginBtn = $('#btnGoogleLogin');
+      
+      const modalDiscordBtn = $('#modalDiscordBtn');
+      const modalGoogleBtn = $('#modalGoogleBtn');
+      const modalCloseBtn = $('#modalCloseBtn');
+      
+      if(mainLoginBtn) mainLoginBtn.addEventListener('click', openLoginModal);
+      if(modalDiscordBtn) modalDiscordBtn.addEventListener('click', beginDiscordLogin);
+      if(modalGoogleBtn) modalGoogleBtn.addEventListener('click', loginWithGoogle);
+      if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeLoginModal);
+      
       const logoutBtn = $('#btnLogout'); 
       const saveBtn = $('#btnSaveCountdown'); 
       const cancelBtn = $('#btnCancelEdit'); 
-      if(discordLoginBtn) discordLoginBtn.addEventListener('click', beginDiscordLogin); 
-      if(googleLoginBtn) googleLoginBtn.addEventListener('click', loginWithGoogle);
+      
       if(logoutBtn) logoutBtn.addEventListener('click', logout); 
       if(saveBtn) saveBtn.addEventListener('click', saveCountdown); 
       if(cancelBtn) cancelBtn.addEventListener('click', resetForm); 
+      
+      // Click sull'avatar per logout (opzionale)
+      const topAvatar = $('#topAvatar');
+      if(topAvatar) {
+        topAvatar.addEventListener('click', () => {
+          if(isLoggedIn()) {
+            if(confirm('Vuoi effettuare il logout?')) logout();
+          } else {
+            openLoginModal();
+          }
+        });
+      }
     });
     
     function createParticles() { 

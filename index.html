@@ -1132,7 +1132,7 @@
     let countdownsRef = null;
     let currentCountdowns = [];
     let currentUser = null;
-    let heartbeatInterval = null;        // heartbeat per utente corrente (guest o autenticato)
+    let heartbeatInterval = null;
     let countdownInterval = null;
     let futureEventsInterval = null;
     let auth = null;
@@ -1177,7 +1177,7 @@
     }
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
     
-    // ------------------- TRACCIAMENTO ANONIMO + SESSIONE (FIX: rimozione definitiva guest al login) -------------------
+    // ------------------- TRACCIAMENTO ANONIMO + SESSIONE -------------------
     let visitorId = null;
     
     function getOrCreateVisitorId() {
@@ -1219,8 +1219,7 @@
     }
     
     function removePresence(userId) {
-      if (onlineUsersRef) return onlineUsersRef.child(userId).remove();
-      return Promise.resolve();
+      if (onlineUsersRef) onlineUsersRef.child(userId).remove();
     }
     
     function startHeartbeat(userId) {
@@ -1230,27 +1229,12 @@
       }, 30000);
     }
     
-    // Ferma heartbeat guest e cancella presenza dal DB, poi resetta visitorId
-    async function cleanupAndRemoveGuest() {
-      if (heartbeatInterval) {
-        clearInterval(heartbeatInterval);
-        heartbeatInterval = null;
-      }
-      if (visitorId) {
-        await removePresence(visitorId);
-        visitorId = null;
-      }
-    }
-    
-    async function initAnonymousTracking() {
-      // se già loggato non fare nulla
-      if (isLoggedIn()) return;
-      // assicura che non ci siano heartbeat guest residui
-      if (heartbeatInterval) clearInterval(heartbeatInterval);
+    function initAnonymousTracking() {
       visitorId = getOrCreateVisitorId();
       const expiresAt = Date.now() + 3600000;
-      await registerPresence(visitorId, { type: 'guest', name: 'Visitatore anonimo' }, expiresAt);
-      startHeartbeat(visitorId);
+      registerPresence(visitorId, { type: 'guest', name: 'Visitatore anonimo' }, expiresAt)
+        .then(() => startHeartbeat(visitorId))
+        .catch(err => console.warn("Anonimo non registrato", err));
       window.addEventListener('beforeunload', () => {
         if (visitorId) removePresence(visitorId);
       });
@@ -1289,9 +1273,8 @@
       return null;
     }
     
-    async function clearAuth() { 
-      // rimuovi presenza corrente (se autenticato)
-      if (currentUser && currentUser.id) await removePresence(currentUser.id);
+    function clearAuth() { 
+      if (currentUser && currentUser.id) removePresence(currentUser.id);
       if (heartbeatInterval) clearInterval(heartbeatInterval);
       if(auth && auth.currentUser) auth.signOut().catch(e=>console.warn);
       localStorage.removeItem('nova_token'); 
@@ -1299,24 +1282,7 @@
       localStorage.removeItem('nova_expires');
       localStorage.removeItem('google_expires');
       currentUser = null;
-      visitorId = null;   // forza ricreazione nuovo guest
-      await initAnonymousTracking(); // riavvia tracciamento anonimo
-    }
-    
-    // Funzione comune per completare il login (sia Discord che Google) e rimuovere definitivamente l'anonimo
-    async function finalizeLogin(userData, userId, expiresInSeconds = 86400) {
-      // 1) Interrompi eventuale heartbeat guest e cancella il nodo guest dal DB
-      await cleanupAndRemoveGuest();
-      
-      // 2) Registra l'utente autenticato nel DB online_users
-      const expiresAt = Date.now() + expiresInSeconds * 1000;
-      await registerPresence(userId, userData, expiresAt);
-      
-      // 3) Avvia heartbeat per l'utente loggato
-      startHeartbeat(userId);
-      
-      // 4) Aggiorna UI e stato
-      updateAuthUI();
+      initAnonymousTracking();
     }
     
     async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) { 
@@ -1337,8 +1303,11 @@
         avatarUrl: getAvatarUrl({type:'discord', id: user.id, avatar: user.avatar})
       };
       localStorage.setItem('nova_user',JSON.stringify(discordUser));
-      
-      await finalizeLogin(discordUser, user.id, expires_in);
+      if (visitorId) removePresence(visitorId);
+      await registerPresence(user.id, { type: 'discord', name: discordUser.name, username: user.username, global_name: user.global_name, avatarUrl: discordUser.avatarUrl }, expiresAt);
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      startHeartbeat(user.id);
+      updateAuthUI();
       toast(`Benvenuto ${discordUser.name}!`, 'fa-brands fa-discord');
       closeLoginModal();
     }
@@ -1410,8 +1379,11 @@
         localStorage.setItem('nova_expires', expiresAt.toString());
         localStorage.setItem('google_expires', expiresAt.toString());
         localStorage.setItem('nova_user', JSON.stringify(googleUser));
-        
-        await finalizeLogin(googleUser, user.uid, 86400);
+        if (visitorId) removePresence(visitorId);
+        await registerPresence(user.uid, { type: 'google', name: googleUser.name, email: googleUser.email, avatarUrl: googleUser.avatarUrl }, expiresAt);
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        startHeartbeat(user.uid);
+        updateAuthUI();
         toast(`Benvenuto ${googleUser.name}!`, 'fa-brands fa-google');
         closeLoginModal();
       } catch (err) {
@@ -1749,19 +1721,7 @@
       createParticles(); 
       await handleOAuthRedirect(); 
       updateAuthUI(); 
-      if (!isLoggedIn()) {
-        await initAnonymousTracking();
-      } else {
-        // Se già loggato, assicuriamoci che non ci sia heartbeat guest attivo e che l'utente sia registrato nel DB
-        const storedUser = getCurrentUserFromStorage();
-        if (storedUser) {
-          await cleanupAndRemoveGuest();
-          const expiresAt = Date.now() + 86400000;
-          await registerPresence(storedUser.id, storedUser, expiresAt);
-          startHeartbeat(storedUser.id);
-          currentUser = storedUser;
-        }
-      }
+      if (!isLoggedIn()) initAnonymousTracking();
       loadDiscordCounts(); 
       setInterval(loadDiscordCounts,30000); 
       loadCountdownsFromFirebase(); 

@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>California Dreaming Roleplay | Admin Panel - Countdown & Visitatori</title>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK (App + Database + Auth) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
   <!-- UA Parser -->
   <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.37/dist/ua-parser.min.js"></script>
@@ -913,7 +914,8 @@
       <a class="nav-link" data-route="staff"><i class="fa-solid fa-users"></i> Staff</a>
       <a class="nav-link" id="navDonations" data-route="donations" hidden><i class="fa-solid fa-hand-holding-heart"></i> Donazioni</a>
       <a class="nav-link" id="btnAdmin" data-route="admin" hidden><i class="fa-solid fa-shield-haltered"></i> Admin</a>
-      <a class="nav-link" id="btnDiscordLogin" title="Login con Discord"><i class="fa-brands fa-discord"></i> Login</a>
+      <a class="nav-link" id="btnDiscordLogin" title="Login con Discord"><i class="fa-brands fa-discord"></i> Discord</a>
+      <a class="nav-link" id="btnGoogleLogin" title="Login con Google"><i class="fa-brands fa-google"></i> Google</a>
       <a class="nav-link" id="btnLogout" hidden><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
     </nav>
     <div class="top-avatar" id="topAvatar" title="Utente">
@@ -1028,13 +1030,15 @@
     let heartbeatInterval = null;
     let countdownInterval = null;
     let futureEventsInterval = null;
+    let auth = null;
     
     try {
       const app = firebase.initializeApp(firebaseConfig);
       database = firebase.database();
+      auth = firebase.auth();
       onlineUsersRef = database.ref('online_users');
       countdownsRef = database.ref('countdowns');
-      console.log("Firebase connesso");
+      console.log("Firebase connesso + Auth ready");
     } catch(e) { console.error("Firebase errore", e); }
 
     // ------------------- VARIABILI GLOBALI -------------------
@@ -1043,6 +1047,7 @@
     const REDIRECT_URI = window.location.href.split('#')[0];
     const INVITE_CODE = 'TAhbywxE4A';
     const ADMIN_DISCORD_ID = '640478852308664360';
+    const ADMIN_GOOGLE_EMAIL = 'admin@californiadreaming.it';  // <-- CAMBIA CON LA TUA EMAIL ADMIN PER GOOGLE
     const $ = s => document.querySelector(s);
 
     // ------------------- UTILITY -------------------
@@ -1085,7 +1090,7 @@
       const record = {
         id: userId,
         type: userData.type,
-        name: userData.name || (userData.type === 'guest' ? 'Visitatore anonimo' : 'Utente Discord'),
+        name: userData.name || (userData.type === 'guest' ? 'Visitatore anonimo' : 'Utente'),
         avatar: userData.avatar || null,
         loginTime: new Date().toISOString(),
         expires: expiresAt,
@@ -1095,6 +1100,10 @@
       if (userData.type === 'discord') {
         record.username = userData.username;
         record.global_name = userData.global_name;
+        record.avatarUrl = userData.avatarUrl;
+      }
+      if (userData.type === 'google') {
+        record.email = userData.email;
         record.avatarUrl = userData.avatarUrl;
       }
       return onlineUsersRef.child(userId).set(record);
@@ -1126,24 +1135,53 @@
       });
     }
     
-    // ------------------- GESTIONE LOGIN DISCORD -------------------
+    // ------------------- GESTIONE LOGIN DISCORD (esistente) -------------------
     function getAuthToken() { const t = localStorage.getItem('nova_token'), e = Number(localStorage.getItem('nova_expires')||0); if(!t||!e||Date.now()>=e){ clearAuth(); return null; } return t; }
-    function getCurrentUserFromStorage() { const token = getAuthToken(); const user = JSON.parse(localStorage.getItem('nova_user') || 'null'); if(!token || !user) return null; return user; }
+    function getCurrentUserFromStorage() { 
+      const token = getAuthToken(); 
+      const user = JSON.parse(localStorage.getItem('nova_user') || 'null'); 
+      if(!token || !user) return null; 
+      // se l'utente è google, verifica anche che non sia scaduto il token personalizzato (1gg)
+      if(user.type === 'google' && localStorage.getItem('google_expires') && Date.now() > Number(localStorage.getItem('google_expires'))) {
+        clearAuth(); return null;
+      }
+      return user; 
+    }
     function isLoggedIn() { return !!getAuthToken(); }
-    function isAdmin() { const u = getCurrentUserFromStorage(); return u && u.id === ADMIN_DISCORD_ID; }
-    function formatDiscordName(u) { return u?.global_name || u?.username || 'Utente'; }
-    function getAvatarUrl(u) { if(!u || !u.avatar || !u.id) return null; const f = u.avatar.startsWith('a_')?'gif':'png'; return `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${f}?size=128`; }
+    function isAdmin() { 
+      const u = getCurrentUserFromStorage(); 
+      if(!u) return false;
+      if(u.type === 'discord' && u.id === ADMIN_DISCORD_ID) return true;
+      if(u.type === 'google' && u.email === ADMIN_GOOGLE_EMAIL) return true;
+      return false;
+    }
+    function formatUserName(u) { 
+      if(u.type === 'google') return u.name || u.email || 'Utente Google';
+      return u?.global_name || u?.username || 'Utente Discord';
+    }
+    function getAvatarUrl(u) { 
+      if(!u) return null;
+      if(u.type === 'google') return u.avatar || null;
+      if(u.type === 'discord' && u.avatar && u.id) {
+        const f = u.avatar.startsWith('a_')?'gif':'png'; 
+        return `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${f}?size=128`;
+      }
+      return null;
+    }
     
     function clearAuth() { 
       if (currentUser && currentUser.id) removePresence(currentUser.id);
       if (heartbeatInterval) clearInterval(heartbeatInterval);
+      if(auth && auth.currentUser) auth.signOut().catch(e=>console.warn);
       localStorage.removeItem('nova_token'); 
       localStorage.removeItem('nova_user'); 
-      localStorage.removeItem('nova_expires'); 
+      localStorage.removeItem('nova_expires');
+      localStorage.removeItem('google_expires');
       currentUser = null;
       initAnonymousTracking();
     }
     
+    // Discord OAuth (già presente)
     async function finalizeOAuth({ access_token, token_type='Bearer', expires_in=3600 }) { 
       if(!access_token) throw new Error('No token');
       localStorage.setItem('nova_token',access_token);
@@ -1152,21 +1190,22 @@
       const r = await fetch('https://discord.com/api/users/@me',{headers:{'Authorization':`${token_type} ${access_token}`}});
       if(!r.ok) throw new Error();
       const user = await r.json();
-      localStorage.setItem('nova_user',JSON.stringify(user));
-      if (visitorId) removePresence(visitorId);
-      const discordData = {
+      const discordUser = {
         type: 'discord',
-        name: formatDiscordName(user),
+        id: user.id,
+        name: user.global_name || user.username,
         username: user.username,
         global_name: user.global_name,
         avatar: user.avatar,
-        avatarUrl: getAvatarUrl(user)
+        avatarUrl: getAvatarUrl({type:'discord', id: user.id, avatar: user.avatar})
       };
-      await registerPresence(user.id, discordData, expiresAt);
+      localStorage.setItem('nova_user',JSON.stringify(discordUser));
+      if (visitorId) removePresence(visitorId);
+      await registerPresence(user.id, { type: 'discord', name: discordUser.name, username: user.username, global_name: user.global_name, avatarUrl: discordUser.avatarUrl }, expiresAt);
       if (heartbeatInterval) clearInterval(heartbeatInterval);
       startHeartbeat(user.id);
       updateAuthUI();
-      toast(`Benvenuto ${formatDiscordName(user)}!`, 'fa-brands fa-discord');
+      toast(`Benvenuto ${discordUser.name}!`, 'fa-brands fa-discord');
     }
     
     function beginDiscordLogin(e) { 
@@ -1211,9 +1250,50 @@
       return true; 
     }
     
+    // ------------------- LOGIN CON GOOGLE (Firebase Auth) -------------------
+    async function googleLogin() {
+      if(isLoggedIn()) { toast('Disconnettiti prima di fare login con un altro account', 'fa-solid fa-info-circle'); return; }
+      if(!auth) { toast('Servizio auth non disponibile', 'fa-solid fa-exclamation-triangle'); return; }
+      showLoader(true);
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+        if(!user) throw new Error('Nessun utente');
+        const googleUser = {
+          type: 'google',
+          id: user.uid,
+          name: user.displayName || user.email,
+          email: user.email,
+          avatar: user.photoURL,
+          avatarUrl: user.photoURL
+        };
+        // salva session personalizzata
+        const expiresAt = Date.now() + 86400000; // 1 giorno
+        localStorage.setItem('nova_token', 'google_' + user.uid);
+        localStorage.setItem('nova_expires', expiresAt.toString());
+        localStorage.setItem('google_expires', expiresAt.toString());
+        localStorage.setItem('nova_user', JSON.stringify(googleUser));
+        if (visitorId) removePresence(visitorId);
+        await registerPresence(user.uid, { type: 'google', name: googleUser.name, email: googleUser.email, avatarUrl: googleUser.avatarUrl }, expiresAt);
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        startHeartbeat(user.uid);
+        updateAuthUI();
+        toast(`Benvenuto ${googleUser.name}!`, 'fa-brands fa-google');
+      } catch (err) {
+        console.error(err);
+        toast('Errore login con Google: ' + err.message, 'fa-solid fa-exclamation-triangle');
+      } finally {
+        showLoader(false);
+      }
+    }
+    
+    // logout unificato
     function logout(e) { 
       if(e) e.preventDefault(); 
-      const name = currentUser ? formatDiscordName(currentUser) : ''; 
+      const name = currentUser ? formatUserName(currentUser) : ''; 
       clearAuth(); 
       updateAuthUI(); 
       showPage('home'); 
@@ -1227,10 +1307,12 @@
       currentUser = user;
       const navDon = $('#navDonations'); 
       const btnDiscord = $('#btnDiscordLogin'); 
+      const btnGoogle = $('#btnGoogleLogin');
       const btnLogout = $('#btnLogout'); 
       const btnAdmin = $('#btnAdmin'); 
       if(navDon) navDon.hidden = !isIn; 
       if(btnDiscord) btnDiscord.hidden = isIn; 
+      if(btnGoogle) btnGoogle.hidden = isIn;
       if(btnLogout) btnLogout.hidden = !isIn; 
       if(btnAdmin) btnAdmin.hidden = !isAdmin(); 
       if(isIn) { 
@@ -1243,7 +1325,7 @@
           $('#topAvatarImg').style.display = 'none'; 
           $('#topAvatarIcon').style.display = 'block'; 
         } 
-        $('#topUsername').textContent = formatDiscordName(user); 
+        $('#topUsername').textContent = formatUserName(user); 
         $('#topUsername').hidden = false; 
       } else { 
         $('#topAvatarImg').style.display = 'none'; 
@@ -1275,8 +1357,7 @@
             if(userList.length === 0) container.innerHTML = `<div class="empty-users"><i class="fa-solid fa-user-slash"></i><br>Nessun visitatore online</div>`;
             else container.innerHTML = userList.map(u => {
               let av = u.avatarUrl || null;
-              if(!av && u.type === 'discord' && u.avatar) av = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_')?'gif':'png'}?size=128`;
-              const name = u.name || (u.type === 'discord' ? (u.global_name || u.username) : 'Visitatore anonimo');
+              const name = u.name || (u.type === 'discord' ? (u.global_name || u.username) : (u.type==='google'? u.email : 'Visitatore anonimo'));
               const loginTime = new Date(u.loginTime).toLocaleString('it-IT');
               const isCurr = (currentUser && currentUser.id === u.id) || (u.type === 'guest' && u.id === visitorId);
               const dev = u.device || 'desktop';
@@ -1285,10 +1366,9 @@
               else if(dev === 'phone') { devIcon = '<i class="fa-solid fa-mobile-alt"></i>'; devClass = 'phone'; }
               else { devIcon = '<i class="fa-solid fa-tablet-alt"></i>'; devClass = 'tablet'; }
               const guestBadge = u.type === 'guest' ? '<span class="guest-badge"><i class="fa-regular fa-eye"></i> Anonimo</span>' : '';
-              // Mostra l'ID solo se l'utente non è guest (anonimo)
               const userIdDisplay = u.type !== 'guest' ? `<div class="user-id">ID: ${escapeHtml(u.id)}</div>` : '';
               return `<div class="user-online-card ${isCurr ? 'admin-current-user' : ''}">
-                ${av ? `<img class="user-avatar" src="${av}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : `<div class="user-avatar-placeholder"><i class="fa-solid ${u.type === 'discord' ? 'fa-brands fa-discord' : 'fa-user'}"></i></div>`}
+                ${av ? `<img class="user-avatar" src="${av}" alt="${escapeHtml(name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : `<div class="user-avatar-placeholder"><i class="fa-solid ${u.type === 'discord' ? 'fa-brands fa-discord' : (u.type==='google'?'fa-brands fa-google':'fa-user')}"></i></div>`}
                 <div class="user-info"><div class="user-name"><i class="fa-solid fa-user"></i> ${escapeHtml(name)} ${guestBadge} ${isCurr ? '<span style="background:#58a6ff20; padding:2px 6px; border-radius:40px; font-size:0.6rem;"><i class="fa-solid fa-user-check"></i> Tu</span>' : ''}<span class="device-badge ${devClass}">${devIcon} ${dev==='desktop'?'Desktop':(dev==='phone'?'Telefono':'Tablet')}</span></div>${userIdDisplay}<div class="user-login-time"><i class="fa-regular fa-clock"></i> Arrivato: ${loginTime}</div></div></div>`;
             }).join('');
           }
@@ -1296,7 +1376,7 @@
       });
     }
     
-    // ------------------- COUNTDOWN GLOBALI -------------------
+    // ------------------- COUNTDOWN GLOBALI (stessa logica invariata) -------------------
     function loadCountdownsFromFirebase() {
       if (!countdownsRef) return;
       countdownsRef.on('value', (snapshot) => {
@@ -1489,7 +1569,7 @@
     
     document.addEventListener('click',(e)=>{ const l=e.target.closest('[data-route]'); if(l){ e.preventDefault(); showPage(l.getAttribute('data-route')); } });
     
-    // ------------------- DONAZIONI -------------------
+    // ------------------- DONAZIONI (identiche) -------------------
     const OFFER_TEXT={5:"🎁 50.000€ in game",10:"🎁 100.000€",15:"100.000€",20:"150.000€",30:"200.000€",40:"250.000€",50:"300.000€ + auto",70:"400.000€"}; 
     const grid = $('#donationsGrid'); 
     if(grid) { 
@@ -1537,11 +1617,13 @@
       setInterval(loadDiscordCounts,30000); 
       loadCountdownsFromFirebase(); 
       listenForOnlineUsers(); 
-      const loginBtn = $('#btnDiscordLogin'); 
+      const loginDiscordBtn = $('#btnDiscordLogin'); 
+      const loginGoogleBtn = $('#btnGoogleLogin');
       const logoutBtn = $('#btnLogout'); 
       const saveBtn = $('#btnSaveCountdown'); 
       const cancelBtn = $('#btnCancelEdit'); 
-      if(loginBtn) loginBtn.addEventListener('click', beginDiscordLogin); 
+      if(loginDiscordBtn) loginDiscordBtn.addEventListener('click', beginDiscordLogin); 
+      if(loginGoogleBtn) loginGoogleBtn.addEventListener('click', googleLogin);
       if(logoutBtn) logoutBtn.addEventListener('click', logout); 
       if(saveBtn) saveBtn.addEventListener('click', saveCountdown); 
       if(cancelBtn) cancelBtn.addEventListener('click', resetForm); 

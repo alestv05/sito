@@ -1219,7 +1219,8 @@
     }
     
     function removePresence(userId) {
-      if (onlineUsersRef) onlineUsersRef.child(userId).remove();
+      if (onlineUsersRef && userId) return onlineUsersRef.child(userId).remove();
+      return Promise.resolve();
     }
     
     function startHeartbeat(userId) {
@@ -1229,15 +1230,27 @@
       }, 30000);
     }
     
+    async function clearAnonymousAndStopHeartbeat() {
+      if (visitorId) {
+        try {
+          await removePresence(visitorId);
+          console.log("[Login] Rimossa presenza anonima:", visitorId);
+        } catch(e) { console.warn("Errore rimozione anonimo", e); }
+        visitorId = null;
+      }
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+    }
+    
     function initAnonymousTracking() {
+      if (isLoggedIn()) return;
       visitorId = getOrCreateVisitorId();
       const expiresAt = Date.now() + 3600000;
       registerPresence(visitorId, { type: 'guest', name: 'Visitatore anonimo' }, expiresAt)
         .then(() => startHeartbeat(visitorId))
         .catch(err => console.warn("Anonimo non registrato", err));
-      window.addEventListener('beforeunload', () => {
-        if (visitorId) removePresence(visitorId);
-      });
     }
     
     // ------------------- GESTIONE LOGIN DISCORD -------------------
@@ -1282,6 +1295,7 @@
       localStorage.removeItem('nova_expires');
       localStorage.removeItem('google_expires');
       currentUser = null;
+      visitorId = null;
       initAnonymousTracking();
     }
     
@@ -1303,9 +1317,12 @@
         avatarUrl: getAvatarUrl({type:'discord', id: user.id, avatar: user.avatar})
       };
       localStorage.setItem('nova_user',JSON.stringify(discordUser));
-      if (visitorId) removePresence(visitorId);
+      
+      // 1) Rimuovi l'anonimo corrente dalla sessione (attesa)
+      await clearAnonymousAndStopHeartbeat();
+      
+      // 2) Registra l'utente loggato
       await registerPresence(user.id, { type: 'discord', name: discordUser.name, username: user.username, global_name: user.global_name, avatarUrl: discordUser.avatarUrl }, expiresAt);
-      if (heartbeatInterval) clearInterval(heartbeatInterval);
       startHeartbeat(user.id);
       updateAuthUI();
       toast(`Benvenuto ${discordUser.name}!`, 'fa-brands fa-discord');
@@ -1379,9 +1396,11 @@
         localStorage.setItem('nova_expires', expiresAt.toString());
         localStorage.setItem('google_expires', expiresAt.toString());
         localStorage.setItem('nova_user', JSON.stringify(googleUser));
-        if (visitorId) removePresence(visitorId);
+        
+        // Rimuovi anonimo
+        await clearAnonymousAndStopHeartbeat();
+        
         await registerPresence(user.uid, { type: 'google', name: googleUser.name, email: googleUser.email, avatarUrl: googleUser.avatarUrl }, expiresAt);
-        if (heartbeatInterval) clearInterval(heartbeatInterval);
         startHeartbeat(user.uid);
         updateAuthUI();
         toast(`Benvenuto ${googleUser.name}!`, 'fa-brands fa-google');
@@ -1485,7 +1504,7 @@
       });
     }
     
-    // ------------------- COUNTDOWN (invariato) -------------------
+    // ------------------- COUNTDOWN -------------------
     function loadCountdownsFromFirebase() {
       if (!countdownsRef) return;
       countdownsRef.on('value', (snapshot) => {

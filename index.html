@@ -753,7 +753,7 @@
   .guest-badge { background: #6c757d20; padding: 2px 8px; border-radius: 40px; font-size: 0.65rem; display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; }
 
   /* ============================================ */
-  /* NUOVO STILE PREMIUM PER IL MODALE DI LOGIN   */
+  /* NUOVO STILE PREMIUM PER I PULSANTI DEL MODALE DI LOGIN */
   /* ============================================ */
   
   /* Sfondo del modal: blur più intenso e overlay scuro */
@@ -856,7 +856,7 @@
     text-align: center;
     color: #5a6e91;
     font-size: 0.7rem;
-    margin: 1rem 0 1.2rem;
+    margin: 1rem 0 1.5rem;
     letter-spacing: 1px;
   }
   
@@ -875,7 +875,7 @@
     margin-left: 0.8rem;
   }
   
-  /* Contenitore bottoni */
+  /* Contenitore bottoni - layout migliorato */
   .login-buttons {
     display: flex;
     flex-direction: column;
@@ -883,7 +883,7 @@
     margin: 1.5rem 0;
   }
   
-  /* Stile bottoni di login */
+  /* Stile base per i pulsanti di login - RADICALMENTE MIGLIORATO */
   .login-btn {
     display: flex;
     align-items: center;
@@ -901,6 +901,7 @@
     letter-spacing: 0.3px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
   }
   
   /* Effetto shine sui bottoni */
@@ -919,45 +920,53 @@
     left: 100%;
   }
   
-  /* Bottone Discord */
+  /* Effetto di pressione */
+  .login-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Bottone Discord - Stile Futuristico/Glow */
   .login-btn.discord {
-    background: linear-gradient(135deg, #5865F2, #4752c4);
+    background: linear-gradient(135deg, #5865F2, #3b47b3);
     color: white;
-    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.35);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
   }
   
   .login-btn.discord:hover {
-    transform: translateY(-2px);
-    background: linear-gradient(135deg, #4752c4, #3a45a8);
-    box-shadow: 0 8px 25px rgba(88, 101, 242, 0.5);
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #6874f4, #4752c4);
+    box-shadow: 0 8px 25px rgba(88, 101, 242, 0.6);
   }
   
-  .login-btn.discord:active {
-    transform: translateY(0px);
-  }
-  
-  /* Bottone Google */
+  /* Bottone Google - Stile Premium */
   .login-btn.google {
-    background: rgba(255, 255, 255, 0.96);
+    background: #ffffff;
     color: #1f1f2e;
     border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
   .login-btn.google:hover {
-    transform: translateY(-2px);
-    background: #ffffff;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    background: #f8f9fa;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 0, 0, 0.15);
   }
   
-  .login-btn.google:active {
-    transform: translateY(0px);
+  /* Icone nei bottoni */
+  .login-btn i {
+    font-size: 1.2rem;
+    transition: transform 0.2s ease;
+  }
+  .login-btn:hover i {
+    transform: scale(1.1);
   }
   
   /* Bottone Chiudi */
   .close-modal {
-    margin-top: 0.8rem;
+    margin-top: 1.2rem;
     background: transparent;
     border: none;
     color: #8a9bcf;
@@ -994,6 +1003,19 @@
   
   .login-panel:hover::after {
     opacity: 0.15;
+  }
+
+  /* Loader per i bottoni (opzionale) */
+  .btn-loading {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .btn-loading i:first-child {
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 
   .staff-section{max-width:1000px; margin:40px auto}
@@ -1172,7 +1194,7 @@
     </div>
   </header>
 
-  <!-- MODALE LOGIN - VERSIONE PREMIUM RIVEDUTA -->
+  <!-- MODALE LOGIN - VERSIONE PREMIUM CON PULSANTI RIDISEGNATI -->
   <div id="loginModal" class="login-modal">
     <div class="login-panel">
       <!-- Icona animata -->

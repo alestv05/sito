@@ -752,96 +752,248 @@
   .admin-current-user { border-color: #58a6ff; background: linear-gradient(135deg, #1a2542, #121a2a); }
   .guest-badge { background: #6c757d20; padding: 2px 8px; border-radius: 40px; font-size: 0.65rem; display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; }
 
-  /* LOGIN MODAL PANEL */
+  /* ============================================ */
+  /* NUOVO STILE PREMIUM PER IL MODALE DI LOGIN   */
+  /* ============================================ */
+  
+  /* Sfondo del modal: blur più intenso e overlay scuro */
   .login-modal {
     display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
     z-index: 2000;
     align-items: center;
     justify-content: center;
   }
+  
   .login-modal.active {
     display: flex;
+    animation: modalOverlayFade 0.3s ease;
   }
+  
+  @keyframes modalOverlayFade {
+    from { opacity: 0; backdrop-filter: blur(0px); }
+    to { opacity: 1; backdrop-filter: blur(12px); }
+  }
+  
+  /* Pannello principale - glassmorphism avanzato */
   .login-panel {
-    background: linear-gradient(145deg, #121a2a, #0a0f1a);
-    border: 2px solid #58a6ff;
-    border-radius: 32px;
-    padding: 40px 30px;
+    background: rgba(18, 26, 42, 0.75);
+    backdrop-filter: blur(20px);
+    border-radius: 36px;
+    padding: 2.5rem 2rem;
     width: 90%;
-    max-width: 450px;
+    max-width: 440px;
     text-align: center;
-    box-shadow: 0 30px 50px rgba(0,0,0,0.7);
-    animation: fadeInUp 0.3s ease;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(88, 166, 255, 0.3);
+    border: 1px solid rgba(88, 166, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: modalSlideUp 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   }
-  .login-panel h3 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    background: linear-gradient(135deg, #fff, #58a6ff);
-    background-clip: text;
+  
+  .login-panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(88, 166, 255, 0.5);
+  }
+  
+  @keyframes modalSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  /* Icona animata nel pannello */
+  .login-panel .modal-icon {
+    font-size: 3.8rem;
+    background: linear-gradient(135deg, #58a6ff, #7ee787);
     -webkit-background-clip: text;
+    background-clip: text;
     color: transparent;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    animation: iconPulse 2s infinite;
   }
-  .login-panel p {
-    color: #9daccc;
-    margin-bottom: 30px;
+  
+  @keyframes iconPulse {
+    0%, 100% { transform: scale(1); text-shadow: 0 0 0px rgba(88,166,255,0); }
+    50% { transform: scale(1.05); text-shadow: 0 0 10px rgba(88,166,255,0.5); }
   }
+  
+  /* Titolo */
+  .login-panel h3 {
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #ffffff, #58a6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.5px;
+  }
+  
+  /* Sottotitolo */
+  .login-panel .login-subtitle {
+    color: #a0b3d9;
+    font-size: 0.85rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed rgba(88, 166, 255, 0.3);
+    display: inline-block;
+  }
+  
+  /* Divisore elegante */
+  .login-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #5a6e91;
+    font-size: 0.7rem;
+    margin: 1rem 0 1.2rem;
+    letter-spacing: 1px;
+  }
+  
+  .login-divider::before,
+  .login-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(88, 166, 255, 0.25);
+  }
+  
+  .login-divider::before {
+    margin-right: 0.8rem;
+  }
+  
+  .login-divider::after {
+    margin-left: 0.8rem;
+  }
+  
+  /* Contenitore bottoni */
   .login-buttons {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
+    margin: 1.5rem 0;
   }
+  
+  /* Stile bottoni di login */
   .login-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    padding: 14px;
+    padding: 0.9rem 1rem;
     border-radius: 60px;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.25s ease;
     border: none;
     font-family: inherit;
     width: 100%;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
   }
+  
+  /* Effetto shine sui bottoni */
+  .login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .login-btn:hover::before {
+    left: 100%;
+  }
+  
+  /* Bottone Discord */
   .login-btn.discord {
-    background: #5865F2;
+    background: linear-gradient(135deg, #5865F2, #4752c4);
     color: white;
-    box-shadow: 0 5px 15px rgba(88,101,242,0.3);
+    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.35);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
+  
   .login-btn.discord:hover {
     transform: translateY(-2px);
-    background: #4752c4;
-    box-shadow: 0 10px 25px rgba(88,101,242,0.5);
+    background: linear-gradient(135deg, #4752c4, #3a45a8);
+    box-shadow: 0 8px 25px rgba(88, 101, 242, 0.5);
   }
+  
+  .login-btn.discord:active {
+    transform: translateY(0px);
+  }
+  
+  /* Bottone Google */
   .login-btn.google {
-    background: #fff;
-    color: #222;
-    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.96);
+    color: #1f1f2e;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
+  
   .login-btn.google:hover {
-    background: #f5f5f5;
     transform: translateY(-2px);
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   }
+  
+  .login-btn.google:active {
+    transform: translateY(0px);
+  }
+  
+  /* Bottone Chiudi */
   .close-modal {
-    margin-top: 30px;
+    margin-top: 0.8rem;
     background: transparent;
     border: none;
-    color: #9daccc;
+    color: #8a9bcf;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    transition: all 0.2s;
   }
+  
   .close-modal:hover {
-    color: #ff4d4f;
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    transform: scale(1.02);
+  }
+  
+  /* Effetto particelle sul modal (opzionale) */
+  .login-panel::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #58a6ff, #7ee787, #5865F2);
+    border-radius: 38px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .login-panel:hover::after {
+    opacity: 0.15;
   }
 
   .staff-section{max-width:1000px; margin:40px auto}
@@ -994,7 +1146,10 @@
     .countdown-item-actions { margin-top: 8px; justify-content: flex-start; width: 100%; }
     .countdown-item-info { width: 100%; }
     .future-event-item { flex-direction: column; align-items: flex-start; }
-    .login-panel { padding: 30px 20px; }
+    .login-panel { padding: 1.8rem 1.2rem; max-width: 90%; }
+    .login-panel h3 { font-size: 1.5rem; }
+    .login-panel .modal-icon { font-size: 2.8rem; }
+    .login-btn { padding: 0.7rem 0.8rem; font-size: 0.85rem; }
   }
   </style>
 </head>
@@ -1017,16 +1172,31 @@
     </div>
   </header>
 
-  <!-- MODALE LOGIN -->
+  <!-- MODALE LOGIN - VERSIONE PREMIUM RIVEDUTA -->
   <div id="loginModal" class="login-modal">
     <div class="login-panel">
-      <h3><i class="fa-solid fa-unlock-keyhole"></i> Accedi</h3>
-      <p>Scegli il metodo di accesso</p>
-      <div class="login-buttons">
-        <button id="modalDiscordBtn" class="login-btn discord"><i class="fa-brands fa-discord fa-lg"></i> Continua con Discord</button>
-        <button id="modalGoogleBtn" class="login-btn google"><i class="fa-brands fa-google fa-lg"></i> Continua con Google</button>
+      <!-- Icona animata -->
+      <div class="modal-icon">
+        <i class="fa-solid fa-gem"></i>
       </div>
-      <button id="closeModalBtn" class="close-modal"><i class="fa-solid fa-xmark"></i> Chiudi</button>
+      <h3>Benvenuto</h3>
+      <div class="login-subtitle">Accedi per continuare</div>
+      
+      <!-- Divisore elegante -->
+      <div class="login-divider">Scegli il metodo</div>
+
+      <div class="login-buttons">
+        <button id="modalDiscordBtn" class="login-btn discord">
+          <i class="fa-brands fa-discord fa-lg"></i> Continua con Discord
+        </button>
+        <button id="modalGoogleBtn" class="login-btn google">
+          <i class="fa-brands fa-google fa-lg"></i> Continua con Google
+        </button>
+      </div>
+      
+      <button id="closeModalBtn" class="close-modal">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Chiudi
+      </button>
     </div>
   </div>
 
